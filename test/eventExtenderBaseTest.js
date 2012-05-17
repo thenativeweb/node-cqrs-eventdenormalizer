@@ -58,87 +58,87 @@ describe('EventExtenderBase', function() {
                 cleanRepo(done);
             });
 
-            // describe('that is mapped to', function() {
+            describe('that is mapped to', function() {
 
-            //     describe('a defaultAction function', function() {
+                describe('a defaultAction function', function() {
 
-            //             var evt;
+                        var evt;
 
-            //             beforeEach(function() {
+                        beforeEach(function() {
 
-            //                 evt = {
-            //                     id: '82517',
-            //                     event: 'dummyCreated',
-            //                     payload: {
-            //                         id: '23'
-            //                     }
-            //                 };
+                            evt = {
+                                id: '82517',
+                                event: 'dummyCreated',
+                                payload: {
+                                    id: '23'
+                                }
+                            };
 
-            //             });
+                        });
 
-            //             it('it should raise a extended event', function(done) {
+                        it('it should raise a extended event', function(done) {
 
-            //                 eventEmitter.once('extended:' + evt.event, function(data) {
-            //                     done();
-            //                 });
-            //                 dummyExtender.handle(evt);
+                            eventEmitter.once('extended:' + evt.event, function(data) {
+                                done();
+                            });
+                            dummyExtender.handle(evt);
 
-            //             });
+                        });
 
-            //             it('it should call the defaultAction function', function(done) {
+                        it('it should call the defaultAction function', function(done) {
 
-            //                 var spy = sinon.spy(dummyExtender, 'defaultAction');
-            //                 eventEmitter.once('extended:' + evt.event, function(data) {
-            //                     expect(spy.calledOnce).to.be.ok();
-            //                     dummyExtender.defaultAction.restore();
-            //                     done();
-            //                 });
-            //                 dummyExtender.handle(evt);
+                            var spy = sinon.spy(dummyExtender, 'defaultAction');
+                            eventEmitter.once('extended:' + evt.event, function(data) {
+                                expect(spy.calledOnce).to.be.ok();
+                                dummyExtender.defaultAction.restore();
+                                done();
+                            });
+                            dummyExtender.handle(evt);
 
-            //             });
+                        });
 
-            //     });
+                });
 
-            //     describe('a custom function', function() {
+                describe('a custom function', function() {
 
-            //             var evt;
+                        var evt;
 
-            //             beforeEach(function() {
+                        beforeEach(function() {
 
-            //                 evt = {
-            //                     id: '82517',
-            //                     event: 'dummied',
-            //                     payload: {
-            //                         id: '23'
-            //                     }
-            //                 };
+                            evt = {
+                                id: '82517',
+                                event: 'dummied',
+                                payload: {
+                                    id: '23'
+                                }
+                            };
 
-            //             });
+                        });
 
-            //             it('it should raise a extended event', function(done) {
+                        it('it should raise a extended event', function(done) {
 
-            //                 eventEmitter.once('extended:' + evt.event, function(data) {
-            //                     done();
-            //                 });
-            //                 dummyExtender.handle(evt);
+                            eventEmitter.once('extended:' + evt.event, function(data) {
+                                done();
+                            });
+                            dummyExtender.handle(evt);
 
-            //             });
+                        });
 
-            //             it('it should call the concrete function', function(done) {
+                        it('it should call the concrete function', function(done) {
 
-            //                 var spy = sinon.spy(dummyExtender, 'dummied');
-            //                 eventEmitter.once('extended:' + evt.event, function(data) {
-            //                     expect(spy.calledOnce).to.be.ok();
-            //                     dummyExtender.dummied.restore();
-            //                     done();
-            //                 });
-            //                 dummyExtender.handle(evt);
+                            var spy = sinon.spy(dummyExtender, 'dummied');
+                            eventEmitter.once('extended:' + evt.event, function(data) {
+                                expect(spy.calledOnce).to.be.ok();
+                                dummyExtender.dummied.restore();
+                                done();
+                            });
+                            dummyExtender.handle(evt);
 
-            //             });
+                        });
 
-            //     });
+                });
 
-            // });
+            });
 
         });
 
