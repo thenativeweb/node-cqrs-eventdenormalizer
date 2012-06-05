@@ -118,6 +118,32 @@ describe('eventDispatcher', function() {
                     });
                 });
 
+                describe('having an extender', function() {
+
+                    var called = false;
+
+                    beforeEach(function() {
+                        eventEmitter.once('extend:dummyChanged', function() {
+                            called = true;
+                        });
+                    });
+
+                    it('it should callback with success', function(done) {
+                        eventDispatcher.queueEvent({id: '1', event: 'dummyChanged'}, function(err) {
+                            expect(err).not.to.be.ok();
+                            done();
+                        });
+                    });
+
+                    it('it should call the extender', function(done) {
+                        eventDispatcher.queueEvent({id: '1', event: 'dummyChanged'}, function(err) {
+                            expect(called).to.be.ok();
+                            done();
+                        });
+                    });
+
+                });
+
             });
             
             describe('having any denormalizers', function() {
