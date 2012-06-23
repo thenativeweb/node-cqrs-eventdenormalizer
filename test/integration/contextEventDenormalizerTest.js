@@ -23,19 +23,23 @@ describe('ContextEventDenormalizer', function() {
 
     before(function(done) {
 
-        contextEventDenormalizer.on('event', function(evt) {
-            dummyEmitter.emit('published', evt);
-        });
+        repository.init(function() {
 
-        contextEventDenormalizer.initialize({
-            denormalizersPath: __dirname + '/eventDenormalizers',
-            extendersPath: __dirname + '/eventExtenders',
-            repository: { type: 'inMemory' }
-        }, function(err) {
-            dummyRepo = repository.extend({
-                collectionName: dummyDenormalizer.collectionName
+            contextEventDenormalizer.on('event', function(evt) {
+                dummyEmitter.emit('published', evt);
             });
-            done();
+
+            contextEventDenormalizer.initialize({
+                denormalizersPath: __dirname + '/eventDenormalizers',
+                extendersPath: __dirname + '/eventExtenders',
+                repository: { type: 'inMemory' }
+            }, function(err) {
+                dummyRepo = repository.extend({
+                    collectionName: dummyDenormalizer.collectionName
+                });
+                done();
+            });
+
         });
 
     });
