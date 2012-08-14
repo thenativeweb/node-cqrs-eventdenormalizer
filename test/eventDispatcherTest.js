@@ -41,6 +41,7 @@ describe('eventDispatcher', function() {
                 // else you would call the dequeue function more than once 
                 // as it is bound in initalize function
                 eventEmitter.removeAllListeners('denormalized:*');
+                eventEmitter.registered = {};
             });
 
             it('it should connect', function(done) {
@@ -57,8 +58,12 @@ describe('eventDispatcher', function() {
             var emitted = false;
 
             beforeEach(function(done) {
+                eventEmitter.registered = {};
+
                 eventEmitter.once('denormalize:dummyChanged', function() {});
+                eventEmitter.register('denormalize:dummyChanged');
                 eventEmitter.once('denormalize:dummyChanged', function() { emitted = true; });
+                eventEmitter.register('denormalize:dummyChanged');
 
                 // remove listeners as you connect in a second test again 
                 // else you would call the dequeue function more than once 
@@ -123,20 +128,21 @@ describe('eventDispatcher', function() {
                     var called = false;
 
                     beforeEach(function() {
-                        eventEmitter.once('extend:dummyChanged', function() {
+                        eventEmitter.once('extend:dummyChanged2', function() {
                             called = true;
                         });
+                        eventEmitter.register('extend:dummyChanged2');
                     });
 
                     it('it should callback with success', function(done) {
-                        eventDispatcher.queueEvent({id: '1', event: 'dummyChanged'}, function(err) {
+                        eventDispatcher.queueEvent({id: '1', event: 'dummyChanged2'}, function(err) {
                             expect(err).not.to.be.ok();
                             done();
                         });
                     });
 
                     it('it should call the extender', function(done) {
-                        eventDispatcher.queueEvent({id: '1', event: 'dummyChanged'}, function(err) {
+                        eventDispatcher.queueEvent({id: '1', event: 'dummyChanged2'}, function(err) {
                             expect(called).to.be.ok();
                             done();
                         });
@@ -149,8 +155,11 @@ describe('eventDispatcher', function() {
             describe('having any denormalizers', function() {
 
                 beforeEach(function() {
+                    eventEmitter.registered = {};
                     eventEmitter.once('denormalize:dummyChanged', function() {});
+                    eventEmitter.register('denormalize:dummyChanged');
                     eventEmitter.once('denormalize:dummyChanged', function() {});
+                    eventEmitter.register('denormalize:dummyChanged');
                 });
 
                 it('it should callback with success', function(done) {
@@ -194,7 +203,9 @@ describe('eventDispatcher', function() {
 
                 beforeEach(function(done) {
                     eventEmitter.once('denormalize:dummyChanged', function() {});
+                    eventEmitter.register('denormalize:dummyChanged');
                     eventEmitter.once('denormalize:dummyChanged', function() {});
+                    eventEmitter.register('denormalize:dummyChanged');
 
                     eventQueue.push('1', { 
                         workers: 2,
@@ -271,6 +282,7 @@ describe('eventDispatcher', function() {
                     // else you would call the dequeue function more than once 
                     // as it is bound in initalize function
                     eventEmitter.removeAllListeners('extend:*');
+                    eventEmitter.registered = {};
                     eventDispatcher.initialize({}, function(err) {
                         done();
                     });
@@ -293,10 +305,12 @@ describe('eventDispatcher', function() {
 
                 before(function(done) {
                     eventEmitter.removeAllListeners('extend:*');
+                    eventEmitter.registered = {};
                     eventDispatcher.initialize({}, function(err) {
-                        eventEmitter.on('extend:dummyChanged', function(evt) {
+                        eventEmitter.on('extend:dummyChanged3', function(evt) {
                             dummyEmitter.emit('done');
                         });
+                        eventEmitter.register('extend:dummyChanged3');
                         done();
                     });
                 });
@@ -310,8 +324,8 @@ describe('eventDispatcher', function() {
                     eventEmitter.once('extended:*', function(evt) {
                         expect(false).to.be.ok();
                     });
-
-                    eventEmitter.emit('extend:dummyChanged', { id: '1', event: 'dummyChanged'});
+                    
+                    eventEmitter.emit('extend:dummyChanged3', { id: '1', event: 'dummyChanged3'});
 
                 });
 
