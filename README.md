@@ -7,13 +7,13 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
 
 # Installation
 
-    $ npm install node-cqrs-eventdenormalizer
+    $ npm install cqrs-eventdenormalizer
 
 # Usage
 
 ## Initialization
 
-	var contextEventDenormalizer = require('node-cqrs-eventdenormalizer').contextEventDenormalizer;
+	var contextEventDenormalizer = require('cqrs-eventdenormalizer').contextEventDenormalizer;
 
 	contextEventDenormalizer.on('event', function(evt) {
         // send to clients
