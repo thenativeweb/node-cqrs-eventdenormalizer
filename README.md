@@ -20,7 +20,9 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
     });
     contextEventDenormalizer.initialize({
         denormalizersPath: __dirname + '/eventDenormalizers',
-        extendersPath: __dirname + '/eventExtenders'
+        extendersPath: __dirname + '/eventExtenders',
+        ignoreRevision: false,
+        disableQueuing: false
     }, function(err) {
 
     });
@@ -46,9 +48,17 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
 
 See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/test) for detailed information...
 
+
+# Release Notes
+
+## v0.2.4
+
+- added disableQueuing and ignoreRevision flag
+
+
 # License
 
-Copyright (c) 2012 Adriano Raiano
+Copyright (c) 2013 Adriano Raiano
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

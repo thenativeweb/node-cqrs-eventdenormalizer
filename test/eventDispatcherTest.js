@@ -70,7 +70,7 @@ describe('eventDispatcher', function() {
                 // as it is bound in initalize function
                 eventEmitter.removeAllListeners('denormalized:*');
 
-                eventQueue.push('1', { 
+                eventQueue.push('1', {
                     workers: 1,
                     event: { id: '1', event: 'dummyChanged'}
                 }, done);
@@ -88,7 +88,7 @@ describe('eventDispatcher', function() {
                     eventQueue.getAll(function(err, entries) {
                         expect(entries[0]).to.eql({
                             id: '1',
-                            data: { 
+                            data: {
                                 workers: 2,
                                 event: { id: '1', event: 'dummyChanged'}
                             }
@@ -112,12 +112,12 @@ describe('eventDispatcher', function() {
             eventDispatcher.initialize(done);
         });
 
-        describe('calling queueEvent', function() {
+        describe('calling dispatch', function() {
 
             describe('having zero denormalizers', function() {
 
                 it('it should callback with success', function(done) {
-                    eventDispatcher.queueEvent({id: '1', event: 'dummyChanged'}, function(err) {
+                    eventDispatcher.dispatch({id: '1', event: 'dummyChanged'}, function(err) {
                         expect(err).not.to.be.ok();
                         done();
                     });
@@ -135,14 +135,14 @@ describe('eventDispatcher', function() {
                     });
 
                     it('it should callback with success', function(done) {
-                        eventDispatcher.queueEvent({id: '1', event: 'dummyChanged2'}, function(err) {
+                        eventDispatcher.dispatch({id: '1', event: 'dummyChanged2'}, function(err) {
                             expect(err).not.to.be.ok();
                             done();
                         });
                     });
 
                     it('it should call the extender', function(done) {
-                        eventDispatcher.queueEvent({id: '1', event: 'dummyChanged2'}, function(err) {
+                        eventDispatcher.dispatch({id: '1', event: 'dummyChanged2'}, function(err) {
                             expect(called).to.be.ok();
                             done();
                         });
@@ -163,14 +163,14 @@ describe('eventDispatcher', function() {
                 });
 
                 it('it should callback with success', function(done) {
-                    eventDispatcher.queueEvent({ id: '0', event: 'dummyChanged'}, function(err) {
+                    eventDispatcher.dispatch({ id: '0', event: 'dummyChanged'}, function(err) {
                         expect(err).not.to.be.ok();
                         done();
                     });
                 });
 
                 it('the eventQueueStore should contain an entry', function(done) {
-                    eventDispatcher.queueEvent({ id: '1', event: 'dummyChanged'}, function(err) {
+                    eventDispatcher.dispatch({ id: '1', event: 'dummyChanged'}, function(err) {
                         eventQueue.getAll(function(err, entries) {
                             expect(entries).to.have.length(1);
                             done();
@@ -179,11 +179,11 @@ describe('eventDispatcher', function() {
                 });
 
                 it('the eventQueueStore\'s entries\' workers number should match the number of denormalizers', function(done) {
-                    eventDispatcher.queueEvent({ id: '1', event: 'dummyChanged'}, function(err) {
+                    eventDispatcher.dispatch({ id: '1', event: 'dummyChanged'}, function(err) {
                         eventQueue.getAll(function(err, entries) {
                             expect(entries[0]).to.eql({
                                 id: '1',
-                                data: { 
+                                data: {
                                     workers: 2,
                                     event: { id: '1', event: 'dummyChanged'}
                                 }
@@ -207,7 +207,7 @@ describe('eventDispatcher', function() {
                     eventEmitter.once('denormalize:dummyChanged', function() {});
                     eventEmitter.register('denormalize:dummyChanged');
 
-                    eventQueue.push('1', { 
+                    eventQueue.push('1', {
                         workers: 2,
                         event: { id: '1', event: 'dummyChanged'}
                     }, done);
@@ -222,7 +222,7 @@ describe('eventDispatcher', function() {
                     eventQueue.getAll(function(err, entries) {
                         expect(entries[0]).to.eql({
                             id: '1',
-                            data: { 
+                            data: {
                                 workers: 1,
                                 event: { id: '1', event: 'dummyChanged'}
                             }
@@ -236,7 +236,7 @@ describe('eventDispatcher', function() {
             describe('on entry with workers number == 1', function() {
 
                 before(function(done) {
-                    eventQueue.push('1', { 
+                    eventQueue.push('1', {
                         workers: 1,
                         event: { id: '1', event: 'dummyChanged'}
                     }, done);
@@ -317,11 +317,14 @@ describe('eventDispatcher', function() {
 
                 it('it should not emit an extended event', function(done) {
                     
+                    var handle;
+
                     dummyEmitter.on('done', function(evt) {
+                        eventEmitter.removeListener('extended:*', handle);
                         done();
                     });
 
-                    eventEmitter.once('extended:*', function(evt) {
+                    eventEmitter.once('extended:*', handle = function(evt) {
                         expect(false).to.be.ok();
                     });
                     
