@@ -51,6 +51,10 @@ See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/tes
 
 # Release Notes
 
+## v0.2.6
+
+- use new concurrency feature of viewmodel
+
 ## v0.2.4
 
 - added disableQueuing and ignoreRevision flag

@@ -300,6 +300,43 @@ describe('ContextEventDenormalizer', function() {
 
                         });
 
+                        describe('but having a viewmodel beeing updated by someone else in the meantime', function() {
+
+                            var denorm,
+                                orgFunc;
+
+                            beforeEach(function (done) {
+
+                                denorm = require('./eventDenormalizers/dummyDenormalizer');
+                                orgFunc = denorm._getAux().defaultRevisionUpdateStrategy;
+
+                                denorm._getAux().defaultRevisionUpdateStrategy = function(vm, evt) {
+                                    vm.commit(function() {});
+                                    denorm._getAux().defaultRevisionUpdateStrategy = orgFunc;
+                                };
+
+                                dummyRepo.get(evt.payload.id, function(err, vm) {
+                                    vm._revision = 2;
+                                    dummyRepo.commit(vm, done);
+                                });
+
+                            });
+
+                            it('it should retry to rehandle the event', function(done) {
+
+                                eventEmitter.once('denormalized:' + evt.event, function(data) {
+                                    dummyRepo.get(data.payload.id, function(err, vm) {
+                                        expect(vm).to.have.property('id', evt.payload.id);
+                                        done();
+                                    });
+                                });
+
+                                contextEventDenormalizer.denormalize(evt, function(err) {});
+
+                            });
+
+                        });
+
                     });
 
                     describe('of delete', function() {
@@ -317,7 +354,7 @@ describe('ContextEventDenormalizer', function() {
                                 payload: {
                                     id: '23'
                                 }
-                            };                            
+                            };
 
                             dummyRepo.get('9876', function(err, vm) {
                                 vm._revision = 2;
@@ -397,8 +434,8 @@ describe('ContextEventDenormalizer', function() {
 
                             describe('having notified a previous event with the successor revision of the expected revision', function() {
 
-                                var firstEvt
-                                  , secondEvt;
+                                var firstEvt,
+                                    secondEvt;
 
                                 beforeEach(function() {
 
@@ -429,8 +466,9 @@ describe('ContextEventDenormalizer', function() {
 
                                 it('it should update the view model with both events in the correct order', function(done) {
 
-                                    var handlersRun = []
-                                      , todo = 2;
+                                    var handlersRun = [],
+                                        todo = 2;
+
                                     function check() {
                                         todo--;
 
