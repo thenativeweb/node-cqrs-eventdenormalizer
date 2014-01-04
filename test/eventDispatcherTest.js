@@ -16,7 +16,7 @@ function cleanQueue(done) {
     });
 }
 
-describe('eventDispatcher', function() {
+describe('EventDispatcher', function() {
 
     before(function(done) {
         queue.connect(function(err, evtQueue) {
@@ -166,30 +166,6 @@ describe('eventDispatcher', function() {
                     eventDispatcher.dispatch({ id: '0', event: 'dummyChanged'}, function(err) {
                         expect(err).not.to.be.ok();
                         done();
-                    });
-                });
-
-                it('the eventQueueStore should contain an entry', function(done) {
-                    eventDispatcher.dispatch({ id: '1', event: 'dummyChanged'}, function(err) {
-                        eventQueue.getAll(function(err, entries) {
-                            expect(entries).to.have.length(1);
-                            done();
-                        });
-                    });
-                });
-
-                it('the eventQueueStore\'s entries\' workers number should match the number of denormalizers', function(done) {
-                    eventDispatcher.dispatch({ id: '1', event: 'dummyChanged'}, function(err) {
-                        eventQueue.getAll(function(err, entries) {
-                            expect(entries[0]).to.eql({
-                                id: '1',
-                                data: {
-                                    workers: 2,
-                                    event: { id: '1', event: 'dummyChanged'}
-                                }
-                            });
-                            done();
-                        });
                     });
                 });
 

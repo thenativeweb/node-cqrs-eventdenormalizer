@@ -74,7 +74,7 @@ describe('ContextEventDenormalizer', function() {
                         revision: 1
                     },
                     payload: {
-                        id: '23'
+                        id: '23789123'
                     }
                 };
 
@@ -83,6 +83,8 @@ describe('ContextEventDenormalizer', function() {
             describe('having no denormalizers', function() {
 
                 it('it should acknowledge the event', function(done) {
+
+                    evt.head.revision = 1;
 
                     contextEventDenormalizer.denormalize(evt, function(err) {
                         expect(err).not.to.be.ok();
@@ -109,6 +111,8 @@ describe('ContextEventDenormalizer', function() {
                 });
 
                 it('it should acknowledge the event', function(done) {
+
+                    evt.head.revision = 2;
 
                     contextEventDenormalizer.denormalize(evt, function(err) {
                         expect(err).not.to.be.ok();
@@ -149,6 +153,8 @@ describe('ContextEventDenormalizer', function() {
 
                             it('it should update the existing record within the view model database', function(done) {
 
+                                evt.payload.id = '1234';
+
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.get(data.payload.id, function(err, vm) {
                                         expect(vm).to.have.property('id', evt.payload.id);
@@ -161,6 +167,8 @@ describe('ContextEventDenormalizer', function() {
                             });
 
                             it('the updated record should contain the correct data', function(done) {
+
+                                evt.payload.id = '12345';
 
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.get(data.payload.id, function(err, vm) {
@@ -179,6 +187,8 @@ describe('ContextEventDenormalizer', function() {
 
                             it('it should insert a new record into the view model database', function(done) {
 
+                                evt.payload.id = '123456';
+
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.get(data.payload.id, function(err, vm) {
                                         expect(vm).to.have.property('id', evt.payload.id);
@@ -191,6 +201,8 @@ describe('ContextEventDenormalizer', function() {
                             });
 
                             it('the newly inserted record should contain the correct data', function(done) {
+
+                                evt.payload.id = '123457';
 
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.get(data.payload.id, function(err, vm) {
@@ -238,6 +250,8 @@ describe('ContextEventDenormalizer', function() {
 
                             it('it should update the existing record within the view model database', function(done) {
 
+                                evt.head.revision = 1;
+
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.get(data.payload.id, function(err, vm) {
                                         expect(vm).to.have.property('id', evt.payload.id);
@@ -250,6 +264,8 @@ describe('ContextEventDenormalizer', function() {
                             });
 
                             it('the updated record should contain the correct data', function(done) {
+
+                                evt.head.revision = 2;
 
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.get(data.payload.id, function(err, vm) {
@@ -266,13 +282,9 @@ describe('ContextEventDenormalizer', function() {
 
                         describe('and the record to be written does not yet exist', function() {
 
-                            beforeEach(function () {
-
-                                evt.head.revision = 1;
-
-                            });
-
                             it('it should insert a new record into the view model database', function(done) {
+
+                                evt.head.revision = 3;
 
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.get(data.payload.id, function(err, vm) {
@@ -286,6 +298,8 @@ describe('ContextEventDenormalizer', function() {
                             });
 
                             it('the newly inserted record should contain the correct data', function(done) {
+
+                                evt.head.revision = 4;
 
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.get(data.payload.id, function(err, vm) {
@@ -324,6 +338,8 @@ describe('ContextEventDenormalizer', function() {
 
                             it('it should retry to rehandle the event', function(done) {
 
+                                evt.head.revision = 5;
+
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.get(data.payload.id, function(err, vm) {
                                         expect(vm).to.have.property('id', evt.payload.id);
@@ -349,7 +365,7 @@ describe('ContextEventDenormalizer', function() {
                                 id: '82517',
                                 event: 'dummyDeleted',
                                 head: {
-                                    revision: 2
+                                    revision: 6
                                 },
                                 payload: {
                                     id: '23'
@@ -372,6 +388,8 @@ describe('ContextEventDenormalizer', function() {
 
                             it('it should neither insert nor update a record within the view model database', function(done) {
 
+                                evt.head.revision = 6;
+
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.find(function(err, results) {
                                         expect(results).to.have.length(1);
@@ -391,6 +409,7 @@ describe('ContextEventDenormalizer', function() {
 
                             it('it should delete the existing record from the view model database', function(done) {
 
+                                evt.head.revision = 1;
                                 evt.payload.id = '9876';
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.find(function(err, results) {
@@ -446,7 +465,7 @@ describe('ContextEventDenormalizer', function() {
                                             revision: 1
                                         },
                                         payload: {
-                                            id: '55'
+                                            id: '55689'
                                         }
                                     };
                                     secondEvt = {
@@ -456,7 +475,7 @@ describe('ContextEventDenormalizer', function() {
                                             revision: 2
                                         },
                                         payload: {
-                                            id: '55'
+                                            id: '55689'
                                         }
                                     };
 
@@ -490,6 +509,39 @@ describe('ContextEventDenormalizer', function() {
                                     });
 
                                     contextEventDenormalizer.denormalize(firstEvt, function(err) {});
+
+                                });
+
+                            });
+
+                            describe('having an event in the queue longer than expected', function() {
+
+                                var evtTimeout;
+
+                                beforeEach(function() {
+
+                                    evtTimeout = {
+                                        id: '16547',
+                                        event: 'dummyChanged',
+                                        head: {
+                                            revision: 4
+                                        },
+                                        payload: {
+                                            id: '50'
+                                        }
+                                    };
+
+                                });
+
+                                it('it should notify it to be able to make a replay', function(done) {
+
+                                    contextEventDenormalizer.denormalize(evtTimeout, function(err) {});
+
+                                    eventEmitter.once('handlingMissed:*', function(obj, id) {
+                                        expect(obj).to.eql(evtTimeout);
+                                        expect(id).to.eql(evtTimeout.payload.id);
+                                        done();
+                                    });
 
                                 });
 
