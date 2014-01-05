@@ -242,7 +242,7 @@ describe('ContextEventDenormalizer', function() {
                             beforeEach(function (done) {
 
                                 dummyRepo.get(evt.payload.id, function(err, vm) {
-                                    vm._revision = 2;
+                                    vm.revision = 2;
                                     dummyRepo.commit(vm, done);
                                 });
 
@@ -330,7 +330,7 @@ describe('ContextEventDenormalizer', function() {
                                 };
 
                                 dummyRepo.get(evt.payload.id, function(err, vm) {
-                                    vm._revision = 2;
+                                    vm.revision = 2;
                                     dummyRepo.commit(vm, done);
                                 });
 
@@ -373,7 +373,7 @@ describe('ContextEventDenormalizer', function() {
                             };
 
                             dummyRepo.get('9876', function(err, vm) {
-                                vm._revision = 2;
+                                vm.revision = 2;
                                 dummyRepo.commit(vm, function(err) {
                                     dummyRepo.get('9876', function(err, vm) {
                                         viewModel = vm;
@@ -394,7 +394,7 @@ describe('ContextEventDenormalizer', function() {
                                     dummyRepo.find(function(err, results) {
                                         expect(results).to.have.length(1);
                                         expect(results[0].id).to.eql(viewModel.id);
-                                        expect(results[0]._revision).to.eql(viewModel._revision);
+                                        expect(results[0].revision).to.eql(viewModel.revision);
                                         done();
                                     });
                                 });
@@ -443,7 +443,7 @@ describe('ContextEventDenormalizer', function() {
                             };
 
                             dummyRepo.get(evt.payload.id, function(err, vm) {
-                                vm._revision = 2;
+                                vm.revision = 2;
                                 dummyRepo.commit(vm, done);
                             });
 
@@ -547,6 +547,26 @@ describe('ContextEventDenormalizer', function() {
                                     });
 
                                 });
+
+                            });
+
+                        });
+
+                        describe('smaller than the view model\'s revision', function() {
+
+                            it('it should not denormalize the event', function(done) {
+
+                                evt.head.revision = 1;
+
+                                eventEmitter.once('denormalized:' + evt.event, function(data) {
+                                    expect(true).to.be(false);
+                                });
+
+                                contextEventDenormalizer.denormalize(evt, function(err) {});
+
+                                setTimeout(function() {
+                                    done();
+                                }, 800);
 
                             });
 

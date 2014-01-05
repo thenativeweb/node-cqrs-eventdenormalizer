@@ -4,18 +4,28 @@ var expect = require('expect.js')
   , revisionGuardStore = require('../lib/revisionGuardStore')
   , eventDispatcher = require('../lib/eventDispatcher')
   , eventEmitter = require('../lib/eventEmitter')
+  , queue = require('node-queue')
+  , eventQueue
   , guardStore;
 
 describe('RevisionGuard', function() {
 
     before(function(done) {
-        revisionGuardStore.connect(function(err, revGuardStore) {
-            guardStore = revGuardStore;
-            revisionGuard.configure(function() {
-                this.use(eventDispatcher);
-                this.use(revGuardStore);
+        queue.connect(function(err, evtQueue) {
+            eventQueue = evtQueue;
+            eventDispatcher.configure(function() {
+                this.use(eventQueue);
             });
-            done();
+
+            revisionGuardStore.connect(function(err, revGuardStore) {
+                guardStore = revGuardStore;
+                revisionGuard.configure(function() {
+                    this.use(eventDispatcher);
+                    this.use(revGuardStore);
+                    this.use(eventQueue);
+                });
+                done();
+            });
         });
     });
 
