@@ -537,9 +537,12 @@ describe('ContextEventDenormalizer', function() {
 
                                     contextEventDenormalizer.denormalize(evtTimeout, function(err) {});
 
-                                    eventEmitter.once('handlingMissed:*', function(obj, id) {
-                                        expect(obj).to.eql(evtTimeout);
+                                    eventEmitter.once('eventMissing', function(id, aggregateRevision, eventRevision, evt) {
+                                        expect(evt).to.eql(evtTimeout);
                                         expect(id).to.eql(evtTimeout.payload.id);
+                                        expect(aggregateRevision).to.eql(1);
+                                        expect(eventRevision).to.eql(evtTimeout.head.revision);
+                                        expect(eventRevision).to.eql(evt.head.revision);
                                         done();
                                     });
 
