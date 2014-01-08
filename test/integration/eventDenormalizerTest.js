@@ -1,12 +1,12 @@
 var expect = require('expect.js')
   , async = require('async')
-  , contextEventDenormalizer = require('../../lib/contextEventDenormalizer')
+  , eventDenormalizer = require('../../lib/eventDenormalizer')
   , repository = require('viewmodel').write
   , dummyRepo
   , eventEmitter = require('../../lib/eventEmitter')
   , dummyEmitter = new (require('events').EventEmitter)();
 
-var dummyDenormalizer = require('./eventDenormalizers/dummyDenormalizer');
+var dummyViewBuilder = require('./viewBuilders/dummyViewBuilder');
 
 function cleanRepo(done) {
     dummyRepo.find(function(err, results) {
@@ -19,23 +19,23 @@ function cleanRepo(done) {
     });
 }
 
-describe('ContextEventDenormalizer', function() {
+describe('EventDenormalizer', function() {
 
     before(function(done) {
 
         repository.init(function() {
 
-            contextEventDenormalizer.on('event', function(evt) {
+            eventDenormalizer.on('event', function(evt) {
                 dummyEmitter.emit('published', evt);
             });
 
-            contextEventDenormalizer.initialize({
-                denormalizersPath: __dirname + '/eventDenormalizers',
+            eventDenormalizer.initialize({
+                viewBuildersPath: __dirname + '/viewBuilders',
                 extendersPath: __dirname + '/eventExtenders',
                 repository: { type: 'inMemory' }
             }, function(err) {
                 dummyRepo = repository.extend({
-                    collectionName: dummyDenormalizer.collectionName
+                    collectionName: dummyViewBuilder.collectionName
                 });
                 done();
             });
@@ -52,7 +52,7 @@ describe('ContextEventDenormalizer', function() {
 
                 var evt = 'foobar';
 
-                contextEventDenormalizer.denormalize(evt, function(err) {
+                eventDenormalizer.denormalize(evt, function(err) {
                     expect(err).not.to.be.ok();
                     done();
                 });
@@ -86,7 +86,7 @@ describe('ContextEventDenormalizer', function() {
 
                     evt.head.revision = 1;
 
-                    contextEventDenormalizer.denormalize(evt, function(err) {
+                    eventDenormalizer.denormalize(evt, function(err) {
                         expect(err).not.to.be.ok();
                         done();
                     });
@@ -114,7 +114,7 @@ describe('ContextEventDenormalizer', function() {
 
                     evt.head.revision = 2;
 
-                    contextEventDenormalizer.denormalize(evt, function(err) {
+                    eventDenormalizer.denormalize(evt, function(err) {
                         expect(err).not.to.be.ok();
                         done();
                     });
@@ -162,7 +162,7 @@ describe('ContextEventDenormalizer', function() {
                                     });
                                 });
 
-                                contextEventDenormalizer.denormalize(evt, function(err) {});
+                                eventDenormalizer.denormalize(evt, function(err) {});
 
                             });
 
@@ -177,7 +177,7 @@ describe('ContextEventDenormalizer', function() {
                                     });
                                 });
 
-                                contextEventDenormalizer.denormalize(evt, function(err) {});
+                                eventDenormalizer.denormalize(evt, function(err) {});
 
                             });
 
@@ -196,7 +196,7 @@ describe('ContextEventDenormalizer', function() {
                                     });
                                 });
 
-                                contextEventDenormalizer.denormalize(evt, function(err) {});
+                                eventDenormalizer.denormalize(evt, function(err) {});
 
                             });
 
@@ -211,7 +211,7 @@ describe('ContextEventDenormalizer', function() {
                                     });
                                 });
 
-                                contextEventDenormalizer.denormalize(evt, function(err) {});
+                                eventDenormalizer.denormalize(evt, function(err) {});
 
                             });
 
@@ -242,7 +242,6 @@ describe('ContextEventDenormalizer', function() {
                             beforeEach(function (done) {
 
                                 dummyRepo.get(evt.payload.id, function(err, vm) {
-                                    vm.revision = 2;
                                     dummyRepo.commit(vm, done);
                                 });
 
@@ -259,7 +258,7 @@ describe('ContextEventDenormalizer', function() {
                                     });
                                 });
 
-                                contextEventDenormalizer.denormalize(evt, function(err) {});
+                                eventDenormalizer.denormalize(evt, function(err) {});
 
                             });
 
@@ -274,7 +273,7 @@ describe('ContextEventDenormalizer', function() {
                                     });
                                 });
 
-                                contextEventDenormalizer.denormalize(evt, function(err) {});
+                                eventDenormalizer.denormalize(evt, function(err) {});
 
                             });
 
@@ -293,7 +292,7 @@ describe('ContextEventDenormalizer', function() {
                                     });
                                 });
 
-                                contextEventDenormalizer.denormalize(evt, function(err) {});
+                                eventDenormalizer.denormalize(evt, function(err) {});
 
                             });
 
@@ -308,7 +307,7 @@ describe('ContextEventDenormalizer', function() {
                                     });
                                 });
 
-                                contextEventDenormalizer.denormalize(evt, function(err) {});
+                                eventDenormalizer.denormalize(evt, function(err) {});
 
                             });
 
@@ -321,16 +320,15 @@ describe('ContextEventDenormalizer', function() {
 
                             beforeEach(function (done) {
 
-                                denorm = require('./eventDenormalizers/dummyDenormalizer');
-                                orgFunc = denorm._getAux().defaultRevisionUpdateStrategy;
+                                denorm = require('./viewBuilders/dummyViewBuilder');
+                                orgFunc = denorm.dummySpezi;
 
-                                denorm._getAux().defaultRevisionUpdateStrategy = function(vm, evt) {
+                                denorm.dummySpezi = function(evt, vm) {
                                     vm.commit(function() {});
-                                    denorm._getAux().defaultRevisionUpdateStrategy = orgFunc;
+                                    denorm.dummySpezi = orgFunc;
                                 };
 
                                 dummyRepo.get(evt.payload.id, function(err, vm) {
-                                    vm.revision = 2;
                                     dummyRepo.commit(vm, done);
                                 });
 
@@ -339,6 +337,7 @@ describe('ContextEventDenormalizer', function() {
                             it('it should retry to rehandle the event', function(done) {
 
                                 evt.head.revision = 5;
+                                evt.event = 'dummySpezi';
 
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.get(data.payload.id, function(err, vm) {
@@ -347,7 +346,7 @@ describe('ContextEventDenormalizer', function() {
                                     });
                                 });
 
-                                contextEventDenormalizer.denormalize(evt, function(err) {});
+                                eventDenormalizer.denormalize(evt, function(err) {});
 
                             });
 
@@ -368,12 +367,11 @@ describe('ContextEventDenormalizer', function() {
                                     revision: 6
                                 },
                                 payload: {
-                                    id: '23'
+                                    id: '237654323567'
                                 }
                             };
 
                             dummyRepo.get('9876', function(err, vm) {
-                                vm.revision = 2;
                                 dummyRepo.commit(vm, function(err) {
                                     dummyRepo.get('9876', function(err, vm) {
                                         viewModel = vm;
@@ -388,7 +386,7 @@ describe('ContextEventDenormalizer', function() {
 
                             it('it should neither insert nor update a record within the view model database', function(done) {
 
-                                evt.head.revision = 6;
+                                evt.head.revision = 1;
 
                                 eventEmitter.once('denormalized:' + evt.event, function(data) {
                                     dummyRepo.find(function(err, results) {
@@ -399,7 +397,7 @@ describe('ContextEventDenormalizer', function() {
                                     });
                                 });
 
-                                contextEventDenormalizer.denormalize(evt, function(err) {});
+                                eventDenormalizer.denormalize(evt, function(err) {});
 
                             });
 
@@ -418,7 +416,7 @@ describe('ContextEventDenormalizer', function() {
                                     });
                                 });
 
-                                contextEventDenormalizer.denormalize(evt, function(err) {});
+                                eventDenormalizer.denormalize(evt, function(err) {});
 
                             });
 
@@ -443,7 +441,6 @@ describe('ContextEventDenormalizer', function() {
                             };
 
                             dummyRepo.get(evt.payload.id, function(err, vm) {
-                                vm.revision = 2;
                                 dummyRepo.commit(vm, done);
                             });
 
@@ -479,7 +476,7 @@ describe('ContextEventDenormalizer', function() {
                                         }
                                     };
 
-                                    contextEventDenormalizer.denormalize(secondEvt, function(err) {});
+                                    eventDenormalizer.denormalize(secondEvt, function(err) {});
 
                                 });
 
@@ -508,7 +505,7 @@ describe('ContextEventDenormalizer', function() {
                                         check();
                                     });
 
-                                    contextEventDenormalizer.denormalize(firstEvt, function(err) {});
+                                    eventDenormalizer.denormalize(firstEvt, function(err) {});
 
                                 });
 
@@ -535,7 +532,7 @@ describe('ContextEventDenormalizer', function() {
 
                                 it('it should notify it to be able to make a replay', function(done) {
 
-                                    contextEventDenormalizer.denormalize(evtTimeout, function(err) {});
+                                    eventDenormalizer.denormalize(evtTimeout, function(err) {});
 
                                     eventEmitter.once('eventMissing', function(id, aggregateRevision, eventRevision, evt) {
                                         expect(evt).to.eql(evtTimeout);
@@ -562,7 +559,7 @@ describe('ContextEventDenormalizer', function() {
                                     expect(true).to.be(false);
                                 });
 
-                                contextEventDenormalizer.denormalize(evt, function(err) {});
+                                eventDenormalizer.denormalize(evt, function(err) {});
 
                                 setTimeout(function() {
                                     done();
@@ -598,7 +595,7 @@ describe('ContextEventDenormalizer', function() {
                         eventEmitter.once('denormalized:' + evt.event, function(data) {
                             done();
                         });
-                        contextEventDenormalizer.denormalize(evt, function(err) {});
+                        eventDenormalizer.denormalize(evt, function(err) {});
 
                     });
 

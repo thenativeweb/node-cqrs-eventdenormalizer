@@ -8,6 +8,6 @@ if (typeof module.exports !== 'undefined') {
 
 index.VERSION = '0.0.1';
 
-index.contextEventDenormalizer = require('./lib/contextEventDenormalizer');
-index.eventDenormalizerBase = require('./lib/bases/eventDenormalizerBase');
+index.eventDenormalizer = require('./lib/eventDenormalizer');
+index.viewBuilderBase = require('./lib/bases/viewBuilderBase');
 index.eventExtenderBase = require('./lib/bases/eventExtenderBase');

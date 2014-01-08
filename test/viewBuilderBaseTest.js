@@ -4,16 +4,16 @@ var expect = require('expect.js')
   , repository = require('viewmodel').write
   , dummyRepo
   , eventEmitter = require('../lib/eventEmitter')
-  , eventDenormalizerBase = require('../lib/bases/eventDenormalizerBase')
+  , viewBuilderBase = require('../lib/bases/viewBuilderBase')
   , Queue = require('../lib/orderQueue');
 
-var dummyDenormalizer = eventDenormalizerBase.extend({
+var dummyViewBuilder = viewBuilderBase.extend({
 
-    events: ['dummied', {'dummyCreated': 'create'}, {'dummyChanged': 'update'}, {'dummyDeleted': 'delete'}],
+    events: ['dummied', {'dummyCreated': 'create'}, {'dummyChanged': 'update'}, {'dummyDeleted': 'delete'}, {'dummySpecialized': 'update'}],
+    viewModelIds: { 'dummySpecialized': 'payload.special.id' },
     collectionName: 'dummies',
 
-    dummied: function(evt, repository, callback) {
-        callback(null);
+    dummied: function(evt, vm) {
     }
 
 });
@@ -29,17 +29,17 @@ function cleanRepo(done) {
     });
 }
 
-describe('EventDenormalizerBase', function() {
+describe('ViewBuilderBase', function() {
 
     before(function(done) {
         
         repository.init(function(err) {
             dummyRepo = repository.extend({
-                collectionName: dummyDenormalizer.collectionName
+                collectionName: dummyViewBuilder.collectionName
             });
 
-            dummyDenormalizer.configure(function() {
-                dummyDenormalizer.use(dummyRepo);
+            dummyViewBuilder.configure(function() {
+                dummyViewBuilder.use(dummyRepo);
             });
 
             done();
@@ -47,13 +47,12 @@ describe('EventDenormalizerBase', function() {
 
     });
 
-    describe('used by a dummy eventDenormalizer', function() {
+    describe('used by a dummy viewBuilder', function() {
 
         describe('calling handle with an event', function() {
 
             afterEach(function(done) {
                 cleanRepo(done);
-                dummyDenormalizer.queue = new Queue({ queueTimeout: 30 });
             });
 
             describe('that is mapped to', function() {
@@ -84,7 +83,7 @@ describe('EventDenormalizerBase', function() {
                             eventEmitter.once('denormalized:' + evt.event, function(data) {
                                 done();
                             });
-                            dummyDenormalizer.handle(evt);
+                            dummyViewBuilder.handle(evt);
 
                         });
 
@@ -96,28 +95,24 @@ describe('EventDenormalizerBase', function() {
                                 dummyRepo.commit.restore();
                                 done();
                             });
-                            dummyDenormalizer.handle(evt);
+                            dummyViewBuilder.handle(evt);
 
                         });
 
                     });
 
-                    describe('with change action', function() {
+                    describe('with update action', function() {
 
                         var evt;
 
                         beforeEach(function(done) {
 
                             dummyRepo.get('23', function(err, vm) {
-                                vm._revision = 1;
                                 vm.foo = 'bar';
                                 dummyRepo.commit(vm, function(err) {
                                     evt = {
                                         id: '82517',
                                         event: 'dummyChanged',
-                                        head: {
-                                            revision: vm._revision
-                                        },
                                         payload: {
                                             id: vm.id
                                         }
@@ -133,7 +128,7 @@ describe('EventDenormalizerBase', function() {
                             eventEmitter.once('denormalized:' + evt.event, function(data) {
                                 done();
                             });
-                            dummyDenormalizer.handle(evt);
+                            dummyViewBuilder.handle(evt);
 
                         });
 
@@ -145,7 +140,7 @@ describe('EventDenormalizerBase', function() {
                                 dummyRepo.commit.restore();
                                 done();
                             });
-                            dummyDenormalizer.handle(evt);
+                            dummyViewBuilder.handle(evt);
 
                         });
 
@@ -158,15 +153,11 @@ describe('EventDenormalizerBase', function() {
                         beforeEach(function(done) {
 
                             dummyRepo.get('23', function(err, vm) {
-                                vm._revision = 1;
                                 vm.foo = 'bar';
                                 dummyRepo.commit(vm, function(err) {
                                     evt = {
                                         id: '82517',
                                         event: 'dummyDeleted',
-                                        head: {
-                                            revision: vm._revision
-                                        },
                                         payload: {
                                             id: vm.id
                                         }
@@ -182,7 +173,7 @@ describe('EventDenormalizerBase', function() {
                             eventEmitter.once('denormalized:' + evt.event, function(data) {
                                 done();
                             });
-                            dummyDenormalizer.handle(evt);
+                            dummyViewBuilder.handle(evt);
 
                         });
 
@@ -194,30 +185,27 @@ describe('EventDenormalizerBase', function() {
                                 dummyRepo.commit.restore();
                                 done();
                             });
-                            dummyDenormalizer.handle(evt);
+                            dummyViewBuilder.handle(evt);
 
                         });
 
                     });
 
-                    describe('having a change action with an event revision', function() {
+                    describe('having a different viewModelId', function() {
 
                         var evt;
 
                         beforeEach(function(done) {
 
                             dummyRepo.get('23', function(err, vm) {
-                                vm._revision = 1;
                                 vm.foo = 'bar';
                                 dummyRepo.commit(vm, function(err) {
                                     evt = {
                                         id: '82517',
-                                        event: 'dummyChanged',
-                                        head: {
-                                            revision: vm._revision
-                                        },
+                                        event: 'dummySpecialized',
                                         payload: {
-                                            id: vm.id
+                                            special: { id: vm.id },
+                                            extra: 'data'
                                         }
                                     };
                                     done();
@@ -226,42 +214,15 @@ describe('EventDenormalizerBase', function() {
 
                         });
 
-                        describe('less than the expected revision', function() {
+                        it('it should have found the right viewmodel', function(done) {
 
-                            it('it should raise a denormalized event', function(done) {
-                                evt.head.revision--;
-
-                                eventEmitter.once('denormalized:' + evt.event, function(data) {
+                            eventEmitter.once('denormalized:' + evt.event, function(data) {
+                                dummyRepo.get('23', function(err, vm) {
+                                    expect(vm.extra).to.eql('data');
                                     done();
                                 });
-                                dummyDenormalizer.handle(evt);
-
                             });
-
-                        });
-
-                        describe('equal to the expected revision', function() {
-
-                            it('it should raise a denormalized event', function(done) {
-
-                                eventEmitter.once('denormalized:' + evt.event, function(data) {
-                                    done();
-                                });
-                                dummyDenormalizer.handle(evt);
-
-                            });
-
-                            it('it should call the commit function on the repository', function(done) {
-
-                                var spy = sinon.spy(dummyRepo, 'commit');
-                                eventEmitter.once('denormalized:' + evt.event, function(data) {
-                                    expect(spy.calledOnce).to.be.ok();
-                                    dummyRepo.commit.restore();
-                                    done();
-                                });
-                                dummyDenormalizer.handle(evt);
-
-                            });
+                            dummyViewBuilder.handle(evt);
 
                         });
 
@@ -290,19 +251,19 @@ describe('EventDenormalizerBase', function() {
                             eventEmitter.once('denormalized:' + evt.event, function(data) {
                                 done();
                             });
-                            dummyDenormalizer.handle(evt);
+                            dummyViewBuilder.handle(evt);
 
                         });
 
                         it('it should call the concrete function', function(done) {
 
-                            var spy = sinon.spy(dummyDenormalizer, 'dummied');
+                            var spy = sinon.spy(dummyViewBuilder, 'dummied');
                             eventEmitter.once('denormalized:' + evt.event, function(data) {
                                 expect(spy.calledOnce).to.be.ok();
-                                dummyDenormalizer.dummied.restore();
+                                dummyViewBuilder.dummied.restore();
                                 done();
                             });
-                            dummyDenormalizer.handle(evt);
+                            dummyViewBuilder.handle(evt);
 
                         });
 
