@@ -13,13 +13,13 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
 
 ## Initialization
 
-	var contextEventDenormalizer = require('cqrs-eventdenormalizer').contextEventDenormalizer;
+	var eventDenormalizer = require('cqrs-eventdenormalizer').eventDenormalizer;
 
-	contextEventDenormalizer.on('event', function(evt) {
+	eventDenormalizer.on('event', function(evt) {
         // send to clients
     });
-    contextEventDenormalizer.initialize({
-        denormalizersPath: __dirname + '/eventDenormalizers',
+    eventDenormalizer.initialize({
+        viewBuildersPath: __dirname + '/viewBuilders',
         extendersPath: __dirname + '/eventExtenders',
         ignoreRevision: false,
         disableQueuing: false
@@ -27,22 +27,55 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
 
     });
 
-    contextEventDenormalizer.denormalize({ id: 'msgId', event: 'dummyChanged', payload: { id: '23445' } }, function(err) {
+    eventDenormalizer.denormalize({ id: 'msgId', event: 'dummyChanged', payload: { id: '23445' } }, function(err) {
 
     });
 
+    // if revision checks are enabled
+    eventDenormalizer.on('eventMissing', function(id, aggregateRevision, eventRevision, evt) {
+        // request the appropriate missing events from domain...
+    });
+
+    // to replay
+    eventDenormalizer.replay([] /* array of ordered events */, function(err) {});
+
 ## Define eventdenormalizers...
 
-    var base = require('node-cqrs-eventdenormalizer').eventDenormalizerBase;
+    var base = require('cqrs-eventdenormalizer').viewBuilderBase;
 
     module.exports = base.extend({
 
-        events: ['dummied', {'dummyCreated': 'create'}, {'dummyChanged': 'update'}, {'dummyDeleted': 'delete'}],
-        collectionName: 'dummies',
+        events: [
+            'dummied',
+            {
+                event: 'dummyCreated',
+                method: 'create',
+                viewModelId: 'payload.id'
+            },
+            {
+                event: 'dummyChanged',
+                method: 'update',
+                payload: 'payload'
+            },
+            {
+                event: 'dummyDeleted',
+                method: 'delete'
+            },
+            'dummySpezi',
+            'somethingFlushed'
+        ],
 
-        dummied: function(evt, aux, callback) {
-            callback(null);
-        }
+      collectionName: 'dummies',
+
+      dummied: function(data, vm, evt) {
+      },
+
+      dummySpezi: function(data, vm, evt) {
+        vm.otherValue = 'value';
+      },
+
+      somethingFlushed: function(data, vm, evt) {
+      }
 
     });
 
@@ -50,6 +83,14 @@ See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/tes
 
 
 # Release Notes
+
+## v0.3.0 (BREAKING CHANGES!!!)
+
+- contextEventDenormalizer is now eventDenormalizer
+- eventMissing notification (for atomic replay)
+- eventDenormalizer.replay to replay (from scratch)
+- eventDenormalizerBase is now viewBuilderBase
+- viewBuilderBase
 
 ## v0.2.6
 
@@ -62,7 +103,7 @@ See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/tes
 
 # License
 
-Copyright (c) 2013 Adriano Raiano
+Copyright (c) 2014 Adriano Raiano
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
