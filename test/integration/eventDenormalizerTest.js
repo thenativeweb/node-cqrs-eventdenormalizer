@@ -454,12 +454,13 @@ describe('EventDenormalizer', function() {
 
                             describe('having notified a previous event with the successor revision of the expected revision', function() {
 
-                                var firstEvt,
+                                var existingEvt,
+                                    firstEvt,
                                     secondEvt;
 
                                 beforeEach(function() {
 
-                                    firstEvt = {
+                                    existingEvt = {
                                         id: '82517',
                                         event: 'dummyCreated',
                                         head: {
@@ -469,7 +470,7 @@ describe('EventDenormalizer', function() {
                                             id: '55689'
                                         }
                                     };
-                                    secondEvt = {
+                                    firstEvt = {
                                         id: '82518',
                                         event: 'dummyChanged',
                                         head: {
@@ -479,7 +480,18 @@ describe('EventDenormalizer', function() {
                                             id: '55689'
                                         }
                                     };
+                                    secondEvt = {
+                                        id: '82519',
+                                        event: 'dummyDeleted',
+                                        head: {
+                                            revision: 3
+                                        },
+                                        payload: {
+                                            id: '55689'
+                                        }
+                                    };
 
+                                    eventDenormalizer.denormalize(existingEvt, function(err) {});
                                     eventDenormalizer.denormalize(secondEvt, function(err) {});
 
                                 });
@@ -517,9 +529,21 @@ describe('EventDenormalizer', function() {
 
                             describe('having an event in the queue longer than expected', function() {
 
-                                var evtTimeout;
+                                var evtTimeout,
+                                    existingEvt;
 
                                 beforeEach(function() {
+
+                                    existingEvt = {
+                                        id: '165475123',
+                                        event: 'dummyCreated',
+                                        head: {
+                                            revision: 1
+                                        },
+                                        payload: {
+                                            id: '50'
+                                        }
+                                    };
 
                                     evtTimeout = {
                                         id: '16547',
@@ -532,6 +556,8 @@ describe('EventDenormalizer', function() {
                                         }
                                     };
 
+                                    eventDenormalizer.denormalize(existingEvt, function(err) {});
+
                                 });
 
                                 it('it should notify it to be able to make a replay', function(done) {
@@ -541,7 +567,7 @@ describe('EventDenormalizer', function() {
                                     eventEmitter.once('eventMissing', function(id, aggregateRevision, eventRevision, evt) {
                                         expect(evt).to.eql(evtTimeout);
                                         expect(id).to.eql(evtTimeout.payload.id);
-                                        expect(aggregateRevision).to.eql(1);
+                                        expect(aggregateRevision).to.eql(2);
                                         expect(eventRevision).to.eql(evtTimeout.head.revision);
                                         expect(eventRevision).to.eql(evt.head.revision);
                                         done();

@@ -46,7 +46,7 @@ describe('RevisionGuard', function() {
                     id: '82517',
                     event: 'dummyChanged',
                     head: {
-                        revision: 1
+                        revision: 15
                     },
                     payload: {
                         id: '237891231234124212'
@@ -55,7 +55,7 @@ describe('RevisionGuard', function() {
             });
 
             it('it should callback with success', function(done) {
-                evt.head.revision = 1;
+                evt.head.revision = 15;
 
                 revisionGuard.guard(evt, function(err) {
                     expect(err).not.to.be.ok();
@@ -64,11 +64,11 @@ describe('RevisionGuard', function() {
             });
 
             it('the guardStore should contain the correct revision', function(done) {
-                evt.head.revision = 2;
+                evt.head.revision = 16;
 
                 revisionGuard.guard(evt, function(err) {
                     guardStore.getRevision(evt.payload.id, function(err, entry) {
-                        expect(entry.revision).to.eql(3);
+                        expect(entry.revision).to.eql(17);
                         done();
                     });
                 });
