@@ -9,11 +9,30 @@ var expect = require('expect.js')
 
 var dummyViewBuilder = viewBuilderBase.extend({
 
-    events: ['dummied', {'dummyCreated': 'create'}, {'dummyChanged': 'update'}, {'dummyDeleted': 'delete'}, {'dummySpecialized': 'update'}],
-    viewModelIds: { 'dummySpecialized': 'payload.special.id' },
+    events: [
+        'dummied',
+        {
+            event: 'dummyCreated',
+            method: 'create'
+        },
+        {
+            event: 'dummyChanged',
+            method: 'update',
+            payload: 'payload'
+        },
+        {
+            event: 'dummyDeleted',
+            method: 'delete'
+        },
+        {
+            event: 'dummySpecialized',
+            method: 'update',
+            viewModelId: 'payload.special.id'
+        }
+    ],
     collectionName: 'dummies',
 
-    dummied: function(evt, vm) {
+    dummied: function(data, vm, evt) {
     }
 
 });

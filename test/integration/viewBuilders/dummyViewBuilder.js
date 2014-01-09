@@ -2,14 +2,31 @@ var viewBuilderBase = require('../../../index').viewBuilderBase;
 
 var dummyViewBuilder = viewBuilderBase.extend({
 
-  events: ['dummied', {'dummyCreated': 'create'}, {'dummyChanged': 'update'}, {'dummyDeleted': 'delete'}, 'dummySpezi'],
-  viewModelIds: { 'dummyCreated': 'payload.id' },
+	events: [
+		'dummied',
+		{
+			event: 'dummyCreated',
+			method: 'create',
+			viewModelId: 'payload.id'
+		},
+		{
+			event: 'dummyChanged',
+			method: 'update',
+			payload: 'payload'
+		},
+		{
+			event: 'dummyDeleted',
+			method: 'delete'
+		},
+		'dummySpezi'
+	],
+
   collectionName: 'dummies',
 
-  dummied: function(evt, vm) {
+  dummied: function(data, vm, evt) {
   },
 
-  dummySpezi: function(evt, vm) {
+  dummySpezi: function(data, vm, evt) {
     vm.otherValue = 'value';
   }
 
