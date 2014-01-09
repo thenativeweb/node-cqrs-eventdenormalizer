@@ -86,11 +86,12 @@ See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/tes
 
 ## v0.3.0 (BREAKING CHANGES!!!)
 
+- introduction of revisionGuard
 - contextEventDenormalizer is now eventDenormalizer
 - eventMissing notification (for atomic replay)
 - eventDenormalizer.replay to replay (from scratch)
 - eventDenormalizerBase is now viewBuilderBase
-- viewBuilderBase
+- viewBuilderBase new signature (see documentation or tests)
 
 ## v0.2.6
 
