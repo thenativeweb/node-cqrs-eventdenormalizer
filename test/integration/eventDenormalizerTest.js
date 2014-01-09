@@ -6,7 +6,8 @@ var expect = require('expect.js')
   , eventEmitter = require('../../lib/eventEmitter')
   , dummyEmitter = new (require('events').EventEmitter)();
 
-var dummyViewBuilder = require('./viewBuilders/dummyViewBuilder');
+var dummyViewBuilder = require('./viewBuilders/dummyViewBuilder'),
+    dummy2ViewBuilder = require('./viewBuilders/dummy2ViewBuilder');
 
 function cleanRepo(done) {
     dummyRepo.find(function(err, results) {
@@ -36,6 +37,9 @@ describe('EventDenormalizer', function() {
             }, function(err) {
                 dummyRepo = repository.extend({
                     collectionName: dummyViewBuilder.collectionName
+                });
+                dummy2Repo = repository.extend({
+                    collectionName: dummy2ViewBuilder.collectionName
                 });
                 done();
             });
@@ -601,6 +605,96 @@ describe('EventDenormalizer', function() {
 
                 });
 
+            });
+
+        });
+
+    });
+
+    describe('repalying', function() {
+
+        var evts = [
+            {
+                id: '111111',
+                event: 'dummyCreated',
+                head: {
+                    revision: 1
+                },
+                payload: {
+                    id: '1987',
+                    first: 'when created'
+                }
+            },
+            {
+                id: '222222',
+                event: 'loaded',
+                head: {
+                    revision: 1
+                },
+                payload: {
+                    id: '2014'
+                }
+            },
+            {
+                id: '333333',
+                event: 'dummyChanged',
+                head: {
+                    revision: 2
+                },
+                payload: {
+                    id: '1987',
+                    second: 'when updated'
+                }
+            },
+            {
+                id: '444444',
+                event: 'somethingFlushed',
+                head: {
+                    revision: 1
+                },
+                payload: {
+                    id: '2014'
+                }
+            }
+        ];
+
+        it('it should work as expected', function(done) {
+
+            eventDenormalizer.replay(evts, function(err) {
+                async.series([
+                    function(callback) {
+                        dummyRepo.get('1987', function(err, res) {
+                            expect(res.first).to.eql('when created');
+                            expect(res.second).to.eql('when updated');
+
+                            callback(err);
+                        });
+                    },
+                    function(callback) {
+                        dummyRepo.get('2014', function(err, res) {
+                            expect(res.loadedSet).to.eql(undefined);
+                            expect(res.flushSet).to.eql(undefined);
+
+                            callback(err);
+                        });
+                    },
+                    function(callback) {
+                        dummy2Repo.get('2014', function(err, res) {
+                            expect(res.loadedSet).to.eql('loaded');
+                            expect(res.flushSet).to.eql('flushed');
+
+                            callback(err);
+                        });
+                    },
+                    function(callback) {
+                        dummy2Repo.get('1987', function(err, res) {
+                            expect(res.first).to.eql(undefined);
+                            expect(res.second).to.eql(undefined);
+
+                            callback(err);
+                        });
+                    }
+                ], done);
             });
 
         });

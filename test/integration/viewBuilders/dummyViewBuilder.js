@@ -18,7 +18,8 @@ var dummyViewBuilder = viewBuilderBase.extend({
 			event: 'dummyDeleted',
 			method: 'delete'
 		},
-		'dummySpezi'
+		'dummySpezi',
+		'somethingFlushed'
 	],
 
   collectionName: 'dummies',
@@ -28,6 +29,9 @@ var dummyViewBuilder = viewBuilderBase.extend({
 
   dummySpezi: function(data, vm, evt) {
     vm.otherValue = 'value';
+  },
+
+  somethingFlushed: function(data, vm, evt) {
   }
 
 });
