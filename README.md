@@ -39,7 +39,7 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
     // to replay
     eventDenormalizer.replay([] /* array of ordered events */, function(err) {});
 
-## Define eventdenormalizers...
+## Define ViewBuilders...
 
     var base = require('cqrs-eventdenormalizer').viewBuilderBase;
 
