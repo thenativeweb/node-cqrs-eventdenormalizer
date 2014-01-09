@@ -79,6 +79,29 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
 
     });
 
+## Settings for a scalable solution
+
+    {
+        viewBuildersPath: __dirname + '/viewBuilders',
+        extendersPath: __dirname + '/eventExtenders',
+        eventQueue: { type: 'inMemory', collectionName: 'events' },
+        repository: {
+            type: 'mongoDb',
+            dbName: 'mydb',
+            timeout: 60 * 1000
+        },
+        revisionGuardStore: {
+            type: 'mongoDb',
+            dbName: 'mydb',
+            collectionName: 'revisionguard',
+            timeout: 60 * 1000
+        },
+        ignoreRevision: false,
+        disableQueuing: false,
+        revisionGuardQueueTimeout: 3000,
+        revisionGuardQueueTimeoutMaxLoops: 3
+    }
+
 See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/test) for detailed information...
 
 
