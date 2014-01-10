@@ -585,13 +585,15 @@ describe('EventDenormalizer', function() {
 
                                 evt.head.revision = 1;
 
-                                eventEmitter.once('denormalized:' + evt.event, function(data) {
+                                var handle;
+                                eventEmitter.once('denormalized:' + evt.event, handle = function(data) {
                                     expect(true).to.be(false);
                                 });
 
                                 eventDenormalizer.denormalize(evt, function(err) {});
 
                                 setTimeout(function() {
+                                    eventEmitter.removeListener('denormalized:' + evt.event, handle);
                                     done();
                                 }, 800);
 
@@ -601,7 +603,54 @@ describe('EventDenormalizer', function() {
 
                     });
 
-                        
+                    describe('handling 2 events', function() {
+
+                        var evt1 = {
+                            id: '918345182',
+                            event: 'dummyCreated',
+                            head: {
+                                revision: 1
+                            },
+                            payload: {
+                                id: '77441122401'
+                            }
+                        };
+                        var evt2 = {
+                            id: '9387181283764',
+                            event: 'dummyChanged',
+                            head: {
+                                revision: 2
+                            },
+                            payload: {
+                                id: '77441122401'
+                            }
+                        };
+
+                        it('it should work correctly', function(done) {
+
+                            var finished = 0;
+
+                            function check() {
+                                finished++;
+                                if (finished === 2) {
+                                    done();
+                                }
+                            }
+
+                            eventEmitter.once('denormalized:' + evt1.event, function(data) {
+                                check();
+                            });
+
+                            eventEmitter.once('denormalized:' + evt2.event, function(data) {
+                                check();
+                            });
+
+                            eventDenormalizer.denormalize(evt1, function(err) {});
+                            eventDenormalizer.denormalize(evt2, function(err) {});
+                        });
+
+                    });
+
                 });
 
                 describe('having a custom action', function() {
