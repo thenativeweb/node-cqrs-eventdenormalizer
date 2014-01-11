@@ -33,7 +33,7 @@ describe('RevisionGuard', function() {
 
         before(function(done) {
             guardStore.clear(function() {
-                revisionGuard.initialize(done);
+                revisionGuard.initialize({ queueTimeout: 500 }, done);
             });
         });
 

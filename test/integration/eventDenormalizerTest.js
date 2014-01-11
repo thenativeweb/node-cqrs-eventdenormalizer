@@ -33,7 +33,9 @@ describe('EventDenormalizer', function() {
             eventDenormalizer.initialize({
                 viewBuildersPath: __dirname + '/viewBuilders',
                 extendersPath: __dirname + '/eventExtenders',
-                repository: { type: 'inMemory' }
+                repository: { type: 'inMemory' },
+                revisionGuardQueueTimeout: 500,
+                revisionGuardQueueTimeoutMaxLoops: 1
             }, function(err) {
                 dummyRepo = repository.extend({
                     collectionName: dummyViewBuilder.collectionName
