@@ -107,6 +107,10 @@ See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/tes
 
 # Release Notes
 
+## v0.3.1
+
+- optimized guard for first event for a new denormalized aggregate id
+
 ## v0.3.0 (BREAKING CHANGES!!!)
 
 - introduction of revisionGuard
