@@ -94,7 +94,8 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
             type: 'mongoDb',
             dbName: 'mydb',
             collectionName: 'revisionguard',
-            timeout: 60 * 1000
+            timeout: 60 * 1000//,
+            //revisionStart: 1
         },
         ignoreRevision: false,
         disableQueuing: false,
@@ -106,6 +107,10 @@ See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/tes
 
 
 # Release Notes
+
+## v0.3.2
+
+- introduced optional revisionStart (default = 1)
 
 ## v0.3.1
 

@@ -727,7 +727,7 @@ describe('EventDenormalizer', function() {
                 id: '444444',
                 event: 'somethingFlushed',
                 head: {
-                    revision: 1
+                    revision: 2
                 },
                 payload: {
                     id: '2014'

@@ -17,7 +17,7 @@ describe('RevisionGuard', function() {
                 this.use(eventQueue);
             });
 
-            revisionGuardStore.connect(function(err, revGuardStore) {
+            revisionGuardStore.connect({ revisionStart: null }, function(err, revGuardStore) {
                 guardStore = revGuardStore;
                 revisionGuard.configure(function() {
                     this.use(eventDispatcher);
