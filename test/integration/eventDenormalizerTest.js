@@ -566,7 +566,7 @@ describe('EventDenormalizer', function() {
 
                                     eventDenormalizer.denormalize(evtTimeout, function(err) {});
 
-                                    eventEmitter.once('eventMissing', function(id, aggregateRevision, eventRevision, evt) {
+                                    eventDenormalizer.once('eventMissing', function(id, aggregateRevision, eventRevision, evt) {
                                         expect(evt).to.eql(evtTimeout);
                                         expect(id).to.eql(evtTimeout.payload.id);
                                         expect(aggregateRevision).to.eql(2);
