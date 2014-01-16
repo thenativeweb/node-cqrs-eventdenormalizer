@@ -778,4 +778,99 @@ describe('EventDenormalizer', function() {
 
     });
 
+    describe('repalying streamed', function() {
+
+        var evts = [
+            {
+                id: '222222-111111',
+                event: 'dummyCreated',
+                head: {
+                    revision: 1
+                },
+                payload: {
+                    id: '222222-1987',
+                    first: 'when created'
+                }
+            },
+            {
+                id: '222222-222222',
+                event: 'loaded',
+                head: {
+                    revision: 1
+                },
+                payload: {
+                    id: '222222-2014'
+                }
+            },
+            {
+                id: '222222-333333',
+                event: 'dummyChanged',
+                head: {
+                    revision: 2
+                },
+                payload: {
+                    id: '222222-1987',
+                    second: 'when updated'
+                }
+            },
+            {
+                id: '222222-444444',
+                event: 'somethingFlushed',
+                head: {
+                    revision: 2
+                },
+                payload: {
+                    id: '222222-2014'
+                }
+            }
+        ];
+
+        it('it should work as expected', function(done) {
+
+            eventDenormalizer.replayStreamed(function(replay, finished) {
+                for (var i = 0, length = evts.length; i < length; i++) {
+                    replay(evts[i]);
+                }
+                finished(function(err) {
+                    async.series([
+                        function(callback) {
+                            dummyRepo.get('222222-1987', function(err, res) {
+                                expect(res.first).to.eql('when created');
+                                expect(res.second).to.eql('when updated');
+
+                                callback(err);
+                            });
+                        },
+                        function(callback) {
+                            dummyRepo.get('222222-2014', function(err, res) {
+                                expect(res.loadedSet).to.eql(undefined);
+                                expect(res.flushSet).to.eql(undefined);
+
+                                callback(err);
+                            });
+                        },
+                        function(callback) {
+                            dummy2Repo.get('222222-2014', function(err, res) {
+                                expect(res.loadedSet).to.eql('loaded');
+                                expect(res.flushSet).to.eql('flushed');
+
+                                callback(err);
+                            });
+                        },
+                        function(callback) {
+                            dummy2Repo.get('222222-1987', function(err, res) {
+                                expect(res.first).to.eql(undefined);
+                                expect(res.second).to.eql(undefined);
+
+                                callback(err);
+                            });
+                        }
+                    ], done);
+                });
+            });
+
+        });
+
+    });
+
 });

@@ -39,6 +39,17 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
     // to replay
     eventDenormalizer.replay([] /* array of ordered events */, function(err) {});
 
+    // to replay streamed
+    eventDenormalizer.replayStreamed(function(replay, done) {
+
+        replay(evt1);
+        replay(evt2);
+        replay(evt3);
+
+        done(function(err) { });
+
+    });
+
 ## Define ViewBuilders...
 
     var base = require('cqrs-eventdenormalizer').viewBuilderBase;
