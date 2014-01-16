@@ -119,6 +119,10 @@ See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/tes
 
 # Release Notes
 
+## v0.3.3
+
+- little fix in replay streamed
+
 ## v0.3.2
 
 - introduced optional revisionStart (default = 1)
