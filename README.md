@@ -73,20 +73,33 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
                 method: 'delete'
             },
             'dummySpezi',
-            'somethingFlushed'
+            'somethingFlushed',
+            {
+                event: 'versioned'
+            },
+            {
+                event: 'versioned'
+                version: 1
+            }
         ],
 
-      collectionName: 'dummies',
+        collectionName: 'dummies',
 
-      dummied: function(data, vm, evt) {
-      },
+        dummied: function(data, vm, evt) {
+        },
+  
+        dummySpezi: function(data, vm, evt) {
+          vm.otherValue = 'value';
+        },
+  
+        somethingFlushed: function(data, vm, evt) {
+        },
 
-      dummySpezi: function(data, vm, evt) {
-        vm.otherValue = 'value';
-      },
+        versioned: function(data, vm, evt) {
+        },
 
-      somethingFlushed: function(data, vm, evt) {
-      }
+        versioned_1: function(data, vm, evt) {
+        }
 
     });
 
@@ -118,6 +131,10 @@ See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/tes
 
 
 # Release Notes
+
+## v0.3.4
+
+- handle versioned events
 
 ## v0.3.3
 

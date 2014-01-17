@@ -19,7 +19,11 @@ var dummyViewBuilder = viewBuilderBase.extend({
 			method: 'delete'
 		},
 		'dummySpezi',
-		'somethingFlushed'
+		'somethingFlushed',
+    {
+      event: 'versioned',
+      version: 1
+    }
 	],
 
   collectionName: 'dummies',
@@ -32,6 +36,12 @@ var dummyViewBuilder = viewBuilderBase.extend({
   },
 
   somethingFlushed: function(data, vm, evt) {
+  },
+
+  versioned: function(data, vm, evt) {
+  },
+
+  versioned_1: function(data, vm, evt) {
   }
 
 });

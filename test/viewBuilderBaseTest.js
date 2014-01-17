@@ -28,11 +28,21 @@ var dummyViewBuilder = viewBuilderBase.extend({
             event: 'dummySpecialized',
             method: 'update',
             viewModelId: 'payload.special.id'
+        },
+        {
+            event: 'versioned',
+            version: 1
         }
     ],
     collectionName: 'dummies',
 
     dummied: function(data, vm, evt) {
+    },
+
+    versioned: function(data, vm, evt) {
+    },
+
+    versioned_1: function(data, vm, evt) {
     }
 
 });
@@ -177,6 +187,97 @@ describe('ViewBuilderBase', function() {
                                     evt = {
                                         id: '82517',
                                         event: 'dummyDeleted',
+                                        payload: {
+                                            id: vm.id
+                                        }
+                                    };
+                                    done();
+                                });
+                            });
+
+                        });
+
+                        it('it should raise a denormalized event', function(done) {
+
+                            eventEmitter.once('denormalized:' + evt.event, function(data) {
+                                done();
+                            });
+                            dummyViewBuilder.handle(evt);
+
+                        });
+
+                        it('it should call the commit function on the repository', function(done) {
+
+                            var spy = sinon.spy(dummyRepo, 'commit');
+                            eventEmitter.once('denormalized:' + evt.event, function(data) {
+                                expect(spy.calledOnce).to.be.ok();
+                                dummyRepo.commit.restore();
+                                done();
+                            });
+                            dummyViewBuilder.handle(evt);
+
+                        });
+
+                    });
+
+                    describe('working with versioned events', function() {
+
+                        var evt;
+
+                        beforeEach(function(done) {
+
+                            dummyRepo.get('233', function(err, vm) {
+                                vm.foo = 'bar';
+                                dummyRepo.commit(vm, function(err) {
+                                    evt = {
+                                        head: { version: 1 },
+                                        id: '82517',
+                                        event: 'versioned',
+                                        payload: {
+                                            id: vm.id
+                                        }
+                                    };
+                                    done();
+                                });
+                            });
+
+                        });
+
+                        it('it should raise a denormalized event', function(done) {
+
+                            eventEmitter.once('denormalized:' + evt.event, function(data) {
+                                done();
+                            });
+                            dummyViewBuilder.handle(evt);
+
+                        });
+
+                        it('it should call the commit function on the repository', function(done) {
+
+                            var spy = sinon.spy(dummyRepo, 'commit');
+                            eventEmitter.once('denormalized:' + evt.event, function(data) {
+                                expect(spy.calledOnce).to.be.ok();
+                                dummyRepo.commit.restore();
+                                done();
+                            });
+                            dummyViewBuilder.handle(evt);
+
+                        });
+
+                    });
+
+                    describe('working with versioned events not passing a version', function() {
+
+                        var evt;
+
+                        beforeEach(function(done) {
+
+                            dummyRepo.get('233', function(err, vm) {
+                                vm.foo = 'bar';
+                                dummyRepo.commit(vm, function(err) {
+                                    evt = {
+                                        id: '82517',
+                                        event: 'versioned',
                                         payload: {
                                             id: vm.id
                                         }

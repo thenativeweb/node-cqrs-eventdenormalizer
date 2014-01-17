@@ -8,7 +8,7 @@ var expect = require('expect.js')
 
 var dummyExtender = eventExtenderBase.extend({
 
-    events: ['dummied', 'dummyCreated', 'dummyChanged', 'dummyDeleted'],
+    events: ['dummied', 'dummyCreated', 'dummyChanged', 'dummyDeleted', 'versioned'],
     collectionName: 'dummies',
 
     defaultAction: function(evt, aux, callback) {
@@ -16,6 +16,14 @@ var dummyExtender = eventExtenderBase.extend({
     },
 
     dummied: function(evt, aux, callback) {
+        callback(null, evt);
+    },
+
+    versioned: function(evt, aux, callback) {
+        callback(null, evt);
+    },
+
+    versioned_1: function(evt, aux, callback) {
         callback(null, evt);
     }
 
@@ -130,6 +138,85 @@ describe('EventExtenderBase', function() {
                             eventEmitter.once('extended:' + evt.event, function(data) {
                                 expect(spy.calledOnce).to.be.ok();
                                 dummyExtender.dummied.restore();
+                                done();
+                            });
+                            dummyExtender.handle(evt);
+
+                        });
+
+                });
+
+                describe('a custom versioned function', function() {
+
+                        var evt;
+
+                        beforeEach(function() {
+
+                            evt = {
+                                head: { version: 1 },
+                                id: '82517',
+                                event: 'versioned',
+                                payload: {
+                                    id: '23'
+                                }
+                            };
+
+                        });
+
+                        it('it should raise a extended event', function(done) {
+
+                            eventEmitter.once('extended:' + evt.event, function(data) {
+                                done();
+                            });
+                            dummyExtender.handle(evt);
+
+                        });
+
+                        it('it should call the concrete function', function(done) {
+
+                            var spy = sinon.spy(dummyExtender, 'versioned_1');
+                            eventEmitter.once('extended:' + evt.event, function(data) {
+                                expect(spy.calledOnce).to.be.ok();
+                                dummyExtender.versioned_1.restore();
+                                done();
+                            });
+                            dummyExtender.handle(evt);
+
+                        });
+
+                });
+
+                describe('a custom versioned function without passing a version', function() {
+
+                        var evt;
+
+                        beforeEach(function() {
+
+                            evt = {
+                                id: '82517',
+                                event: 'versioned',
+                                payload: {
+                                    id: '23'
+                                }
+                            };
+
+                        });
+
+                        it('it should raise a extended event', function(done) {
+
+                            eventEmitter.once('extended:' + evt.event, function(data) {
+                                done();
+                            });
+                            dummyExtender.handle(evt);
+
+                        });
+
+                        it('it should call the concrete function', function(done) {
+
+                            var spy = sinon.spy(dummyExtender, 'versioned');
+                            eventEmitter.once('extended:' + evt.event, function(data) {
+                                expect(spy.calledOnce).to.be.ok();
+                                dummyExtender.versioned.restore();
                                 done();
                             });
                             dummyExtender.handle(evt);

@@ -653,6 +653,73 @@ describe('EventDenormalizer', function() {
 
                     });
 
+                    describe('working with versioned events', function() {
+
+                        beforeEach(function () {
+             
+                            evt = {
+                                id: '82517123',
+                                event: 'versioned',
+                                head: {
+                                    revision: 1,
+                                    version: 1
+                                },
+                                payload: {
+                                    id: '23123123',
+                                    foo: 'bar'
+                                }
+                            };
+
+                        });
+
+                        it('it should work as expected', function(done) {
+
+                            eventEmitter.once('denormalized:' + evt.event, function(data) {
+                                dummyRepo.get(data.payload.id, function(err, vm) {
+                                    expect(vm).to.have.property('id', evt.payload.id);
+                                    done();
+                                });
+                            });
+
+                            eventDenormalizer.denormalize(evt, function(err) {});
+
+                        });
+
+                    });
+
+                    describe('working with versioned events not passing a version', function() {
+
+                        beforeEach(function () {
+             
+                            evt = {
+                                id: '82517123',
+                                event: 'versioned',
+                                head: {
+                                    revision: 1
+                                },
+                                payload: {
+                                    id: '231121212132423423',
+                                    foo: 'bar'
+                                }
+                            };
+
+                        });
+
+                        it('it should work as expected', function(done) {
+
+                            eventEmitter.once('denormalized:' + evt.event, function(data) {
+                                dummyRepo.get(data.payload.id, function(err, vm) {
+                                    expect(vm).to.have.property('id', evt.payload.id);
+                                    done();
+                                });
+                            });
+
+                            eventDenormalizer.denormalize(evt, function(err) {});
+
+                        });
+
+                    });
+
                 });
 
                 describe('having a custom action', function() {
