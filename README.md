@@ -132,6 +132,10 @@ See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/tes
 
 # Release Notes
 
+## v0.3.5
+
+- emit missingEvent if commandRejected and revision not in sync
+
 ## v0.3.4
 
 - handle versioned events

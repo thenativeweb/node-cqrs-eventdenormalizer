@@ -722,6 +722,57 @@ describe('EventDenormalizer', function() {
 
                 });
 
+                describe('noting a commandRejected Event because of destroyed aggregate', function() {
+
+                    var evtRej,
+                        existingEvt;
+
+                    beforeEach(function() {
+
+                        existingEvt = {
+                            id: '165475112323',
+                            event: 'dummyCreated',
+                            head: {
+                                revision: 1
+                            },
+                            payload: {
+                                id: '50123123'
+                            }
+                        };
+
+                        evtRej = {
+                            id: '13131316547',
+                            event: 'commandRejected',
+                            payload: {
+                                reason: {
+                                    name: 'AggregateDestroyed',
+                                    message: 'Aggregate has already been destroyed!',
+                                    aggregateRevision: 5,
+                                    aggregateId: '50123123'
+                                }
+                            }
+                        };
+
+                        eventDenormalizer.denormalize(existingEvt, function(err) {});
+
+                    });
+
+                    it('it should emit eventMissing', function(done) {
+
+                        eventDenormalizer.once('eventMissing', function(id, aggregateRevision, eventRevision, evt) {
+                            expect(evt).to.eql(evtRej);
+                            expect(id).to.eql(existingEvt.payload.id);
+                            expect(aggregateRevision).to.eql(2);
+                            expect(eventRevision).to.eql(5);
+                            done();
+                        });
+
+                        eventDenormalizer.denormalize(evtRej, function(err) {});
+
+                    });
+
+                });
+
                 describe('having a custom action', function() {
 
                     var evt;
