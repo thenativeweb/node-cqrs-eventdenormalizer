@@ -1,6 +1,6 @@
 # Introduction
 
-[![Build Status](https://secure.travis-ci.org/adrai/node-cqrs-eventdenormalizer.png)](http://travis-ci.org/adrai/node-cqrs-eventdenormalizer)
+[![travis](https://img.shields.io/travis/adrai/node-cqrs-eventdenormalizer.svg)](https://travis-ci.org/adrai/node-cqrs-eventdenormalizer) [![npm](https://img.shields.io/npm/v/cqrs-eventdenormalizer.svg)](https://npmjs.org/package/cqrs-eventdenormalizer)
 
 Node-cqrs-eventdenormalizer is a node.js module that implements the cqrs pattern.
 It can be very useful as eventdenormalizer component if you work with (d)ddd, cqrs, domain, host, etc.
