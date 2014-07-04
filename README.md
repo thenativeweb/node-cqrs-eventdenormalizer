@@ -132,6 +132,10 @@ See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/tes
 
 # Release Notes
 
+## v0.3.6
+
+- make use of viewmodel indexes
+
 ## v0.3.5
 
 - emit missingEvent if commandRejected and revision not in sync
