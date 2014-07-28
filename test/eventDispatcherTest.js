@@ -19,7 +19,7 @@ function cleanQueue(done) {
 describe('EventDispatcher', function() {
 
     before(function(done) {
-        queue.connect(function(err, evtQueue) {
+        queue.createQueue(function(err, evtQueue) {
             eventQueue = evtQueue;
             eventDispatcher.configure(function() {
                 this.use(eventQueue);
