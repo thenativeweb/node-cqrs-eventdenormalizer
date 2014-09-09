@@ -112,6 +112,11 @@ denorm.onNotification(function (noti, callback) {
   });
 });
 
+// optional
+denorm.defaultEventExtension(function (evt) {
+  evt.receiver = [evt.meta.userId];
+});
+
 
 denorm.init(function (err) {
   // this callback is called when all is ready...
@@ -139,7 +144,7 @@ denorm.handle({
     userId: 'ccd65819-4da4-4df9-9f24-5b10bf89ef89'
   }
 }, function (errs, evts, notifications, viewModels) {
-  
+
 });
 
 

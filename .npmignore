@@ -1,1 +1,6 @@
 test
+
+*.tingo
+*.db
+
+dump.rdb
