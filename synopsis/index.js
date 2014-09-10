@@ -66,7 +66,7 @@ denorm.defineEvent({
   // optional
   version: 'version',
   
-  // optional, if defined theses values will be copied to the command (can be used to transport information like userId, etc..)
+  // optional, if defined theses values will be copied to the notification (can be used to transport information like userId, etc..)
   meta: 'meta'
 });
 
@@ -74,7 +74,11 @@ denorm.defineNotification({
   id: 'id',
   collection: 'collection',
   name: 'name',
-  payload: 'payload'
+  payload: 'payload',
+  eventId: 'eventId',
+
+  // optional, if defined theses values will be copied from the event (can be used to transport information like userId, etc..)
+  meta: 'meta'
 });
 
 
