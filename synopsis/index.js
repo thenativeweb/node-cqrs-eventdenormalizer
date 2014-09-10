@@ -71,20 +71,10 @@ denorm.defineEvent({
 });
 
 denorm.defineNotification({
-  // // optional, default is 'name'
-  // name: 'name',
-  
-  // // optional, only makes sense if contexts are defined in the 'domainPath' structure 
-  // context: 'context.name',
-  
-  // // optional, only makes sense if aggregates with names are defined in the 'domainPath' structure
-  // aggregate: 'aggregate.name',
-  
-  // // optional
-  // version: 'version',
-  
-  // // optional, if defined theses values will be copied to the command (can be used to transport information like userId, etc..)
-  // meta: 'meta'
+  id: 'id',
+  collection: 'collection',
+  name: 'name',
+  payload: 'payload'
 });
 
 
