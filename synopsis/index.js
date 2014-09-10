@@ -73,9 +73,15 @@ denorm.defineEvent({
 denorm.defineNotification({
   id: 'id',
   collection: 'collection',
-  name: 'name',
+  action: 'name',
   payload: 'payload',
   correlationId: 'eventId',
+
+  event: 'meta.event', 
+  context: 'meta.context.name',
+  aggregate: 'meta.aggregate.name',
+  aggregateId: 'meta.aggregate.id',
+  revision: 'meta.aggregate.revision',
 
   // optional, if defined theses values will be copied from the event (can be used to transport information like userId, etc..)
   meta: 'meta'
