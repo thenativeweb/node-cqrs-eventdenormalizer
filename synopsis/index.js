@@ -1,5 +1,5 @@
 var denorm = require('cqrs-eventdenormalizer')({
-  sagaPath: '/path/to/my/files',
+  denormalizerPath: '/path/to/my/files',
   retryOnConcurrencyTimeout: 1000,
   
   repository: {
