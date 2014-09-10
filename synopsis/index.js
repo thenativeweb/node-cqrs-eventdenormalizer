@@ -112,6 +112,28 @@ denorm.onNotification(function (noti, callback) {
   });
 });
 
+// denorm.on('eventMissing', function (id, aggregateRevision, eventRevision, evt) {
+//   // request the appropriate missing events from domain...
+// }),
+// denorm.onEventMissing(function (id, aggregateRevision, eventRevision, evt) {
+//   // request the appropriate missing events from domain...
+// }),
+
+// // to replay
+// denorm.replay([] /* array of ordered events */, function(err) {});
+
+// // to replay streamed
+// denorm.replayStreamed(function(replay, done) {
+
+//   replay(evt1);
+//   replay(evt2);
+//   replay(evt3);
+
+//   done(function(err) { });
+
+// });
+
+
 // optional
 denorm.defaultEventExtension(function (evt) {
   evt.receiver = [evt.meta.userId];

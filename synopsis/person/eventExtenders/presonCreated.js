@@ -4,11 +4,10 @@ module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
   aggregate: 'employee', // optional
   context: 'hr',         // optional
   version: 2, // optional, default is 0
-  collectionName: 'person', // optional, default is folder name
-  viewModelId: 'payload.id',
+  id: 'payload.id',
   // payload: 'payload' // optional, if not defined it will pass the whole event...
-}, function (evt, repo, callback) {
-  // repo.get()...
+}, function (evt, col, callback) {
+  // col.get()...
   calllback(null, evt);
 });
 
@@ -18,8 +17,7 @@ module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
   aggregate: 'employee', // optional
   context: 'hr',         // optional
   version: 2, // optional, default is 0
-  collectionName: 'person', // optional, default is folder name
-  viewModelId: 'payload.id',
+  id: 'payload.id',
   // payload: 'payload' // optional, if not defined it will pass the whole event...
 }, function (evt) {
   return evt;
