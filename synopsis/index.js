@@ -130,12 +130,6 @@ denorm.defaultEventExtension(function (evt) {
   return evt;
 });
 
-// optional
-denorm.defaultNotificationExtension(function (noti) {
-  // manipulate noti
-  return noti;
-});
-
 denorm.init(function (err) {
   // this callback is called when all is ready...
 });
