@@ -127,8 +127,14 @@ denorm.onNotification(function (noti, callback) {
 // optional
 denorm.defaultEventExtension(function (evt) {
   evt.receiver = [evt.meta.userId];
+  return evt;
 });
 
+// optional
+denorm.defaultNotificationExtension(function (noti) {
+  // manipulate noti
+  return noti;
+});
 
 denorm.init(function (err) {
   // this callback is called when all is ready...
