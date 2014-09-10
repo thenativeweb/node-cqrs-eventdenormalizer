@@ -99,7 +99,7 @@ denorm.onNotification(function (noti) {
   bus.emit('notification', noti);
 });
 // or
-// pass events to bus
+// pass notifications to bus
 denorm.onNotification(function (noti, callback) {
   bus.emit('notification', noti, function ack () {
     callback();
