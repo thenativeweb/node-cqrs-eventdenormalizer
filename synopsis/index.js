@@ -75,7 +75,7 @@ denorm.defineNotification({
   collection: 'collection',
   name: 'name',
   payload: 'payload',
-  eventId: 'eventId',
+  correlationId: 'eventId',
 
   // optional, if defined theses values will be copied from the event (can be used to transport information like userId, etc..)
   meta: 'meta'
