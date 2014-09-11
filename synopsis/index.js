@@ -57,7 +57,7 @@ denorm.defineEvent({
   // optional, default is 'name'
   name: 'name',
   
-  // optional, only makes sense if contexts are defined in the 'domainPath' structure 
+  // optional, only makes sense if contexts are defined in the 'denormalizerPath' structure 
   context: 'context.name',
   
   // optional, only makes sense if aggregates with names are defined in the 'domainPath' structure
