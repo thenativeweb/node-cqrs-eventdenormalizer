@@ -77,7 +77,6 @@ denorm.defineNotification({
   payload: 'payload',
   correlationId: 'commandId',
 
-  event: 'meta.event', 
   context: 'meta.context.name',
   aggregate: 'meta.aggregate.name',
   aggregateId: 'meta.aggregate.id',

@@ -10,6 +10,17 @@ module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
   calllback(null, evt);
 });
 
+// or only with callback (async) (this event extender could be saved collection indipendent)
+module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
+  name: 'personCreated', // optional, default is file name without extension
+  aggregate: 'employee', // optional
+  context: 'hr',         // optional
+  version: 2//, // optional, default is 0
+  // payload: 'payload' // optional, if not defined it will pass the whole event...
+}, function (evt, callback) {
+  return evt;
+});
+
 // or directly load vm (sync)
 module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
   name: 'personCreated', // optional, default is file name without extension
