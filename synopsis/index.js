@@ -146,7 +146,7 @@ denorm.handle({
   meta: {
     userId: 'ccd65819-4da4-4df9-9f24-5b10bf89ef89'
   }
-}, function (errs, evts, notifications, viewModels) {
+}, function (errs, evt, notifications) {
 
 });
 
