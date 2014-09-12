@@ -10,8 +10,12 @@ module.exports = require('cqrs-eventdenormalizer').defineCollection({
 }).defaultEventExtension(function (evt) {
   evt.receiver = [evt.meta.userId];
   return evt;
+// }).defaultEventExtension(function (evt, callback) {
+//   evt.receiver = [evt.meta.userId];
+//   // from somewhere...
+//   calllback(null, evt);
 // }).defaultEventExtension(function (evt, col, callback) {
 //   evt.receiver = [evt.meta.userId];
-//   // col.get()... or from somewhere else...
+//   // col.get()...
 //   calllback(null, evt);
 });
