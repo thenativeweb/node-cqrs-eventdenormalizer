@@ -1,6 +1,6 @@
 // if exports is an array, it will be the same like loading multiple files...
 module.exports = require('cqrs-eventdenormalizer').defineViewBuilder({
-  name: 'personUpdated', // optional, default is file name without extension
+  name: 'personUpdated', // optional, default is file name without extension, if name is '' it will handle all events that matches
   aggregate: 'employee', // optional
   context: 'hr',         // optional
   // version: 2, // optional, default is 0
