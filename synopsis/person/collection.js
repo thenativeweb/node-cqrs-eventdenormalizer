@@ -8,15 +8,4 @@ module.exports = require('cqrs-eventdenormalizer').defineCollection({
 {
   emails: ['default@mycomp.org'],
   phoneNumbers: []
-}).defaultEventExtension(function (evt) {
-  evt.receiver = [evt.meta.userId];
-  return evt;
-// }).defaultEventExtension(function (evt, callback) {
-//   evt.receiver = [evt.meta.userId];
-//   // from somewhere...
-//   calllback(null, evt);
-// }).defaultEventExtension(function (evt, col, callback) {
-//   evt.receiver = [evt.meta.userId];
-//   // col.get()...
-//   calllback(null, evt);
 });
