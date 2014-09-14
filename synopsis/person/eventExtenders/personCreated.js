@@ -3,20 +3,18 @@ module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
   name: 'personCreated', // optional, default is file name without extension, if name is '' it will handle all events that matches
   aggregate: 'employee', // optional
   context: 'hr',         // optional
-  version: 2//, // optional, default is 0
-  // payload: 'payload' // optional, if not defined it will pass the whole event...
+  version: 2 // optional, default is 0
 }, function (evt, col, callback) {
   // col.get()... or from somewhere else... (col.find())
   calllback(null, evt);
 });
 
-// or only with callback (async) (this event extender could be saved collection indipendent)
+// or only with callback (async) (this event extender could be saved collection independent)
 module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
   name: 'personCreated', // optional, default is file name without extension, if name is '' it will handle all events that matches
   aggregate: 'employee', // optional
   context: 'hr',         // optional
-  version: 2//, // optional, default is 0
-  // payload: 'payload' // optional, if not defined it will pass the whole event...
+  version: 2 // optional, default is 0
 }, function (evt, callback) {
   return evt;
 });
@@ -27,8 +25,7 @@ module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
   aggregate: 'employee', // optional
   context: 'hr',         // optional
   version: 2, // optional, default is 0
-  id: 'payload.id'//,
-  // payload: 'payload' // optional, if not defined it will pass the whole event...
+  id: 'payload.id'
 }, function (evt, vm) {
   return evt;
 });
@@ -39,8 +36,7 @@ module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
   aggregate: 'employee', // optional
   context: 'hr',         // optional
   version: 2, // optional, default is 0
-  id: 'payload.id'//,
-  // payload: 'payload' // optional, if not defined it will pass the whole event...
+  id: 'payload.id'
 }, function (evt) {
   return evt;
 });
