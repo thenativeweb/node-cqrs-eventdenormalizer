@@ -5,7 +5,7 @@ module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
   context: 'hr',         // optional
   version: 2 // optional, default is 0
 }, function (evt, col, callback) {
-  // col.get()... or from somewhere else... (col.find())
+  // col.loadViewModel()... or from somewhere else... (col.findViewModels())
   calllback(null, evt);
 });
 
