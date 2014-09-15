@@ -158,6 +158,7 @@ denorm.onEventMissing(function (info, evt) {
 //  info.context
 //  info.aggregateRevision
 //  info.eventRevision
+//  info.guardRevision
   // request the appropriate missing events from domain...
 });
 
