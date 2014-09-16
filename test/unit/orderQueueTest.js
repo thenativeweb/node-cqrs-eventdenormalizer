@@ -84,21 +84,22 @@ describe('orderQueue', function () {
 
             function evtClb () {}
             var loopCounts = [];
-            var max = 3;
             function timeoutFn (loopCount, wait) {
               loopCounts.push(loopCount);
-              
-              if (--max > 0) {
-                return wait();
-              }
-              
-              expect(loopCounts.length).to.eql(3);
-              expect(loopCounts[0]).to.eql(1);
-              expect(loopCounts[1]).to.eql(2);
-              expect(loopCounts[2]).to.eql(3);
-              done();
+              wait();
             }
             queue.push('aggId5132', 'objId151452', { ev: 'ent' }, evtClb, timeoutFn);
+            setTimeout(function () {
+              queue.remove('aggId5132', 'objId151452');
+              
+              setTimeout(function () {
+                expect(loopCounts.length).to.eql(3);
+                expect(loopCounts[0]).to.eql(1);
+                expect(loopCounts[1]).to.eql(2);
+                expect(loopCounts[2]).to.eql(3);
+                done();
+              }, 60);
+            }, 160);
             
           });
           
