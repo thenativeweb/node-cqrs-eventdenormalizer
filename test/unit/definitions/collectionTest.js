@@ -494,6 +494,8 @@ describe('collection definition', function () {
                   expect(vm).to.be.an('object');
                   expect(vm.get('my.def')).to.eql('data');
                   expect(vm.get('new')).to.eql('value');
+                  expect(vm.toJSON().my.def).to.eql('data');
+                  expect(vm.toJSON().new).to.eql('value');
 
                   col.findViewModels(function (err, vms) {
                     expect(err).not.to.be.ok();
