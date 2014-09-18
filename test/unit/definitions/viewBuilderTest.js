@@ -191,7 +191,185 @@ describe('viewBuilder definition', function () {
       });
 
     });
-    
+
+    describe('calling loadViewModel', function () {
+
+      var vb;
+
+      beforeEach(function () {
+        vb = api.defineViewBuilder(null, 'update');
+      });
+
+      describe('in normal mode', function () {
+
+        it('it should work as expected', function (done) {
+
+          var col = { name: 'dummy', loadViewModel: function (id, callback) {
+            callback(null, { id: id });
+          }};
+          vb.useCollection(col);
+          vb.loadViewModel('423', function (err, vm) {
+            expect(err).not.to.be.ok();
+            expect(vm.id).to.eql('423');
+            done();
+          });
+
+        });
+        
+      });
+
+      describe('in replay mode', function () {
+
+        describe('not having a cached vm', function () {
+
+          it('it should work as expected', function (done) {
+
+            var col = { name: 'dummy', loadViewModel: function (id, callback) {
+              callback(null, { id: id, cached: false });
+            }};
+            vb.useCollection(col);
+            vb.isReplaying = true;
+//            vb.replayingVms['423'] = { id: '423', cached: true };
+            vb.loadViewModel('423', function (err, vm) {
+              expect(err).not.to.be.ok();
+              expect(vm.id).to.eql('423');
+              expect(vm.cached).to.eql(false);
+              done();
+            });
+
+          });
+
+        });
+
+        describe('having a cached vm', function () {
+
+          it('it should work as expected', function (done) {
+
+            var col = { name: 'dummy', loadViewModel: function (id, callback) {
+              callback(null, { id: id, cached: false });
+            }};
+            vb.useCollection(col);
+            vb.isReplaying = true;
+            vb.replayingVms['423'] = { id: '423', cached: true };
+            vb.loadViewModel('423', function (err, vm) {
+              expect(err).not.to.be.ok();
+              expect(vm.id).to.eql('423');
+              expect(vm.cached).to.eql(true);
+              done();
+            });
+
+          });
+          
+        });
+
+      });
+
+    });
+
+    describe('calling saveViewModel', function () {
+
+      var vb;
+
+      beforeEach(function () {
+        vb = api.defineViewBuilder(null, 'update');
+      });
+
+      describe('in normal mode', function () {
+
+        it('it should work as expected', function (done) {
+
+          var called = false;
+          var col = { name: 'dummy', saveViewModel: function (vm, callback) {
+            expect(vm.id).to.eql('423');
+            called = true;
+            callback(null);
+          }};
+          vb.useCollection(col);
+          vb.saveViewModel({ id: '423' }, function (err) {
+            expect(err).not.to.be.ok();
+            expect(called).to.eql(true);
+            done();
+          });
+
+        });
+
+      });
+
+      describe('in replay mode', function () {
+
+        describe('not having a cached vm', function () {
+
+          it('it should work as expected', function (done) {
+
+            var called = false;
+            var col = { name: 'dummy', saveViewModel: function (vm, callback) {
+              expect(vm.id).to.eql('423');
+              called = true;
+              callback(null);
+            }};
+            vb.useCollection(col);
+            vb.isReplaying = true;
+            vb.saveViewModel({ id: '423' }, function (err) {
+              expect(err).not.to.be.ok();
+              expect(called).to.eql(false);
+              expect(vb.replayingVms['423'].id).to.eql('423');
+              done();
+            });
+
+          });
+
+        });
+
+      });
+
+    });
+
+    describe('calling extractId', function () {
+
+      var vb;
+
+      beforeEach(function () {
+        vb = api.defineViewBuilder({ id: 'myId' }, 'update');
+      });
+
+      describe('not passing that id', function () {
+
+        it('it should work as expected', function (done) {
+
+          var col = { name: 'dummy', getNewId: function (callback) {
+            callback(null, 'newId');
+          }};
+          vb.useCollection(col);
+          vb.extractId({ id: '423' }, function (err, id) {
+            expect(err).not.to.be.ok();
+            expect(id).to.eql('newId');
+            done();
+          });
+
+        });
+
+      });
+
+      describe('passing that id', function () {
+
+        it('it should work as expected', function (done) {
+
+          var col = { name: 'dummy', getNewId: function (callback) {
+            callback(null, 'newId');
+          }};
+          vb.useCollection(col);
+          vb.extractId({ myId: '423' }, function (err, id) {
+            expect(err).not.to.be.ok();
+            expect(id).to.eql('423');
+            done();
+          });
+
+        });
+        
+      });
+
+    });
+  
   });
 
 });
