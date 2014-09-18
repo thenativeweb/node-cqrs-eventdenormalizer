@@ -369,6 +369,122 @@ describe('viewBuilder definition', function () {
       });
 
     });
+
+    describe('calling generateNotification', function () {
+
+      var vb;
+
+      beforeEach(function () {
+        vb = api.defineViewBuilder(null, 'update');
+      });
+      
+      it('it should work as expected', function () {
+
+        vb.defineEvent({
+          correlationId: 'correlationId',
+          id: 'id',
+          name: 'name',
+          aggregateId: 'aggregate.id',
+          context: 'context.name',
+          aggregate: 'aggregate.name',
+          payload: 'payload',
+          revision: 'revision',
+          version: 'version',
+          meta: 'meta'
+        });
+        
+        vb.defineNotification({
+          correlationId: 'correlationId',
+          id: 'id',
+          action: 'name',
+          collection: 'collection',
+          payload: 'payload',
+          context: 'meta.context.name',
+          aggregate: 'meta.aggregate.name',
+          aggregateId: 'meta.aggregate.id',
+          revision: 'meta.aggregate.revision',
+          eventId: 'meta.event.id',
+          eventName: 'meta.event.name',
+          meta: 'meta'
+        });
+        
+        var col = { name: 'dummy' };
+        vb.useCollection(col);
+        
+        var evt = {
+          correlationId: 'cmdId',
+          id: 'evtId',
+          name: 'enteredNewPerson',
+          aggregate: {
+            id: 'aggId',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            firstname: 'Jack',
+            lastname: 'Joe'
+          },
+          revision: 1,
+          version: 4,
+          meta: {
+            userId: 'usrId'
+          }
+        };
+        
+        var vm = {
+          actionOnCommit: 'update',
+          toJSON: function () {
+            return { vmAs: 'json' };
+          }
+        };
+
+        var noti = vb.generateNotification(evt, vm);
+        
+        expect(noti.meta.userId).to.eql('usrId');
+        expect(noti.meta.event.id).to.eql('evtId');
+        expect(noti.meta.event.name).to.eql('enteredNewPerson');
+        expect(noti.meta.aggregate.id).to.eql('aggId');
+        expect(noti.meta.aggregate.name).to.eql('person');
+        expect(noti.meta.aggregate.revision).to.eql(1);
+        expect(noti.meta.context.name).to.eql('hr');
+        expect(noti.correlationId).to.eql('cmdId');
+        expect(noti.payload.vmAs).to.eql('json');
+        expect(noti.collection).to.eql('dummy');
+        expect(noti.name).to.eql('update');
+        
+      });
+
+    });
+    
+    describe('denormalizing an event', function () {
+
+      describe('defining a payload', function () {
+        
+        it('it should work as expected');
+        
+      });
+
+      describe('not defining a payload', function () {
+
+        it('it should work as expected');
+
+      });
+      
+    });
+    
+    describe('replaying', function () {
+
+      it('it should work as expected');
+      
+    });
+
+    describe('replaying streamed', function () {
+
+      it('it should work as expected');
+
+    });
   
   });
 
