@@ -232,9 +232,9 @@ describe('base definition', function () {
           function check () {
             guarded++;
 
-            if (guarded === 3) {
-              done();
-            }
+//            if (guarded === 3) {
+//              done();
+//            }
           }
 
           guard.guard(evt1, function (err, finish) {
@@ -271,14 +271,14 @@ describe('base definition', function () {
             });
           }, 10);
 
-//          setTimeout(function () {
-//            guard.guard(evt2, function (err) {
-//              expect(err).to.be.ok();
-//              expect(err.name).to.eql('AlreadyDenormalizedError');
-//              expect(guarded).to.eql(3);
-//              done();
-//            });
-//          }, 80);
+          setTimeout(function () {
+            guard.guard(evt2, function (err) {
+              expect(err).to.be.ok();
+              expect(err.name).to.eql('AlreadyDenormalizedError');
+              expect(guarded).to.eql(3);
+              done();
+            });
+          }, 300);
 
         });
 
