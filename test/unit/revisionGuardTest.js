@@ -146,7 +146,11 @@ describe('base definition', function () {
       var evt3 = {
         id: 'evtId3',
         aggregate: {
-          id: 'aggId1'
+          id: 'aggId1',
+          name: 'agg'
+        },
+        context: {
+          name: 'ctx'
         },
         revision: 3
       };
@@ -276,9 +280,66 @@ describe('base definition', function () {
               expect(err).to.be.ok();
               expect(err.name).to.eql('AlreadyDenormalizedError');
               expect(guarded).to.eql(3);
-              done();
+              
+              guard.guard(evt3, function (err) {
+                expect(err).to.be.ok();
+                expect(err.name).to.eql('AlreadyDenormalizedError');
+                expect(guarded).to.eql(3);
+                done();
+              });
             });
           }, 300);
+
+        });
+
+      });
+
+      describe('and missing something', function () {
+
+        it('it should work as expected', function (done) {
+
+          var guarded = 0;
+
+          function check () {
+            guarded++;
+
+//            if (guarded === 3) {
+//              done();
+//            }
+          }
+
+          guard.onEventMissing(function (info, evt) {
+            expect(guarded).to.eql(1);
+            expect(evt).to.eql(evt3);
+            expect(info.aggregateId).to.eql('aggId1');
+            expect(info.aggregateRevision).to.eql(3);
+            expect(info.guardRevision).to.eql(2);
+            expect(info.aggregate).to.eql('agg');
+            expect(info.context).to.eql('ctx');
+            done();
+          });
+
+          guard.guard(evt1, function (err, finish) {
+            expect(err).not.to.be.ok();
+
+            finish(function (err) {
+              expect(err).not.to.be.ok();
+              expect(guarded).to.eql(0);
+              check();
+            });
+          });
+
+          setTimeout(function () {
+            guard.guard(evt3, function (err, finish) {
+              expect(err).not.to.be.ok();
+
+              finish(function (err) {
+                expect(err).not.to.be.ok();
+                expect(guarded).to.eql(2);
+                check();
+              });
+            });
+          }, 20);
 
         });
 
