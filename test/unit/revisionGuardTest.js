@@ -3,7 +3,7 @@ var expect = require('expect.js'),
   RevisionGuard = require('../../lib/revisionGuard'),
   revGuardStore = require('../../lib/revisionGuardStore');
 
-describe('base definition', function () {
+describe('revisionGuard', function () {
   
   var store;
   
