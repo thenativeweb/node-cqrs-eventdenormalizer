@@ -679,7 +679,7 @@ describe('denormalizer', function () {
         
       });
 
-      describe('with a command rejected evt', function () {
+      describe('with a command rejected event', function () {
 
         describe('not having defined a revision', function () {
 
@@ -865,6 +865,236 @@ describe('denormalizer', function () {
 
       });
       
+    });
+
+    describe('calling dispatch', function () {
+
+      var denorm;
+
+      beforeEach(function () {
+        denorm = api({ denormalizerPath: __dirname });
+      });
+
+      it('it should work as expected', function (done) {
+
+        var calledDispatch = false;
+        denorm.eventDispatcher = {
+          dispatch: function (evt, clb) {
+            expect(evt.my).to.eql('evt');
+            calledDispatch = true;
+            clb(null, [{ noti: '1'}, { noti: '2'}]);
+          }
+        };
+
+        var calledExtend = false;
+        denorm.extendEvent = function (evt, clb) {
+          evt.ext++;
+          calledExtend = true;
+          clb(null, evt);
+        };
+        
+        var notiCalled = [];
+        denorm.onNotification(function (noti) {
+          notiCalled.push(noti);
+        });
+
+        var evtCalled = [];
+        denorm.onEvent(function (evt) {
+          evtCalled.push(evt);
+        });
+
+        denorm.dispatch({ my: 'evt', ext: 0 }, function (err, extEvt, notis) {
+          expect(err).not.to.be.ok();
+          expect(extEvt.ext).to.eql(1);
+          expect(notis).to.be.an('array');
+          expect(notis.length).to.eql(2);
+          expect(notis[0].noti).to.eql(1);
+          expect(notis[1].noti).to.eql(2);
+          
+          expect(notiCalled.length).to.eql(2);
+          expect(notiCalled[0].noti).to.eql(1);
+          expect(notiCalled[1].noti).to.eql(2);
+          expect(evtCalled.length).to.eql(1);
+          expect(evtCalled[0].ext).to.eql(1);
+          
+          expect(calledDispatch).to.eql(true);
+          expect(calledExtend).to.eql(true);
+          done();
+        });
+
+      });
+
+    });
+    
+    describe('calling handle', function () {
+
+      var denorm;
+
+      beforeEach(function () {
+        denorm = api({ denormalizerPath: __dirname });
+      });
+      
+      describe('not working with revisions', function () {
+
+        it('it should work as expected', function (done) {
+
+          var cmdRejCalled = false;
+          denorm.isCommandRejected = function (evt, clb) {
+            expect(evt.my).to.eql('evt');
+            cmdRejCalled = true;
+            return false;
+          };
+
+          var dispCalled = false;
+          denorm.dispatch = function (evt, clb) {
+            expect(evt.my).to.eql('evt');
+            dispCalled = true;
+            clb(null, evt, [{ noti: 1 }]);
+          };
+          
+          var guardCalled = false;
+          var guardDoneCalled = false;
+          denorm.revisionGuard = {
+            guard: function (evt, clb) {
+              guardCalled = true;
+              clb(null, function (c) {
+                guardDoneCalled = true;
+                c(null);
+              });
+            }
+          };
+
+          denorm.handle({ my: 'evt' }, function (err, extEvt, notis) {
+            expect(err).not.be.ok();
+            expect(extEvt.my).to.eql('evt');
+            expect(notis).to.be.an('array');
+            expect(notis.length).to.eql(1);
+            expect(notis[0].noti).to.eql(1);
+
+            expect(cmdRejCalled).to.eql(true);
+            expect(dispCalled).to.eql(true);
+            expect(guardCalled).to.eql(false);
+            expect(guardDoneCalled).to.eql(false);
+
+            done();
+          });
+
+        });
+        
+      });
+
+      describe('working with revisions', function () {
+
+        it('it should work as expected', function (done) {
+
+          denorm.defineEvent({
+            aggregate: 'aggregate.name',
+            aggregateId: 'aggregate.id',
+            revision: 'aggregate.revision'
+          });
+
+          var cmdRejCalled = false;
+          denorm.isCommandRejected = function (evt, clb) {
+            expect(evt.my).to.eql('evt');
+            cmdRejCalled = true;
+            return false;
+          };
+
+          var dispCalled = false;
+          denorm.dispatch = function (evt, clb) {
+            expect(evt.my).to.eql('evt');
+            dispCalled = true;
+            clb(null, evt, [{ noti: 1 }]);
+          };
+
+          var guardCalled = false;
+          var guardDoneCalled = false;
+          denorm.revisionGuard = {
+            guard: function (evt, clb) {
+              expect(evt.my).to.eql('evt');
+              guardCalled = true;
+              clb(null, function (c) {
+                guardDoneCalled = true;
+                c(null);
+              });
+            }
+          };
+
+          denorm.handle({ my: 'evt', aggregate: { id: 'aggId', name: 'agg', revision: 4 } }, function (err, extEvt, notis) {
+            expect(err).not.be.ok();
+            expect(extEvt.my).to.eql('evt');
+            expect(notis).to.be.an('array');
+            expect(notis.length).to.eql(1);
+            expect(notis[0].noti).to.eql(1);
+
+            expect(cmdRejCalled).to.eql(true);
+            expect(dispCalled).to.eql(true);
+            expect(guardCalled).to.eql(true);
+            expect(guardDoneCalled).to.eql(true);
+
+            done();
+          });
+
+        });
+
+      });
+      
+    });
+
+    describe('calling replay', function () {
+
+      var denorm;
+
+      beforeEach(function () {
+        denorm = api({ denormalizerPath: __dirname });
+      });
+
+      it('it should work as expected', function (done) {
+        
+        var events = [{ evt: 1 }, { evt: 2 }];
+        var callback = function () {
+          console.log('haha');
+        };
+
+        denorm.replayHandler = {
+          replay: function (evts, clb) {
+            expect(evts).to.eql(events);
+            expect(clb).to.eql(callback);
+            done();
+          }
+        };
+
+        denorm.replay(events, callback);
+        
+      });
+
+    });
+
+    describe('calling replayStreamed', function () {
+
+      var denorm;
+
+      beforeEach(function () {
+        denorm = api({ denormalizerPath: __dirname });
+      });
+
+      it('it should work as expected', function (done) {
+
+        var replFn = function () {
+          console.log('haha');
+        };
+
+        denorm.replayHandler = {
+          replayStreamed: function (fn) {
+            expect(fn).to.eql(replFn);
+            done();
+          }
+        };
+
+        denorm.replayStreamed(replFn);
+
+      });
+
     });
     
   });
