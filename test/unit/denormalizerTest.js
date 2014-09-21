@@ -429,7 +429,7 @@ describe('denormalizer', function () {
 
       beforeEach(function () {
         denorm = api({ denormalizerPath: __dirname });
-        denorm.extendEvent = null;
+        denorm.extendEventHandle = null;
       });
 
       describe('in a synchronous way', function() {
@@ -442,7 +442,7 @@ describe('denormalizer', function () {
             called = true;
           });
 
-          denorm.extendEvent({ my: 'evt' }, function (err) {
+          denorm.extendEventHandle({ my: 'evt' }, function (err) {
             expect(err).not.to.be.ok();
             expect(called).to.eql(true);
             done();
@@ -465,7 +465,7 @@ describe('denormalizer', function () {
             }, 10);
           });
 
-          denorm.extendEvent({ my: 'evt' }, function (err) {
+          denorm.extendEventHandle({ my: 'evt' }, function (err) {
             expect(err).not.to.be.ok();
             expect(called).to.eql(true);
             done();
@@ -565,6 +565,306 @@ describe('denormalizer', function () {
 
       });
 
+    });
+    
+    describe('calling extendEvent', function () {
+
+      var denorm;
+
+      beforeEach(function () {
+        denorm = api({ denormalizerPath: __dirname });
+      });
+      
+      describe('having found only the default event extender', function () {
+
+        it('it should work as expected', function (done) {
+
+          denorm.defaultEventExtension(function (evt) {
+            evt.ext++;
+            return evt;
+          });
+
+          denorm.eventDispatcher = {
+            getTargetInformation: function (e) {
+              expect(e.ext).to.eql(1);
+              return 'target';
+            }
+          };
+
+          denorm.tree = {
+            getEventExtender: function (t) {
+              expect(t).to.eql('target');
+
+              return null;
+            }
+          };
+
+          denorm.extendEvent({ ext: 0 }, function (err, extEvt) {
+            expect(err).not.to.be.ok();
+            expect(extEvt.ext).to.eql(1);
+            done();
+          });
+
+        });
+        
+      });
+
+      describe('having found the default event extender and an other one', function () {
+
+        it('it should work as expected', function (done) {
+
+          denorm.defaultEventExtension(function (evt) {
+            evt.ext++;
+            return evt;
+          });
+
+          denorm.eventDispatcher = {
+            getTargetInformation: function (e) {
+              expect(e.ext).to.eql(1);
+              return 'target';
+            }
+          };
+
+          denorm.tree = {
+            getEventExtender: function (t) {
+              expect(t).to.eql('target');
+
+              return {
+                extend: function (e, clb) {
+                  expect(e.ext).to.eql(1);
+                  e.ext++;
+                  clb(null, e);
+                }
+              };
+            }
+          };
+
+          denorm.extendEvent({ ext: 0 }, function (err, extEvt) {
+            expect(err).not.to.be.ok();
+            expect(extEvt.ext).to.eql(2);
+            done();
+          });
+
+        });
+
+      });
+      
+    });
+    
+    describe('calling isCommandRejected', function () {
+
+      var denorm;
+
+      beforeEach(function () {
+        denorm = api({ denormalizerPath: __dirname, commandRejectedEventName: 'reji' });
+      });
+      
+      describe('with a normal event', function () {
+        
+        it('it should work as expected', function (done) {
+          
+          var calledClb = false;
+          var res = denorm.isCommandRejected({ name: 'normal' }, function (err, evt, notifications) {
+            calledClb = true;
+          });
+          
+          expect(res).to.eql(false);
+          
+          setTimeout(function () {
+            expect(calledClb).to.eql(false);
+            done();
+          }, 40);
+          
+        });
+        
+      });
+
+      describe('with a command rejected evt', function () {
+
+        describe('not having defined a revision', function () {
+
+          it('it should work as expected', function (done) {
+
+            denorm.defineEvent({
+              aggregate: 'aggregate.name',
+              context: 'context.name'
+            });
+
+            var calledMissing = false;
+            
+            denorm.onEventMissing(function (info, evt) {
+              expect(info.aggregateId).to.eql('aggId');
+              expect(info.aggregateRevision).to.eql(5);
+              expect(info.aggregate).to.eql('agg');
+              expect(info.context).to.eql('ctx');
+              expect(info.guardRevision).not.to.be.ok();
+              expect(evt.name).to.eql('reji');
+              calledMissing = true;
+            });
+
+            var res = denorm.isCommandRejected({
+              name: 'reji',
+              payload: {
+                reason: {
+                  name: 'AggregateDestroyedError',
+                  aggregateId: 'aggId',
+                  aggregateRevision: 5
+                }
+              },
+              aggregate: {
+                name: 'agg'
+              },
+              context: {
+                name: 'ctx'
+              }
+            }, function (err, evt, notifications) {
+              expect(err).not.to.be.ok();
+              expect(evt.name).to.eql('reji');
+              expect(notifications).to.be.an('array');
+              expect(notifications.length).to.eql(0);
+              expect(calledMissing).to.eql(true);
+              
+              done();
+            });
+
+            expect(res).to.eql(true);
+
+          });
+          
+        });
+
+        describe('having defined a revision', function () {
+
+          describe('and the revisionGuardStore has missed some event', function () {
+
+            it('it should work as expected', function (done) {
+
+              denorm.defineEvent({
+                aggregate: 'aggregate.name',
+                context: 'context.name',
+                revision: 'aggregate.revision'
+              });
+
+              var calledMissing = false;
+
+              denorm.onEventMissing(function (info, evt) {
+                expect(info.aggregateId).to.eql('aggId');
+                expect(info.aggregateRevision).to.eql(5);
+                expect(info.aggregate).to.eql('agg');
+                expect(info.context).to.eql('ctx');
+                expect(info.guardRevision).to.eql(4);
+                expect(evt.name).to.eql('reji');
+                calledMissing = true;
+              });
+
+              var calledStore = false;
+
+              denorm.revisionGuardStore = {
+                get: function (aggId, clb) {
+                  expect(aggId).to.eql('aggId');
+                  calledStore = true;
+
+                  clb(null, 4)
+                }
+              };
+
+              var res = denorm.isCommandRejected({
+                name: 'reji',
+                payload: {
+                  reason: {
+                    name: 'AggregateDestroyedError',
+                    aggregateId: 'aggId',
+                    aggregateRevision: 5
+                  }
+                },
+                aggregate: {
+                  name: 'agg',
+                  revision: 2
+                },
+                context: {
+                  name: 'ctx'
+                }
+              }, function (err, evt, notifications) {
+                expect(err).not.to.be.ok();
+                expect(evt.name).to.eql('reji');
+                expect(notifications).to.be.an('array');
+                expect(notifications.length).to.eql(0);
+                expect(calledMissing).to.eql(true);
+                expect(calledStore).to.eql(true);
+
+                done();
+              });
+
+              expect(res).to.eql(true);
+
+            });
+            
+          });
+
+          describe('and the revisionGuardStore has not missed anything', function () {
+
+            it('it should work as expected', function (done) {
+
+              denorm.defineEvent({
+                aggregate: 'aggregate.name',
+                context: 'context.name',
+                revision: 'aggregate.revision'
+              });
+
+              var calledMissing = false;
+
+              denorm.onEventMissing(function (info, evt) {
+                calledMissing = true;
+              });
+
+              var calledStore = false;
+
+              denorm.revisionGuardStore = {
+                get: function (aggId, clb) {
+                  expect(aggId).to.eql('aggId');
+                  calledStore = true;
+
+                  clb(null, 6)
+                }
+              };
+
+              var res = denorm.isCommandRejected({
+                name: 'reji',
+                payload: {
+                  reason: {
+                    name: 'AggregateDestroyedError',
+                    aggregateId: 'aggId',
+                    aggregateRevision: 5
+                  }
+                },
+                aggregate: {
+                  name: 'agg',
+                  revision: 2
+                },
+                context: {
+                  name: 'ctx'
+                }
+              }, function (err, evt, notifications) {
+                expect(err).not.to.be.ok();
+                expect(evt.name).to.eql('reji');
+                expect(notifications).to.be.an('array');
+                expect(notifications.length).to.eql(0);
+                expect(calledMissing).to.eql(false);
+                expect(calledStore).to.eql(true);
+
+                done();
+              });
+
+              expect(res).to.eql(true);
+
+            });
+
+          });
+
+        });
+
+      });
+      
     });
     
   });
