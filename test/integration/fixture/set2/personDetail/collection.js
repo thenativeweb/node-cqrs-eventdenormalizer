@@ -1,5 +1,5 @@
 // if exports is an array, it will be the same like loading multiple files...
-module.exports = require('../../../../index').defineCollection({
+module.exports = require('../../../../../index').defineCollection({
 //module.exports = require('cqrs-eventdenormalizer').defineCollection({
 //  name: 'personDetail' // optional, default is folder name
 //  defaultPayload: 'payload',
