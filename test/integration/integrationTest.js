@@ -32,7 +32,7 @@ describe('integration', function () {
         aggregateId: 'meta.aggregate.id',
         revision: 'meta.aggregate.revision',
         eventId: 'meta.event.id',
-        eventName: 'meta.event.name',
+        event: 'meta.event.name',
         meta: 'meta'
       });
       
@@ -605,7 +605,7 @@ describe('integration', function () {
         aggregateId: 'meta.aggregate.id',
         revision: 'meta.aggregate.revision',
         eventId: 'meta.event.id',
-        eventName: 'meta.event.name',
+        event: 'meta.event.name',
         meta: 'meta'
       });
 

@@ -122,7 +122,7 @@ describe('base definition', function () {
             aggregateId: 'aggId',
             revision: 'rev',
             eventId: 'evtId',
-            eventName: 'evtName',
+            event: 'evtName',
             meta: 'm'
           });
 
@@ -146,8 +146,8 @@ describe('base definition', function () {
           expect(defaults.revision).not.to.eql(def.definitions.notification.revision);
           expect(def.definitions.notification.eventId).to.eql('evtId');
           expect(defaults.eventId).not.to.eql(def.definitions.notification.eventId);
-          expect(def.definitions.notification.eventName).to.eql('evtName');
-          expect(defaults.eventName).not.to.eql(def.definitions.notification.eventName);
+          expect(def.definitions.notification.event).to.eql('evtName');
+          expect(defaults.event).not.to.eql(def.definitions.notification.event);
           expect(def.definitions.notification.meta).to.eql('m');
           expect(defaults.meta).not.to.eql(def.definitions.notification.meta);
 

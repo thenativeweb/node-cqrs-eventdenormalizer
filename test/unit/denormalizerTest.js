@@ -255,7 +255,7 @@ describe('denormalizer', function () {
             aggregateId: 'aggId',
             revision: 'rev',
             eventId: 'evtId',
-            eventName: 'evtName',
+            event: 'evtName',
             meta: 'm'
           });
 
@@ -279,8 +279,8 @@ describe('denormalizer', function () {
           expect(defaults.revision).not.to.eql(denorm.definitions.notification.revision);
           expect(denorm.definitions.notification.eventId).to.eql('evtId');
           expect(defaults.eventId).not.to.eql(denorm.definitions.notification.eventId);
-          expect(denorm.definitions.notification.eventName).to.eql('evtName');
-          expect(defaults.eventName).not.to.eql(denorm.definitions.notification.eventName);
+          expect(denorm.definitions.notification.event).to.eql('evtName');
+          expect(defaults.event).not.to.eql(denorm.definitions.notification.event);
           expect(denorm.definitions.notification.meta).to.eql('m');
           expect(defaults.meta).not.to.eql(denorm.definitions.notification.meta);
 
@@ -494,7 +494,7 @@ describe('denormalizer', function () {
           aggregateId: 'aggId',
           revision: 'rev',
           eventId: 'evtId',
-          eventName: 'evtName',
+          event: 'evtName',
           meta: 'm'
         });
         denorm.defineEvent({
