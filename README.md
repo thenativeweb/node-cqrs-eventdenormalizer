@@ -213,14 +213,14 @@ The values describes the path to that property in the notification message.
 ## Wire up notifications [optional]
 ### you can define a synchronous function
 
-	// pass events to bus
+	// pass notifications to bus
 	denormalizer.onNotification(function (noti) {
 	  bus.emit('event', evt);
 	});
 	
 ### or you can define an asynchronous function
 
-	// pass events to bus
+	// pass notifications to bus
 	denormalizer.onNotification(function (noti, callback) {
 	  bus.emit('notification', noti, function ack () {
 	    callback();
@@ -231,7 +231,6 @@ The values describes the path to that property in the notification message.
 ## Wire up event missing [optional]
 ### you can define a synchronous function
 
-	// pass events to bus
 	denormalizer.onEventMissing(function (info, evt) {
 	  console.log(info);
 	  console.log(evt);
