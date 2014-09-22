@@ -240,7 +240,6 @@ The values describes the path to that property in the notification message.
 ## Define default event extension [optional]
 ### you can define a synchronous function
 
-	// pass events to bus
 	denormalizer.defaultEventExtension(function (evt) {
 	  evt.receiver = [evt.meta.userId];
 	  return evt;
@@ -248,7 +247,6 @@ The values describes the path to that property in the notification message.
 	
 ### or you can define an asynchronous function
 
-	// pass events to bus
 	denormalizer.defaultEventExtension(function (evt, callback) {
 	  evt.receiver = [evt.meta.userId];
 	  callback(null, evt);
