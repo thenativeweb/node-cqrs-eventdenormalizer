@@ -471,8 +471,22 @@ The values describes the path to that property in the notification message.
 
 ## Replay events
 
+Replay whenever you want...
+
 	denormalizer.replay([/* ordered array of events */], function (err) {
 	  if (err) { console.log(err); }
+	});
+	
+or when catching some events:
+
+	denormalizer.onEventMissing(function (info, evt) {
+	  
+	  // grab the missing events, depending from info values...
+	  // and call replay...
+	  denormalizer.replay([/* ordered array of events */], function (err) {
+	    if (err) { console.log(err); }
+	  });
+	  
 	});
 
 ### streamed
