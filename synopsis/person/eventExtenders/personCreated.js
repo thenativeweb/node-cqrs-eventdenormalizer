@@ -16,7 +16,7 @@ module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
   context: 'hr',         // optional
   version: 2 // optional, default is 0
 }, function (evt, callback) {
-  return evt;
+  callback(null, evt);
 });
 
 // or directly load vm (sync)

@@ -53,7 +53,7 @@
       "url": "https://raw.github.com/adrai/node-cqrs-eventdenormalizer/master/licence"
     }
   ],
-  "scripts" : { 
-    "test" : "mocha && mocha test/integration/eventDenormalizerTest.js"
+  "scripts" : {
+    "test": "mocha test/unit && mocha test/integration"
   } 
 }
