@@ -7,127 +7,56 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
 
 # Installation
 
-    $ npm install cqrs-eventdenormalizer
+    npm install cqrs-eventdenormalizer
 
 # Usage
 
-## Initialization
-
-	var eventDenormalizer = require('cqrs-eventdenormalizer').eventDenormalizer;
-
-	eventDenormalizer.on('event', function(evt) {
-        // send to clients
-    });
-    eventDenormalizer.initialize({
-        viewBuildersPath: __dirname + '/viewBuilders',
-        extendersPath: __dirname + '/eventExtenders',
-        ignoreRevision: false,
-        disableQueuing: false
-    }, function(err) {
-
-    });
-
-    eventDenormalizer.denormalize({ id: 'msgId', event: 'dummyChanged', payload: { id: '23445' } }, function(err) {
-
-    });
-
-    // if revision checks are enabled
-    eventDenormalizer.on('eventMissing', function(id, aggregateRevision, eventRevision, evt) {
-        // request the appropriate missing events from domain...
-    });
-
-    // to replay
-    eventDenormalizer.replay([] /* array of ordered events */, function(err) {});
-
-    // to replay streamed
-    eventDenormalizer.replayStreamed(function(replay, done) {
-
-        replay(evt1);
-        replay(evt2);
-        replay(evt3);
-
-        done(function(err) { });
-
-    });
-
-## Define ViewBuilders...
-
-    var base = require('cqrs-eventdenormalizer').viewBuilderBase;
-
-    module.exports = base.extend({
-
-        events: [
-            'dummied',
-            {
-                event: 'dummyCreated',
-                method: 'create',
-                viewModelId: 'payload.id'
-            },
-            {
-                event: 'dummyChanged',
-                method: 'update',
-                payload: 'payload'
-            },
-            {
-                event: 'dummyDeleted',
-                method: 'delete'
-            },
-            'dummySpezi',
-            'somethingFlushed',
-            {
-                event: 'versioned'
-            },
-            {
-                event: 'versioned'
-                version: 1
-            }
-        ],
-
-        collectionName: 'dummies',
-
-        dummied: function(data, vm, evt) {
-        },
-  
-        dummySpezi: function(data, vm, evt) {
-          vm.otherValue = 'value';
-        },
-  
-        somethingFlushed: function(data, vm, evt) {
-        },
-
-        versioned: function(data, vm, evt) {
-        },
-
-        versioned_1: function(data, vm, evt) {
-        }
-
-    });
-
-## Settings for a scalable solution
-
-    {
-        viewBuildersPath: __dirname + '/viewBuilders',
-        extendersPath: __dirname + '/eventExtenders',
-        eventQueue: { type: 'inMemory', collectionName: 'events' },
-        repository: {
-            type: 'mongoDb',
-            dbName: 'mydb',
-            timeout: 60 * 1000
-        },
-        revisionGuardStore: {
-            type: 'mongoDb',
-            dbName: 'mydb',
-            collectionName: 'revisionguard',
-            timeout: 60 * 1000//,
-            //revisionStart: 1
-        },
-        ignoreRevision: false,
-        disableQueuing: false,
-        revisionGuardQueueTimeout: 3000,
-        revisionGuardQueueTimeoutMaxLoops: 3
-    }
-
-See [tests](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/test) for detailed information...
+	var denormalizer = require('cqrs-eventdenormalizer')({
+	  // the path to the "working directory"
+	  // can be structured like
+	  // [set 1](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/test/integration/fixture/set1) or
+	  // [set 2](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/test/integration/fixture/set2)
+	  denormalizerPath: '/path/to/my/files',
+	  
+	  // optional, default is 'commandRejected'
+	  // will be used to catch AggregateDestroyedError from cqrs-domain
+	  commandRejectedEventName: 'rejectedCommand',
+	  
+	  // optional, default is 800
+	  // if using in scaled systems, this module tries to catch the concurrency issues and
+	  // retries to handle the event after a timeout between 0 and the defined value
+	  retryOnConcurrencyTimeout: 1000,
+	  
+	  // optional, default is in-memory
+	  // currently supports: mongodb, redis, tingodb, couchdb and inmemory
+	  // hint: [viewmodel](https://github.com/adrai/node-viewmodel#connecting-to-any-repository-mongodb-in-the-example--modewrite)
+	  // hint settings like: [eventstore](https://github.com/adrai/node-eventstore#provide-implementation-for-storage)
+	  repository: {
+	    type: 'mongodb',
+	    host: 'localhost',                          // optional
+	    port: 27017,                                // optional
+	    dbName: 'readmodel',                        // optional
+	    timeout: 10000                              // optional
+	    // username: 'technicalDbUser',                // optional
+	    // password: 'secret'                          // optional
+	  },
+     	  
+	  // optional, default is in-memory
+	  // currently supports: mongodb, redis, tingodb and inmemory
+	  // hint settings like: [eventstore](https://github.com/adrai/node-eventstore#provide-implementation-for-storage)
+	  revisionGuard: {
+	    queueTimeout: 1000,                         // optional, timeout for non-handled events in the internal in-memory queue
+	    queueTimeoutMaxLoops: 3                     // optional, maximal loop count for non-handled event in the internal in-memory queue
+	    
+	    type: 'redis',
+	    host: 'localhost',                          // optional
+	    port: 6379,                                 // optional
+	    db: 0,                                      // optional
+	    prefix: 'readmodel_revision',               // optional
+	    timeout: 10000                              // optional
+	    // password: 'secret'                          // optional
+	  }
+	});
 
 
 [Release notes](https://github.com/adrai/node-cqrs-eventdenormalizer/blob/master/releasenotes.md)
