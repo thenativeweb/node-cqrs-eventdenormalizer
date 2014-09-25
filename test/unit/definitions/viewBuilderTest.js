@@ -556,6 +556,7 @@ describe('viewBuilder definition', function () {
         it('it should work as expected', function (done) {
 
           var vb = api.defineViewBuilder({}, function (evt, vm) {
+            evt.deep = 'duup';
             vm.set(evt.payload);
           });
 
@@ -637,6 +638,8 @@ describe('viewBuilder definition', function () {
             expect(err).not.to.be.ok();
             expect(noti.payload.firstname).to.eql('Jack');
             expect(noti.payload.lastname).to.eql('Joe');
+
+            expect(evt.deep).not.to.be.ok();
             done();
           });
 

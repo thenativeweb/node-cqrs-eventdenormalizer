@@ -1,3 +1,6 @@
+## v1.0.1
+- clone event payload before passing to handle function
+
 ## v1.0.0
 - refactored whole module
 - added possibility to define aggregateId, aggregate and context
