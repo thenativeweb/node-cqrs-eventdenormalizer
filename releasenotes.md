@@ -1,3 +1,6 @@
+## v1.0.2
+- update viewmodel
+
 ## v1.0.1
 - clone event payload before passing to handle function
 
