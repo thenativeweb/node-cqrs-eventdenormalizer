@@ -1,3 +1,6 @@
+## v1.0.3
+- handle crappy events with an error
+
 ## v1.0.2
 - update viewmodel
 
