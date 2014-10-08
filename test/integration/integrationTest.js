@@ -44,6 +44,87 @@ describe('integration', function () {
       denorm.init(done);
     });
 
+    describe('handling an event that is not a json object', function () {
+
+      it('it should not publish any notification and it should callback with an error and without event', function (done) {
+
+        var publishedEvents = [];
+        denorm.onEvent(function (evt) {
+          publishedEvents.push(evt);
+        });
+
+        var publishedNotis = [];
+        denorm.onNotification(function (noti) {
+          publishedNotis.push(noti);
+        });
+
+        denorm.handle('crappy', function (errs, e, notis) {
+          expect(errs).to.be.ok();
+          expect(errs.length).to.eql(1);
+          expect(errs[0].message).to.match(/valid/i);
+          expect(e).not.to.be.ok();
+          expect(notis).not.to.be.ok();
+
+          expect(publishedEvents.length).to.eql(0);
+          expect(publishedNotis.length).to.eql(0);
+
+          done();
+        });
+
+      });
+
+    });
+
+    describe('handling an event that has no name', function () {
+
+      it('it should not publish any notification and it should callback with an error and without event', function (done) {
+
+        var publishedEvents = [];
+        denorm.onEvent(function (evt) {
+          publishedEvents.push(evt);
+        });
+
+        var publishedNotis = [];
+        denorm.onNotification(function (noti) {
+          publishedNotis.push(noti);
+        });
+
+        var evt = {
+          correlationId: 'cmdId',
+          id: 'evtId',
+//          name: 'evtName',
+          aggregate: {
+            id: 'aggregateId',
+            name: 'aggregate'
+          },
+          context: {
+            name: 'context'
+          },
+          payload: 'payload',
+          revision: 1,
+          version: 0,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        denorm.handle(evt, function (errs, e, notis) {
+          expect(errs).to.be.ok();
+          expect(errs.length).to.eql(1);
+          expect(errs[0].message).to.match(/valid/i);
+          expect(e).not.to.be.ok();
+          expect(notis).not.to.be.ok();
+
+          expect(publishedEvents.length).to.eql(0);
+          expect(publishedNotis.length).to.eql(0);
+
+          done();
+        });
+
+      });
+
+    });
+    
     describe('handling an event that will not be handled by any viewBuilder or any specific eventExtender', function () {
 
       it('it should not publish any notification and it should callback without an error but with same event', function (done) {
