@@ -1,4 +1,4 @@
-## v1.0.3
+## v1.0.4
 - handle crappy events with an error
 
 ## v1.0.2
