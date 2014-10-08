@@ -938,6 +938,10 @@ describe('denormalizer', function () {
 
         it('it should work as expected', function (done) {
 
+          denorm.defineEvent({
+            name: 'my'
+          });
+
           var cmdRejCalled = false;
           denorm.isCommandRejected = function (evt, clb) {
             expect(evt.my).to.eql('evt');
@@ -988,6 +992,7 @@ describe('denormalizer', function () {
         it('it should work as expected', function (done) {
 
           denorm.defineEvent({
+            name: 'my',
             aggregate: 'aggregate.name',
             aggregateId: 'aggregate.id',
             revision: 'aggregate.revision'
