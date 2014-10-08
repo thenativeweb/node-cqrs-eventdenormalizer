@@ -479,6 +479,11 @@ or when catching some events:
 	denormalizer.onEventMissing(function (info, evt) {
 	  
 	  // grab the missing events, depending from info values...
+	  // info.aggregateId
+	  // info.aggregateRevision
+	  // info.aggregate
+	  // info.context
+	  // info.guardRevision
 	  // and call replay...
 	  denormalizer.replay([/* ordered array of events */], function (err) {
 	    if (err) { console.log(err); }
