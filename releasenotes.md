@@ -1,8 +1,11 @@
+## v1.0.5
+- update viewmodel dependency
+
 ## v1.0.4
 - handle crappy events with an error
 
 ## v1.0.2
-- update viewmodel
+- update viewmodel dependency
 
 ## v1.0.1
 - clone event payload before passing to handle function
