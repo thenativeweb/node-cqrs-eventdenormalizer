@@ -1,4 +1,4 @@
-## v1.0.7
+## v1.0.8
 - fixed replay handling
 
 ## v1.0.6

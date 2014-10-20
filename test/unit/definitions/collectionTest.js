@@ -507,6 +507,7 @@ describe('collection definition', function () {
                 
                 col.repository = orgRepo;
                 col.isReplaying = false;
+                col.replayingVms = {};
                 done();
               });
 
@@ -629,6 +630,7 @@ describe('collection definition', function () {
 
               col.repository = orgRepo;
               col.isReplaying = false;
+              col.replayingVms = {};
               done();
             });
 
