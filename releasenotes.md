@@ -1,3 +1,6 @@
+## v1.0.7
+- fixed replay handling
+
 ## v1.0.6
 - update viewmodel dependency
 

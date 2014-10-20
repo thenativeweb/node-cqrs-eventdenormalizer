@@ -126,34 +126,41 @@ describe('replayHandler', function () {
             var called1 = false;
             var called2 = false;
             var called3 = false;
+            
+            var evts1 = [];
+            var evts2 = [];
+            var evts3 = [];
+            
+            var saveRvmsCalled1 = false;
+            var saveRvmsCalled2 = false;
+            var saveRvmsCalled3 = false;
 
             disp = new EventDispatcher({
               getViewBuilders: function (query) {
                 if (query.aggregate === 'agg1') {
                   return [{
+                    collection: { workerId: '11', saveReplayingVms: function (clb) {saveRvmsCalled1 = true; clb(null);} },
                     workerId: '1',
-                    replay: function (evts, callback) {
-                      expect(evts[0]).to.eql(evt1);
-                      expect(evts[1]).to.eql(evt2);
-                      expect(evts[2]).to.eql(evt4);
+                    denormalize: function (evt, callback) {
+                      evts1.push(evt);
                       called1 = true;
                       callback(null);
                     }
                   }];
                 } else if (query.aggregate === 'agg2') {
                   return [{
+                    collection: { workerId: '22', saveReplayingVms: function (clb) {saveRvmsCalled2 = true; clb(null);} },
                     workerId: '2',
-                    replay: function (evts, callback) {
-                      expect(evts[0]).to.eql(evt3);
-                      expect(evts[1]).to.eql(evt5);
+                    denormalize: function (evt, callback) {
+                      evts2.push(evt);
                       called2 = true;
                       callback(null);
                     }
                   },{
+                    collection: { workerId: '11', saveReplayingVms: function (clb) {saveRvmsCalled3 = true; clb(null);} },
                     workerId: '3',
-                    replay: function (evts, callback) {
-                      expect(evts[0]).to.eql(evt3);
-                      expect(evts[1]).to.eql(evt5);
+                    denormalize: function (evt, callback) {
+                      evts3.push(evt);
                       called3 = true;
                       callback(null);
                     }
@@ -169,6 +176,18 @@ describe('replayHandler', function () {
               expect(called1).to.eql(true);
               expect(called2).to.eql(true);
               expect(called3).to.eql(true);
+
+              expect(evts1[0]).to.eql(evt1);
+              expect(evts1[1]).to.eql(evt2);
+              expect(evts1[2]).to.eql(evt4);
+              expect(evts2[0]).to.eql(evt3);
+              expect(evts2[1]).to.eql(evt5);
+              expect(evts3[0]).to.eql(evt3);
+              expect(evts3[1]).to.eql(evt5);
+              
+              expect(saveRvmsCalled1).to.eql(true);
+              expect(saveRvmsCalled2).to.eql(true);
+              expect(saveRvmsCalled3).to.eql(false);
 
               store.get('aggId1', function (err, rev) {
                 expect(err).not.to.be.ok();
@@ -197,33 +216,40 @@ describe('replayHandler', function () {
             var called2 = false;
             var called3 = false;
 
+            var evts1 = [];
+            var evts2 = [];
+            var evts3 = [];
+
+            var saveRvmsCalled1 = false;
+            var saveRvmsCalled2 = false;
+            var saveRvmsCalled3 = false;
+
             disp = new EventDispatcher({
               getViewBuilders: function (query) {
                 if (query.aggregate === 'agg1') {
                   return [{
+                    collection: { workerId: '11', saveReplayingVms: function (clb) {saveRvmsCalled1 = true; clb(null);} },
                     workerId: '1',
-                    replay: function (evts, callback) {
-                      expect(evts[0]).to.eql(evt1);
-                      expect(evts[1]).to.eql(evt2);
-                      expect(evts[2]).to.eql(evt4);
+                    denormalize: function (evt, callback) {
+                      evts1.push(evt);
                       called1 = true;
                       callback(null);
                     }
                   }];
                 } else if (query.aggregate === 'agg2') {
                   return [{
+                    collection: { workerId: '22', saveReplayingVms: function (clb) {saveRvmsCalled2 = true; clb(null);} },
                     workerId: '2',
-                    replay: function (evts, callback) {
-                      expect(evts[0]).to.eql(evt3);
-                      expect(evts[1]).to.eql(evt5);
+                    denormalize: function (evt, callback) {
+                      evts2.push(evt);
                       called2 = true;
                       callback(null);
                     }
                   },{
+                    collection: { workerId: '11', saveReplayingVms: function (clb) {saveRvmsCalled3 = true; clb(null);} },
                     workerId: '3',
-                    replay: function (evts, callback) {
-                      expect(evts[0]).to.eql(evt3);
-                      expect(evts[1]).to.eql(evt5);
+                    denormalize: function (evt, callback) {
+                      evts3.push(evt);
                       called3 = true;
                       callback(null);
                     }
@@ -239,6 +265,18 @@ describe('replayHandler', function () {
               expect(called1).to.eql(true);
               expect(called2).to.eql(true);
               expect(called3).to.eql(true);
+
+              expect(evts1[0]).to.eql(evt1);
+              expect(evts1[1]).to.eql(evt2);
+              expect(evts1[2]).to.eql(evt4);
+              expect(evts2[0]).to.eql(evt3);
+              expect(evts2[1]).to.eql(evt5);
+              expect(evts3[0]).to.eql(evt3);
+              expect(evts3[1]).to.eql(evt5);
+
+              expect(saveRvmsCalled1).to.eql(true);
+              expect(saveRvmsCalled2).to.eql(true);
+              expect(saveRvmsCalled3).to.eql(false);
 
               store.get('aggId1', function (err, rev) {
                 expect(err).not.to.be.ok();
@@ -265,47 +303,46 @@ describe('replayHandler', function () {
 
           it('it should work as expected', function (done) {
 
-            var calledRepl1 = [];
-            var calledDone1 = false;
-            var calledRepl2 = [];
-            var calledDone2 = false;
-            var calledRepl3 = [];
-            var calledDone3 = false;
+            var called1 = false;
+            var called2 = false;
+            var called3 = false;
+
+            var evts1 = [];
+            var evts2 = [];
+            var evts3 = [];
+
+            var saveRvmsCalled1 = false;
+            var saveRvmsCalled2 = false;
+            var saveRvmsCalled3 = false;
 
             disp = new EventDispatcher({
               getViewBuilders: function (query) {
                 if (query.aggregate === 'agg1') {
                   return [{
+                    collection: { workerId: '11', saveReplayingVms: function (clb) {saveRvmsCalled1 = true; clb(null);} },
                     workerId: '1',
-                    replayStreamed: function (fn) {
-                      fn(function (evt) {
-                        calledRepl1.push(evt);
-                      }, function (clb) {
-                        calledDone1 = true;
-                        clb(null);
-                      });
+                    denormalize: function (evt, callback) {
+                      evts1.push(evt);
+                      called1 = true;
+                      callback(null);
                     }
                   }];
                 } else if (query.aggregate === 'agg2') {
                   return [{
+                    collection: { workerId: '22', saveReplayingVms: function (clb) {saveRvmsCalled2 = true; clb(null);} },
                     workerId: '2',
-                    replayStreamed: function (fn) {
-                      fn(function (evt) {
-                        calledRepl2.push(evt);
-                      }, function (clb) {
-                        calledDone2 = true;
-                        clb(null);
-                      });
+                    denormalize: function (evt, callback) {
+                      evts2.push(evt);
+                      called2 = true;
+                      callback(null);
                     }
                   },{
+                    collection: { workerId: '11', saveReplayingVms: function (clb) {saveRvmsCalled3 = true; clb(null);} },
                     workerId: '3',
-                    replayStreamed: function (fn) {
-                      fn(function (evt) {
-                        calledRepl3.push(evt);
-                      }, function (clb) {
-                        calledDone3 = true;
-                        clb(null);
-                      });
+                    denormalize: function (evt, callback) {
+                      evts3.push(evt);
+                      called3 = true;
+                      callback(null);
                     }
                   }];
                 }
@@ -322,19 +359,21 @@ describe('replayHandler', function () {
 
               finished(function (err) {
                 expect(err).not.to.be.ok();
-                expect(calledDone1).to.eql(true);
-                expect(calledRepl1.length).to.eql(3);
-                expect(calledRepl1[0]).to.eql(evt1);
-                expect(calledRepl1[1]).to.eql(evt2);
-                expect(calledRepl1[2]).to.eql(evt4);
-                expect(calledDone2).to.eql(true);
-                expect(calledRepl2.length).to.eql(2);
-                expect(calledRepl2[0]).to.eql(evt3);
-                expect(calledRepl2[1]).to.eql(evt5);
-                expect(calledDone3).to.eql(true);
-                expect(calledRepl3.length).to.eql(2);
-                expect(calledRepl3[0]).to.eql(evt3);
-                expect(calledRepl3[1]).to.eql(evt5);
+                expect(called1).to.eql(true);
+                expect(called2).to.eql(true);
+                expect(called3).to.eql(true);
+
+                expect(evts1[0]).to.eql(evt1);
+                expect(evts1[1]).to.eql(evt2);
+                expect(evts1[2]).to.eql(evt4);
+                expect(evts2[0]).to.eql(evt3);
+                expect(evts2[1]).to.eql(evt5);
+                expect(evts3[0]).to.eql(evt3);
+                expect(evts3[1]).to.eql(evt5);
+
+                expect(saveRvmsCalled1).to.eql(true);
+                expect(saveRvmsCalled2).to.eql(true);
+                expect(saveRvmsCalled3).to.eql(false);
 
                 store.get('aggId1', function (err, rev) {
                   expect(err).not.to.be.ok();
@@ -361,47 +400,46 @@ describe('replayHandler', function () {
 
             delete def.revision;
 
-            var calledRepl1 = [];
-            var calledDone1 = false;
-            var calledRepl2 = [];
-            var calledDone2 = false;
-            var calledRepl3 = [];
-            var calledDone3 = false;
+            var called1 = false;
+            var called2 = false;
+            var called3 = false;
+
+            var evts1 = [];
+            var evts2 = [];
+            var evts3 = [];
+
+            var saveRvmsCalled1 = false;
+            var saveRvmsCalled2 = false;
+            var saveRvmsCalled3 = false;
 
             disp = new EventDispatcher({
               getViewBuilders: function (query) {
                 if (query.aggregate === 'agg1') {
                   return [{
+                    collection: { workerId: '11', saveReplayingVms: function (clb) {saveRvmsCalled1 = true; clb(null);} },
                     workerId: '1',
-                    replayStreamed: function (fn) {
-                      fn(function (evt) {
-                        calledRepl1.push(evt);
-                      }, function (clb) {
-                        calledDone1 = true;
-                        clb(null);
-                      });
+                    denormalize: function (evt, callback) {
+                      evts1.push(evt);
+                      called1 = true;
+                      callback(null);
                     }
                   }];
                 } else if (query.aggregate === 'agg2') {
                   return [{
+                    collection: { workerId: '22', saveReplayingVms: function (clb) {saveRvmsCalled2 = true; clb(null);} },
                     workerId: '2',
-                    replayStreamed: function (fn) {
-                      fn(function (evt) {
-                        calledRepl2.push(evt);
-                      }, function (clb) {
-                        calledDone2 = true;
-                        clb(null);
-                      });
+                    denormalize: function (evt, callback) {
+                      evts2.push(evt);
+                      called2 = true;
+                      callback(null);
                     }
                   },{
+                    collection: { workerId: '11', saveReplayingVms: function (clb) {saveRvmsCalled3 = true; clb(null);} },
                     workerId: '3',
-                    replayStreamed: function (fn) {
-                      fn(function (evt) {
-                        calledRepl3.push(evt);
-                      }, function (clb) {
-                        calledDone3 = true;
-                        clb(null);
-                      });
+                    denormalize: function (evt, callback) {
+                      evts3.push(evt);
+                      called3 = true;
+                      callback(null);
                     }
                   }];
                 }
@@ -418,19 +456,21 @@ describe('replayHandler', function () {
 
               finished(function (err) {
                 expect(err).not.to.be.ok();
-                expect(calledDone1).to.eql(true);
-                expect(calledRepl1.length).to.eql(3);
-                expect(calledRepl1[0]).to.eql(evt1);
-                expect(calledRepl1[1]).to.eql(evt2);
-                expect(calledRepl1[2]).to.eql(evt4);
-                expect(calledDone2).to.eql(true);
-                expect(calledRepl2.length).to.eql(2);
-                expect(calledRepl2[0]).to.eql(evt3);
-                expect(calledRepl2[1]).to.eql(evt5);
-                expect(calledDone3).to.eql(true);
-                expect(calledRepl3.length).to.eql(2);
-                expect(calledRepl3[0]).to.eql(evt3);
-                expect(calledRepl3[1]).to.eql(evt5);
+                expect(called1).to.eql(true);
+                expect(called2).to.eql(true);
+                expect(called3).to.eql(true);
+
+                expect(evts1[0]).to.eql(evt1);
+                expect(evts1[1]).to.eql(evt2);
+                expect(evts1[2]).to.eql(evt4);
+                expect(evts2[0]).to.eql(evt3);
+                expect(evts2[1]).to.eql(evt5);
+                expect(evts3[0]).to.eql(evt3);
+                expect(evts3[1]).to.eql(evt5);
+
+                expect(saveRvmsCalled1).to.eql(true);
+                expect(saveRvmsCalled2).to.eql(true);
+                expect(saveRvmsCalled3).to.eql(false);
 
                 store.get('aggId1', function (err, rev) {
                   expect(err).not.to.be.ok();

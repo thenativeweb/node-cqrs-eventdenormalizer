@@ -41,7 +41,7 @@ describe('collection definition', function () {
       expect(col.saveViewModel).to.be.a('function');
       expect(col.loadViewModel).to.be.a('function');
       expect(col.findViewModels).to.be.a('function');
-      expect(col.findViewModels).to.be.a('function');
+      expect(col.saveReplayingVms).to.be.a('function');
 
     });
 
@@ -429,6 +429,209 @@ describe('collection definition', function () {
             expect(err).not.to.be.ok();
             expect(id).to.be.a('string');
             done();
+          });
+
+        });
+
+      });
+
+      describe('calling loadViewModel', function () {
+
+        describe('in normal mode', function () {
+
+          it('it should work as expected', function (done) {
+
+            var orgRepo = col.repository;
+            col.repository = {
+              get: function (id, clb) {
+                clb(null, {theId: id, has: function () { return true }});
+              }
+            };
+
+            col.loadViewModel('423', function (err, vm) {
+              expect(err).not.to.be.ok();
+              expect(vm.theId).to.eql('423');
+
+              col.repository = orgRepo;
+              col.isReplaying = false;
+              done();
+            });
+
+          });
+
+        });
+
+        describe('in replay mode', function () {
+
+          describe('not having a cached vm', function () {
+
+            it('it should work as expected', function (done) {
+
+              var orgRepo = col.repository;
+              col.repository = {
+                get: function (id, clb) {
+                  clb(null, {theId: id, has: function () { return true }});
+                }
+              };
+              col.isReplaying = true;
+//              col.replayingVms['423'] = { id: '423', cached: true };
+              col.loadViewModel('423', function (err, vm) {
+                expect(err).not.to.be.ok();
+                expect(vm.theId).to.eql('423');
+
+                col.repository = orgRepo;
+                col.isReplaying = false;
+                done();
+              });
+
+            });
+
+          });
+
+          describe('having a cached vm', function () {
+
+            it('it should work as expected', function (done) {
+
+              var orgRepo = col.repository;
+              col.repository = {
+                get: function (id, clb) {
+                  clb(null, {theId: id, has: function () { return true }});
+                }
+              };
+              col.isReplaying = true;
+              col.replayingVms['423'] = { id: '423', cached: true };
+              col.loadViewModel('423', function (err, vm) {
+                expect(err).not.to.be.ok();
+                expect(vm.id).to.eql('423');
+                expect(vm.cached).to.eql(true);
+                
+                col.repository = orgRepo;
+                col.isReplaying = false;
+                done();
+              });
+
+            });
+
+          });
+
+        });
+
+      });
+
+      describe('calling saveViewModel', function () {
+
+        describe('in normal mode', function () {
+
+          it('it should work as expected', function (done) {
+
+            var orgRepo = col.repository;
+            col.repository = {
+              commit: function (vm, clb) {
+                expect(vm.id).to.eql('423');
+                called = true;
+                clb(null);
+              }
+            };
+            
+            var called = false;
+            col.saveViewModel({ id: '423' }, function (err) {
+              expect(err).not.to.be.ok();
+              expect(called).to.eql(true);
+
+              col.repository = orgRepo;
+              col.isReplaying = false;
+              done();
+            });
+
+          });
+
+        });
+
+        describe('in replay mode', function () {
+
+          it('it should work as expected', function (done) {
+
+            var orgRepo = col.repository;
+            col.repository = {
+              commit: function (vm, clb) {
+                expect(vm.id).to.eql('423');
+                called = true;
+                clb(null);
+              }
+            };
+
+            var called = false;
+            col.isReplaying = true;
+            col.saveViewModel({ id: '423' }, function (err) {
+              expect(err).not.to.be.ok();
+              expect(called).to.eql(false);
+              expect(col.replayingVms['423'].id).to.eql('423');
+
+              col.repository = orgRepo;
+              col.isReplaying = false;
+              done();
+            });
+
+          });
+
+        });
+
+      });
+
+      describe('calling saveReplayingVms', function () {
+
+        describe('in normal mode', function () {
+
+          it('it callback with an error', function (done) {
+
+            var orgRepo = col.repository;
+            col.repository = {
+              commit: function (vm, clb) {
+                called = true;
+                clb(null);
+              }
+            };
+
+            var called = false;
+            col.saveReplayingVms(function (err) {
+              expect(err).to.be.ok();
+              expect(err.message).to.match(/replay/);
+              expect(called).to.eql(false);
+
+              col.repository = orgRepo;
+              col.isReplaying = false;
+              done();
+            });
+
+          });
+
+        });
+
+        describe('in replay mode', function () {
+
+          it('it should work as expected', function (done) {
+
+            var orgRepo = col.repository;
+            col.repository = {
+              commit: function (vm, clb) {
+                expect(vm.id).to.eql('423');
+                called = true;
+                clb(null);
+              }
+            };
+
+            var called = false;
+            col.isReplaying = true;
+            col.replayingVms['423'] = { id: '423', cached: true };
+            col.saveReplayingVms(function (err) {
+              expect(err).not.to.be.ok();
+              expect(called).to.eql(true);
+
+              col.repository = orgRepo;
+              col.isReplaying = false;
+              done();
+            });
+
           });
 
         });

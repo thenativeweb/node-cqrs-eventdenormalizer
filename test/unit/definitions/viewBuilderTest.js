@@ -79,8 +79,6 @@ describe('viewBuilder definition', function () {
           expect(vb.extractId).to.be.a('function');
           expect(vb.generateNotification).to.be.a('function');
           expect(vb.denormalize).to.be.a('function');
-          expect(vb.replay).to.be.a('function');
-          expect(vb.replayStreamed).to.be.a('function');
 
         });
 
@@ -116,8 +114,6 @@ describe('viewBuilder definition', function () {
           expect(vb.extractId).to.be.a('function');
           expect(vb.generateNotification).to.be.a('function');
           expect(vb.denormalize).to.be.a('function');
-          expect(vb.replay).to.be.a('function');
-          expect(vb.replayStreamed).to.be.a('function');
 
         });
 
@@ -200,66 +196,16 @@ describe('viewBuilder definition', function () {
         vb = api.defineViewBuilder(null, 'update');
       });
 
-      describe('in normal mode', function () {
+      it('it should work as expected', function (done) {
 
-        it('it should work as expected', function (done) {
-
-          var col = { name: 'dummy', loadViewModel: function (id, callback) {
-            callback(null, { id: id });
-          }};
-          vb.useCollection(col);
-          vb.loadViewModel('423', function (err, vm) {
-            expect(err).not.to.be.ok();
-            expect(vm.id).to.eql('423');
-            done();
-          });
-
-        });
-        
-      });
-
-      describe('in replay mode', function () {
-
-        describe('not having a cached vm', function () {
-
-          it('it should work as expected', function (done) {
-
-            var col = { name: 'dummy', loadViewModel: function (id, callback) {
-              callback(null, { id: id, cached: false });
-            }};
-            vb.useCollection(col);
-            vb.isReplaying = true;
-//            vb.replayingVms['423'] = { id: '423', cached: true };
-            vb.loadViewModel('423', function (err, vm) {
-              expect(err).not.to.be.ok();
-              expect(vm.id).to.eql('423');
-              expect(vm.cached).to.eql(false);
-              done();
-            });
-
-          });
-
-        });
-
-        describe('having a cached vm', function () {
-
-          it('it should work as expected', function (done) {
-
-            var col = { name: 'dummy', loadViewModel: function (id, callback) {
-              callback(null, { id: id, cached: false });
-            }};
-            vb.useCollection(col);
-            vb.isReplaying = true;
-            vb.replayingVms['423'] = { id: '423', cached: true };
-            vb.loadViewModel('423', function (err, vm) {
-              expect(err).not.to.be.ok();
-              expect(vm.id).to.eql('423');
-              expect(vm.cached).to.eql(true);
-              done();
-            });
-
-          });
-          
+        var col = { name: 'dummy', loadViewModel: function (id, callback) {
+          callback(null, { id: id });
+        }};
+        vb.useCollection(col);
+        vb.loadViewModel('423', function (err, vm) {
+          expect(err).not.to.be.ok();
+          expect(vm.id).to.eql('423');
+          done();
         });
 
       });
@@ -274,50 +220,19 @@ describe('viewBuilder definition', function () {
         vb = api.defineViewBuilder(null, 'update');
       });
 
-      describe('in normal mode', function () {
+      it('it should work as expected', function (done) {
 
-        it('it should work as expected', function (done) {
-
-          var called = false;
-          var col = { name: 'dummy', saveViewModel: function (vm, callback) {
-            expect(vm.id).to.eql('423');
-            called = true;
-            callback(null);
-          }};
-          vb.useCollection(col);
-          vb.saveViewModel({ id: '423' }, function (err) {
-            expect(err).not.to.be.ok();
-            expect(called).to.eql(true);
-            done();
-          });
-
-        });
-
-      });
-
-      describe('in replay mode', function () {
-
-        describe('not having a cached vm', function () {
-
-          it('it should work as expected', function (done) {
-
-            var called = false;
-            var col = { name: 'dummy', saveViewModel: function (vm, callback) {
-              expect(vm.id).to.eql('423');
-              called = true;
-              callback(null);
-            }};
-            vb.useCollection(col);
-            vb.isReplaying = true;
-            vb.saveViewModel({ id: '423' }, function (err) {
-              expect(err).not.to.be.ok();
-              expect(called).to.eql(false);
-              expect(vb.replayingVms['423'].id).to.eql('423');
-              done();
-            });
-
-          });
-
+        var called = false;
+        var col = { name: 'dummy', saveViewModel: function (vm, callback) {
+          expect(vm.id).to.eql('423');
+          called = true;
+          callback(null);
+        }};
+        vb.useCollection(col);
+        vb.saveViewModel({ id: '423' }, function (err) {
+          expect(err).not.to.be.ok();
+          expect(called).to.eql(true);
+          done();
         });
 
       });
@@ -647,274 +562,6 @@ describe('viewBuilder definition', function () {
 
       });
       
-    });
-    
-    describe('replaying', function () {
-
-      it('it should work as expected', function (done) {
-
-        var vb = api.defineViewBuilder({}, function (evt, vm) {
-          vm.set(evt.payload);
-        });
-
-        vb.defineEvent({
-          correlationId: 'correlationId',
-          id: 'id',
-          name: 'name',
-          aggregateId: 'aggregate.id',
-          context: 'context.name',
-          aggregate: 'aggregate.name',
-          payload: 'payload',
-          revision: 'revision',
-          version: 'version',
-          meta: 'meta'
-        });
-
-        vb.defineNotification({
-          correlationId: 'correlationId',
-          id: 'id',
-          action: 'name',
-          collection: 'collection',
-          payload: 'payload',
-          context: 'meta.context.name',
-          aggregate: 'meta.aggregate.name',
-          aggregateId: 'meta.aggregate.id',
-          revision: 'meta.aggregate.revision',
-          eventId: 'meta.event.id',
-          event: 'meta.event.name',
-          meta: 'meta'
-        });
-
-        var vm = {
-          actionOnCommit: 'update',
-          set: function (data) {
-            this.attr = data;
-          },
-          toJSON: function () {
-            return this.attr;
-          }
-        };
-        
-        var loadCalled = 0;
-        var saveCalled = 0;
-
-        var col = { name: 'dummy',
-          getNewId: function (callback) { callback(null, 'newId'); },
-          loadViewModel: function (id, callback) {
-            expect(vb.isReplaying).to.eql(true);
-            loadCalled++;
-            vm.id = id;
-            callback(null, vm);
-          },
-          saveViewModel: function (vm, callback) {
-            expect(vb.isReplaying).to.eql(true);
-            saveCalled++;
-            expect(vm.attr.firstname).to.eql('Jack');
-            expect(vm.attr.lastname).to.eql('Joey');
-            expect(vm.attr.title).to.eql('Dr.');
-            callback(null);
-          }
-        };
-        vb.useCollection(col);
-
-        var evt1 = {
-          correlationId: 'cmdId',
-          id: 'evtId',
-          name: 'enteredNewPerson',
-          aggregate: {
-            id: 'aggId',
-            name: 'person'
-          },
-          context: {
-            name: 'hr'
-          },
-          payload: {
-            firstname: 'Jack',
-            lastname: 'Joe'
-          },
-          revision: 1,
-          version: 4,
-          meta: {
-            userId: 'usrId'
-          }
-        };
-
-        var evt2 = {
-          correlationId: 'cmdId2',
-          id: 'evtId2',
-          name: 'updatedPerson',
-          aggregate: {
-            id: 'aggId',
-            name: 'person'
-          },
-          context: {
-            name: 'hr'
-          },
-          payload: {
-            firstname: 'Jack',
-            lastname: 'Joey',
-            title: 'Dr.'
-          },
-          revision: 2,
-          version: 4,
-          meta: {
-            userId: 'usrId'
-          }
-        };
-        
-        expect(vb.isReplaying).to.eql(false);
-
-        vb.replay([evt1, evt2], function (err) {
-          expect(err).not.to.be.ok();
-
-          expect(vb.isReplaying).to.eql(false);
-          
-          expect(vm.attr.firstname).to.eql('Jack');
-          expect(vm.attr.lastname).to.eql('Joey');
-          expect(vm.attr.title).to.eql('Dr.');
-          expect(loadCalled).to.eql(1);
-          expect(saveCalled).to.eql(1);
-          done();
-        });
-
-      });
-      
-    });
-
-    describe('replaying streamed', function () {
-
-      it('it should work as expected', function (done) {
-
-        var vb = api.defineViewBuilder({}, function (evt, vm) {
-          vm.set(evt.payload);
-        });
-
-        vb.defineEvent({
-          correlationId: 'correlationId',
-          id: 'id',
-          name: 'name',
-          aggregateId: 'aggregate.id',
-          context: 'context.name',
-          aggregate: 'aggregate.name',
-          payload: 'payload',
-          revision: 'revision',
-          version: 'version',
-          meta: 'meta'
-        });
-
-        vb.defineNotification({
-          correlationId: 'correlationId',
-          id: 'id',
-          action: 'name',
-          collection: 'collection',
-          payload: 'payload',
-          context: 'meta.context.name',
-          aggregate: 'meta.aggregate.name',
-          aggregateId: 'meta.aggregate.id',
-          revision: 'meta.aggregate.revision',
-          eventId: 'meta.event.id',
-          event: 'meta.event.name',
-          meta: 'meta'
-        });
-
-        var vm = {
-          actionOnCommit: 'update',
-          set: function (data) {
-            this.attr = data;
-          },
-          toJSON: function () {
-            return this.attr;
-          }
-        };
-
-        var loadCalled = 0;
-        var saveCalled = 0;
-
-        var col = { name: 'dummy',
-          getNewId: function (callback) { callback(null, 'newId'); },
-          loadViewModel: function (id, callback) {
-            expect(vb.isReplaying).to.eql(true);
-            loadCalled++;
-            vm.id = id;
-            callback(null, vm);
-          },
-          saveViewModel: function (vm, callback) {
-            expect(vb.isReplaying).to.eql(true);
-            saveCalled++;
-            expect(vm.attr.firstname).to.eql('Jack');
-            expect(vm.attr.lastname).to.eql('Joey');
-            expect(vm.attr.title).to.eql('Dr.');
-            callback(null);
-          }
-        };
-        vb.useCollection(col);
-
-        var evt1 = {
-          correlationId: 'cmdId',
-          id: 'evtId',
-          name: 'enteredNewPerson',
-          aggregate: {
-            id: 'aggId',
-            name: 'person'
-          },
-          context: {
-            name: 'hr'
-          },
-          payload: {
-            firstname: 'Jack',
-            lastname: 'Joe'
-          },
-          revision: 1,
-          version: 4,
-          meta: {
-            userId: 'usrId'
-          }
-        };
-
-        var evt2 = {
-          correlationId: 'cmdId2',
-          id: 'evtId2',
-          name: 'updatedPerson',
-          aggregate: {
-            id: 'aggId',
-            name: 'person'
-          },
-          context: {
-            name: 'hr'
-          },
-          payload: {
-            firstname: 'Jack',
-            lastname: 'Joey',
-            title: 'Dr.'
-          },
-          revision: 2,
-          version: 4,
-          meta: {
-            userId: 'usrId'
-          }
-        };
-
-        expect(vb.isReplaying).to.eql(false);
-        
-        vb.replayStreamed(function (replay, rDone) {
-          replay(evt1);
-          replay(evt2);
-          rDone(function (err) {
-            expect(err).not.to.be.ok();
-
-            expect(vb.isReplaying).to.eql(false);
-
-            expect(vm.attr.firstname).to.eql('Jack');
-            expect(vm.attr.lastname).to.eql('Joey');
-            expect(vm.attr.title).to.eql('Dr.');
-            expect(loadCalled).to.eql(1);
-            expect(saveCalled).to.eql(1);
-            done();
-          });
-        });
-
-      });
-
     });
   
   });
