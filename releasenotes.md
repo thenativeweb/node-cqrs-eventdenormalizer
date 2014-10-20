@@ -20,7 +20,7 @@
 - added a lot of tests
 - stabilized everything
 - optimized performance
-- added notificatio feature
+- added notification feature
 - IMPORTANT: changed API!!!
 
 ## v0.4.1
