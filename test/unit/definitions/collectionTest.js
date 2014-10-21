@@ -408,11 +408,11 @@ describe('collection definition', function () {
       });
 
     });
-    
+
     describe('using a repository', function () {
-      
+
       var col;
-      
+
       before(function (done) {
         viewmodel.write(function (err, repository) {
           col = api.defineCollection({ name: 'dummy' }, { my: { def: 'data' } });
@@ -504,10 +504,38 @@ describe('collection definition', function () {
                 expect(err).not.to.be.ok();
                 expect(vm.id).to.eql('423');
                 expect(vm.cached).to.eql(true);
-                
+
                 col.repository = orgRepo;
                 col.isReplaying = false;
                 col.replayingVms = {};
+                done();
+              });
+
+            });
+
+          });
+
+          describe('having a cached deleted vm', function () {
+
+            it('it should work as expected', function (done) {
+
+              var orgRepo = col.repository;
+              col.repository = {
+                get: function (id, clb) {
+                  clb(null, {theId: id, has: function () { return true }});
+                }
+              };
+              col.isReplaying = true;
+              col.replayingVmsToDelete['423'] = { id: '423', cached: true };
+              col.loadViewModel('423', function (err, vm) {
+                expect(err).not.to.be.ok();
+                expect(vm.id).to.eql('423');
+                expect(vm.cached).not.to.eql(true);
+
+                col.repository = orgRepo;
+                col.isReplaying = false;
+                col.replayingVms = {};
+                col.replayingVmsToDelete = {};
                 done();
               });
 
@@ -533,7 +561,7 @@ describe('collection definition', function () {
                 clb(null);
               }
             };
-            
+
             var called = false;
             col.saveViewModel({ id: '423' }, function (err) {
               expect(err).not.to.be.ok();
@@ -575,6 +603,37 @@ describe('collection definition', function () {
 
           });
 
+          describe('having a deleted vm', function () {
+
+            it('it should work as expected', function (done) {
+
+              var orgRepo = col.repository;
+              col.repository = {
+                commit: function (vm, clb) {
+                  expect(vm.id).to.eql('423');
+                  called = true;
+                  clb(null);
+                }
+              };
+
+              var called = false;
+              col.isReplaying = true;
+              col.saveViewModel({ id: '423', actionOnCommit: 'delete' }, function (err) {
+                expect(err).not.to.be.ok();
+                expect(called).to.eql(false);
+                expect(col.replayingVms['423']).not.to.be.ok();
+                expect(col.replayingVmsToDelete['423'].id).to.eql('423');
+
+                col.repository = orgRepo;
+                col.isReplaying = false;
+                col.replayingVmsToDelete = {};
+                done();
+              });
+
+            });
+
+          });
+
         });
 
       });
@@ -612,25 +671,29 @@ describe('collection definition', function () {
 
           it('it should work as expected', function (done) {
 
+            var commitCalled = [];
+
             var orgRepo = col.repository;
             col.repository = {
               commit: function (vm, clb) {
-                expect(vm.id).to.eql('423');
-                called = true;
+                commitCalled.push(vm);
                 clb(null);
               }
             };
 
-            var called = false;
             col.isReplaying = true;
             col.replayingVms['423'] = { id: '423', cached: true };
+            col.replayingVmsToDelete['5123'] = { id: '5123', cached: true };
             col.saveReplayingVms(function (err) {
               expect(err).not.to.be.ok();
-              expect(called).to.eql(true);
+              expect(commitCalled.length).to.eql(2);
+              expect(commitCalled[0].id).to.eql('5123');
+              expect(commitCalled[1].id).to.eql('423');
 
               col.repository = orgRepo;
               col.isReplaying = false;
               col.replayingVms = {};
+              col.replayingVmsToDelete = {};
               done();
             });
 
@@ -639,9 +702,9 @@ describe('collection definition', function () {
         });
 
       });
-      
+
       describe('having an empty read model', function () {
-        
+
         beforeEach(function (done) {
           col.findViewModels(function (err, vms) {
             async.each(vms, function (vm, callback) {
@@ -689,11 +752,11 @@ describe('collection definition', function () {
               expect(err).not.to.be.ok();
               expect(vm).to.be.an('object');
               expect(vm.get('my.def')).to.eql('data');
-              
+
               vm.set('new', 'value');
               col.saveViewModel(vm, function (err) {
                 expect(err).not.to.be.ok();
-                
+
                 col.loadViewModel('vmId', function (err, vm) {
                   expect(err).not.to.be.ok();
                   expect(vm).to.be.an('object');
@@ -708,7 +771,7 @@ describe('collection definition', function () {
                     expect(vms.length).to.eql(1);
                     expect(vms[0].get('my.def')).to.eql('data');
                     expect(vms[0].get('new')).to.eql('value');
-                    
+
                     done();
                   });
                 });
@@ -718,9 +781,9 @@ describe('collection definition', function () {
           });
 
         });
-        
+
       });
-      
+
       describe('having some viewmodels in the read model', function () {
 
         beforeEach(function (done) {
@@ -810,7 +873,7 @@ describe('collection definition', function () {
         describe('with a query object', function() {
 
           describe('having no records', function() {
-            
+
             beforeEach(function (done) {
               col.findViewModels(function (err, vms) {
                 async.each(vms, function (vm, callback) {
@@ -966,7 +1029,7 @@ describe('collection definition', function () {
         });
 
       });
-      
+
     });
 
   });
