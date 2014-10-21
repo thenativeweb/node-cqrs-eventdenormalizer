@@ -1,7 +1,7 @@
-## v1.0.10
+## [v1.0.10](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.0.6...v1.0.10)
 - fixed replay handling
 
-## v1.0.6
+## [v1.0.6](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.0.4...v1.0.6)
 - update viewmodel dependency
 
 ## v1.0.4
