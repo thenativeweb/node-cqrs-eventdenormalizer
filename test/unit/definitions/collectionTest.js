@@ -547,6 +547,124 @@ describe('collection definition', function () {
 
       });
 
+      describe('calling findViewModels', function () {
+
+        describe('in normal mode', function () {
+
+          it('it should work as expected', function (done) {
+
+            var orgRepo = col.repository;
+            col.repository = {
+              find: function (query, queryOpt, clb) {
+                expect(query.id).to.eql('8372');
+                clb(null, [{id: '8372', has: function () { return true }}]);
+              }
+            };
+
+            col.findViewModels({ id: '8372' }, function (err, vms) {
+              expect(err).not.to.be.ok();
+              expect(vms.length).to.eql(1);
+              expect(vms[0].id).to.eql('8372');
+
+              col.repository = orgRepo;
+              col.isReplaying = false;
+              done();
+            });
+
+          });
+
+        });
+
+        describe('in replay mode', function () {
+
+          describe('not having a cached vm', function () {
+
+            it('it should work as expected', function (done) {
+
+              var orgRepo = col.repository;
+              col.repository = {
+                find: function (query, queryOpt, clb) {
+                  expect(query.id).to.eql('8372');
+                  clb(null, [{id: '8372', has: function () { return true }}]);
+                }
+              };
+              col.isReplaying = true;
+//              col.replayingVms['423'] = { id: '423', cached: true };
+              col.findViewModels({ id: '8372' }, function (err, vms) {
+                expect(err).not.to.be.ok();
+                expect(vms.length).to.eql(1);
+                expect(vms[0].id).to.eql('8372');
+
+                col.repository = orgRepo;
+                col.isReplaying = false;
+                done();
+              });
+
+            });
+
+          });
+
+          describe('having a cached vm', function () {
+
+            it('it should work as expected', function (done) {
+
+              var orgRepo = col.repository;
+              col.repository = {
+                find: function (query, queryOpt, clb) {
+                  expect(query.id).to.eql('8372');
+                  clb(null, [{id: '8372', has: function () { return true }}]);
+                }
+              };
+              col.isReplaying = true;
+              col.replayingVms['8372'] = { id: '8372', cached: true };
+              col.findViewModels({ id: '8372' }, function (err, vms) {
+                expect(err).not.to.be.ok();
+                expect(vms.length).to.eql(1);
+                expect(vms[0].id).to.eql('8372');
+                expect(vms[0].cached).to.eql(true);
+
+                col.repository = orgRepo;
+                col.isReplaying = false;
+                col.replayingVms = {};
+                done();
+              });
+
+            });
+
+          });
+
+          describe('having a cached deleted vm', function () {
+
+            it('it should work as expected', function (done) {
+
+              var orgRepo = col.repository;
+              col.repository = {
+                find: function (query, queryOpt, clb) {
+                  expect(query.id).to.eql('8372');
+                  clb(null, [{id: '8372', has: function () { return true }}]);
+                }
+              };
+              col.isReplaying = true;
+              col.replayingVmsToDelete['8372'] = { id: '8372', cached: true };
+              col.findViewModels({ id: '8372' }, function (err, vms) {
+                expect(err).not.to.be.ok();
+                expect(vms.length).to.eql(0);
+
+                col.repository = orgRepo;
+                col.isReplaying = false;
+                col.replayingVms = {};
+                col.replayingVmsToDelete = {};
+                done();
+              });
+
+            });
+
+          });
+
+        });
+
+      });
+
       describe('calling saveViewModel', function () {
 
         describe('in normal mode', function () {

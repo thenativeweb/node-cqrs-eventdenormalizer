@@ -1,3 +1,6 @@
+## [v1.1.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.0.10...v1.1.0)
+- added possibility to denormalize multiple viewmodels in same collection
+
 ## [v1.0.10](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.0.6...v1.0.10)
 - fixed replay handling
 

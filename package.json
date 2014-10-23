@@ -12,13 +12,14 @@
   },
   "dependencies": {
     "async": "0.9.0",
-    "debug": "2.0.0",
+    "debug": "2.1.0",
     "dotty": "0.0.2",
-    "viewmodel": "1.2.0",
     "jsondate": "0.0.1",
     "lodash": "2.4.1",
     "node-uuid": "1.4.1",
-    "tolerance": "1.0.0"
+    "sift": "0.1.0",
+    "tolerance": "1.0.0",
+    "viewmodel": "1.2.0"
   },
   "devDependencies": {
     "cradle": ">=0.6.7",

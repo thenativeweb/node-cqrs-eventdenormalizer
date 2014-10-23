@@ -373,6 +373,36 @@ The values describes the path to that property in the notification message.
 	  vm.set('firstname', data.firstname);
 	  vm.set('lastname', data.lastname);
 	});
+	
+### ViewBuilder for multiple viewmodels in a collection
+
+Be careful with the query!
+
+A lot of viewmodels can slow down the denormalization process!
+
+	module.exports = require('cqrs-eventdenormalizer').defineViewBuilder({
+	  // optional, default is file name without extension,
+	  // if name is '' it will handle all events that matches
+	  name: 'enteredNewPerson',
+	  
+	  // optional
+	  aggregate: 'person',
+	  
+	  // optional
+	  context: 'hr',
+	  
+	  // optional, default is 0
+	  version: 2,
+	  
+	  // optional, if not defined or not found it will generate a new viewmodel with new id
+	  query: '{ group: 'admins' }',
+	  
+	  // optional, if not defined it will pass the whole event...
+	  payload: 'payload'
+	}, function (data, vm) { // instead of function you can define a string with default handling ('create', 'update', 'delete')
+	  vm.set('firstname', data.firstname);
+	  vm.set('lastname', data.lastname);
+	});
 
 ## EventExtender
 

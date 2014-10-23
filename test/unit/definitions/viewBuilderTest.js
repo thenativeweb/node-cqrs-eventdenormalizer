@@ -109,6 +109,7 @@ describe('viewBuilder definition', function () {
 
           expect(vb.idGenerator).to.be.a('function');
           expect(vb.useCollection).to.be.a('function');
+          expect(vb.findViewModels).to.be.a('function');
           expect(vb.loadViewModel).to.be.a('function');
           expect(vb.saveViewModel).to.be.a('function');
           expect(vb.extractId).to.be.a('function');
@@ -171,9 +172,9 @@ describe('viewBuilder definition', function () {
     });
 
     describe('calling useCollection', function () {
-      
+
       var vb;
-      
+
       before(function () {
         vb = api.defineViewBuilder(null, 'update');
       });
@@ -280,7 +281,7 @@ describe('viewBuilder definition', function () {
           });
 
         });
-        
+
       });
 
     });
@@ -292,7 +293,7 @@ describe('viewBuilder definition', function () {
       beforeEach(function () {
         vb = api.defineViewBuilder(null, 'update');
       });
-      
+
       it('it should work as expected', function () {
 
         vb.defineEvent({
@@ -307,7 +308,7 @@ describe('viewBuilder definition', function () {
           version: 'version',
           meta: 'meta'
         });
-        
+
         vb.defineNotification({
           correlationId: 'correlationId',
           id: 'id',
@@ -322,10 +323,10 @@ describe('viewBuilder definition', function () {
           event: 'meta.event.name',
           meta: 'meta'
         });
-        
+
         var col = { name: 'dummy' };
         vb.useCollection(col);
-        
+
         var evt = {
           correlationId: 'cmdId',
           id: 'evtId',
@@ -347,7 +348,7 @@ describe('viewBuilder definition', function () {
             userId: 'usrId'
           }
         };
-        
+
         var vm = {
           actionOnCommit: 'update',
           toJSON: function () {
@@ -356,7 +357,7 @@ describe('viewBuilder definition', function () {
         };
 
         var noti = vb.generateNotification(evt, vm);
-        
+
         expect(noti.meta.userId).to.eql('usrId');
         expect(noti.meta.event.id).to.eql('evtId');
         expect(noti.meta.event.name).to.eql('enteredNewPerson');
@@ -368,17 +369,17 @@ describe('viewBuilder definition', function () {
         expect(noti.payload.vmAs).to.eql('json');
         expect(noti.collection).to.eql('dummy');
         expect(noti.name).to.eql('update');
-        
+
       });
 
     });
-    
+
     describe('denormalizing an event', function () {
 
       describe('defining a payload', function () {
 
         it('it should work as expected', function (done) {
-          
+
           var vb = api.defineViewBuilder({ payload: 'payload' }, 'update');
 
           vb.defineEvent({
@@ -455,15 +456,16 @@ describe('viewBuilder definition', function () {
             }
           };
 
-          vb.denormalize(evt, function (err, noti) {
+          vb.denormalize(evt, function (err, notis) {
             expect(err).not.to.be.ok();
-            expect(noti.payload.firstname).to.eql('Jack');
-            expect(noti.payload.lastname).to.eql('Joe');
+            expect(notis.length).to.eql(1);
+            expect(notis[0].payload.firstname).to.eql('Jack');
+            expect(notis[0].payload.lastname).to.eql('Joe');
             done();
           });
-          
+
         });
-        
+
       });
 
       describe('not defining a payload', function () {
@@ -549,10 +551,11 @@ describe('viewBuilder definition', function () {
             }
           };
 
-          vb.denormalize(evt, function (err, noti) {
+          vb.denormalize(evt, function (err, notis) {
             expect(err).not.to.be.ok();
-            expect(noti.payload.firstname).to.eql('Jack');
-            expect(noti.payload.lastname).to.eql('Joe');
+            expect(notis.length).to.eql(1);
+            expect(notis[0].payload.firstname).to.eql('Jack');
+            expect(notis[0].payload.lastname).to.eql('Joe');
 
             expect(evt.deep).not.to.be.ok();
             done();
@@ -561,9 +564,120 @@ describe('viewBuilder definition', function () {
         });
 
       });
-      
+
+      describe('defining a query', function () {
+
+        it('it should work as expected', function (done) {
+
+          var counter = 0;
+
+          var vb = api.defineViewBuilder({ query: { my: 'query' } }, function (evt, vm) {
+            vm.set({ index: counter++ });
+          });
+
+          vb.defineEvent({
+            correlationId: 'correlationId',
+            id: 'id',
+            name: 'name',
+            aggregateId: 'aggregate.id',
+            context: 'context.name',
+            aggregate: 'aggregate.name',
+            payload: 'payload',
+            revision: 'revision',
+            version: 'version',
+            meta: 'meta'
+          });
+
+          vb.defineNotification({
+            correlationId: 'correlationId',
+            id: 'id',
+            action: 'name',
+            collection: 'collection',
+            payload: 'payload',
+            context: 'meta.context.name',
+            aggregate: 'meta.aggregate.name',
+            aggregateId: 'meta.aggregate.id',
+            revision: 'meta.aggregate.revision',
+            eventId: 'meta.event.id',
+            event: 'meta.event.name',
+            meta: 'meta'
+          });
+
+          var vm1 = {
+            actionOnCommit: 'update',
+            set: function (data) {
+              this.attr = data;
+            },
+            toJSON: function () {
+              return this.attr;
+            }
+          };
+
+          var vm2 = {
+            actionOnCommit: 'update',
+            set: function (data) {
+              this.attr = data;
+            },
+            toJSON: function () {
+              return this.attr;
+            }
+          };
+
+          var col = { name: 'dummy',
+            getNewId: function (callback) { callback(null, 'newId'); },
+            saveViewModel: function (vm, callback) {
+              if (counter === 1) {
+                expect(vm.attr.index).to.eql(0);
+              } else {
+                expect(vm.attr.index).to.eql(1);
+              }
+              callback(null);
+            },
+            findViewModels: function (query, queryOptions, callback) {
+              expect(query.my).to.eql('query');
+              callback(null, [vm1, vm2]);
+            }
+          };
+          vb.useCollection(col);
+
+          var evt = {
+            correlationId: 'cmdId',
+            id: 'evtId',
+            name: 'enteredNewPerson',
+            aggregate: {
+              id: 'aggId',
+              name: 'person'
+            },
+            context: {
+              name: 'hr'
+            },
+            payload: {
+              firstname: 'Jack',
+              lastname: 'Joe'
+            },
+            revision: 1,
+            version: 4,
+            meta: {
+              userId: 'usrId'
+            }
+          };
+
+          vb.denormalize(evt, function (err, notis) {
+            expect(err).not.to.be.ok();
+            expect(notis.length).to.eql(2);
+            expect(notis[0].payload.index).to.eql(0);
+            expect(notis[1].payload.index).to.eql(1);
+
+            expect(evt.deep).not.to.be.ok();
+            done();
+          });
+
+        });
+
+      });
+
     });
-  
+
   });
 
 });
