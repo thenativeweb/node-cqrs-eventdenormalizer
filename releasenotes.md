@@ -1,3 +1,6 @@
+## [v1.1.2](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.1.1...v1.1.2)
+- update viewmodel dependency
+
 ## [v1.1.1](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.1.0...v1.1.1)
 - little optimization for replay
 
