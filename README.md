@@ -514,8 +514,8 @@ or when catching some events:
 	  // info.aggregate
 	  // info.context
 	  // info.guardRevision
-	  // and call replay...
-	  denormalizer.replay([/* ordered array of events */], function (err) {
+	  // and call handle...
+	  denormalizer.handle(missingEvent, function (err) {
 	    if (err) { console.log(err); }
 	  });
 	  
