@@ -1,3 +1,6 @@
+## [v1.1.3](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.1.2...v1.1.3)
+- handle case of same aggregateId in different contexts or aggregates
+
 ## [v1.1.2](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.1.1...v1.1.2)
 - update viewmodel dependency
 

@@ -448,7 +448,7 @@ describe('integration', function () {
           correlationId: 'cmdId',
           name: 'registeredEMailAddress',
           aggregate: {
-            id: '1234'//,
+            id: '1234',
 //            name: 'person'
           },
           context: {
@@ -568,11 +568,11 @@ describe('integration', function () {
           correlationId: 'cmdId',
           name: 'registeredEMailAddress',
           aggregate: {
-            id: '1234',
-            name: 'person'
+            id: '1234'//,
+            //name: 'person'
           },
           context: {
-            name: 'hr'
+            //name: 'hr'
           },
           payload: {
             email: 'abc@d.e'
@@ -641,7 +641,7 @@ describe('integration', function () {
           expect(info.aggregateId).to.eql('1234');
           expect(info.context).to.eql('hr');
           expect(info.aggregateRevision).to.eql(7);
-          expect(info.guardRevision).to.eql(4);
+          expect(info.guardRevision).to.eql(3);
           expect(e).to.eql(evt);
 
           expect(publishedEvents.length).to.eql(0);
