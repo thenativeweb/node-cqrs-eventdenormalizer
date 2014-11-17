@@ -676,6 +676,106 @@ describe('viewBuilder definition', function () {
 
       });
 
+      describe('defining a function with a callback', function () {
+
+        it('it should work as expected', function (done) {
+
+          var vb = api.defineViewBuilder({}, function (evt, vm, clb) {
+            setTimeout(function () {
+              evt.deep = 'duup';
+              vm.set(evt.payload);
+              clb();
+            });
+          });
+
+          vb.defineEvent({
+            correlationId: 'correlationId',
+            id: 'id',
+            name: 'name',
+            aggregateId: 'aggregate.id',
+            context: 'context.name',
+            aggregate: 'aggregate.name',
+            payload: 'payload',
+            revision: 'revision',
+            version: 'version',
+            meta: 'meta'
+          });
+
+          vb.defineNotification({
+            correlationId: 'correlationId',
+            id: 'id',
+            action: 'name',
+            collection: 'collection',
+            payload: 'payload',
+            context: 'meta.context.name',
+            aggregate: 'meta.aggregate.name',
+            aggregateId: 'meta.aggregate.id',
+            revision: 'meta.aggregate.revision',
+            eventId: 'meta.event.id',
+            event: 'meta.event.name',
+            meta: 'meta'
+          });
+
+          var vm = {
+            actionOnCommit: 'update',
+            set: function (data) {
+              this.attr = data;
+            },
+            toJSON: function () {
+              return this.attr;
+            }
+          };
+
+          var col = { name: 'dummy',
+            getNewId: function (callback) { callback(null, 'newId'); },
+            loadViewModel: function (id, callback) {
+              vm.id = id;
+              callback(null, vm);
+            },
+            saveViewModel: function (vm, callback) {
+              expect(vm.attr.firstname).to.eql('Jack');
+              expect(vm.attr.lastname).to.eql('Joe');
+              callback(null);
+            }
+          };
+          vb.useCollection(col);
+
+          var evt = {
+            correlationId: 'cmdId',
+            id: 'evtId',
+            name: 'enteredNewPerson',
+            aggregate: {
+              id: 'aggId',
+              name: 'person'
+            },
+            context: {
+              name: 'hr'
+            },
+            payload: {
+              firstname: 'Jack',
+              lastname: 'Joe'
+            },
+            revision: 1,
+            version: 4,
+            meta: {
+              userId: 'usrId'
+            }
+          };
+
+          vb.denormalize(evt, function (err, notis) {
+            expect(err).not.to.be.ok();
+            expect(notis.length).to.eql(1);
+            expect(notis[0].payload.firstname).to.eql('Jack');
+            expect(notis[0].payload.lastname).to.eql('Joe');
+
+            expect(evt.deep).not.to.be.ok();
+            done();
+          });
+
+        });
+
+      });
+      
     });
 
   });
