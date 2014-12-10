@@ -403,30 +403,7 @@ A lot of viewmodels can slow down the denormalization process!
 	  vm.set('firstname', data.firstname);
 	  vm.set('lastname', data.lastname);
 	});
-
-or
-
-	module.exports = require('cqrs-eventdenormalizer').defineViewBuilder({
-	  // optional, default is file name without extension,
-	  // if name is '' it will handle all events that matches
-	  name: 'enteredNewPerson',
-	  
-	  // optional
-	  aggregate: 'person',
-	  
-	  // optional
-	  context: 'hr',
-	  
-	  // optional, default is 0
-	  version: 2
-	  
-	  // optional, if not defined it will pass the whole event...
-	  payload: 'payload'
-	}, function (data, vm) { // instead of function you can define a string with default handling ('create', 'update', 'delete')
-	  vm.set('firstname', data.firstname);
-	  vm.set('lastname', data.lastname);
-	});
-	// optional define a function to that returns a query that will be used as query to find the viewmodels
+	// optional define a function to that returns a query that will be used as query to find the viewmodels (but do not define the query in the options)
 	//.useAsQuery(function (evt) {
 	//  return { my: evt.payload.my };
 	//});
