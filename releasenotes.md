@@ -1,3 +1,6 @@
+## [v1.1.6](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.1.5...v1.1.6)
+- added possibility to denormalize multiple viewmodels in same collection with intelligent queries
+
 ## [v1.1.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.1.4...v1.1.5)
 - async viewBuilders
 
