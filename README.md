@@ -376,7 +376,9 @@ But be careful with this!
 
 	  // optional, if not defined it will pass the whole event...
 	  payload: 'payload'
-	}, function (data, vm) { // instead of function you can define a string with default handling ('create', 'update', 'delete')
+	}, function (data, vm) { // instead of function you can define
+	                         // a string with default handling ('create', 'update', 'delete')
+	                         // or function that expects a callback (i.e. function (data, vm, callback) {})
 	  vm.set('firstname', data.firstname);
 	  vm.set('lastname', data.lastname);
 	});
@@ -406,7 +408,9 @@ A lot of viewmodels can slow down the denormalization process!
 
 	  // optional, if not defined it will pass the whole event...
 	  payload: 'payload'
-	}, function (data, vm) { // instead of function you can define a string with default handling ('create', 'update', 'delete')
+	}, function (data, vm) { // instead of function you can define
+	                         // a string with default handling ('create', 'update', 'delete')
+	                         // or function that expects a callback (i.e. function (data, vm, callback) {})handling ('create', 'update', 'delete')
 	  vm.set('firstname', data.firstname);
 	  vm.set('lastname', data.lastname);
 	});
