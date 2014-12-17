@@ -1,3 +1,6 @@
+## [v1.1.9](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.1.8...v1.1.9)
+- update viewmodel dependency
+
 ## [v1.1.8](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.1.7...v1.1.8)
 - prevent events being denormalized out of order during replayStreamed thanks to [#6](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/#6) thanks to [andywer](https://github.com/andywer)
 
