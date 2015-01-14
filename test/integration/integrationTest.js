@@ -726,9 +726,7 @@ describe('integration', function () {
     describe('replaying some events', function () {
 
       before(function (done) {
-        denorm.repository.clearAll(function () {
-          denorm.revisionGuardStore.clear(done);
-        });
+        denorm.clear(done);
       });
 
       it('it should work as expected', function (done) {
@@ -900,9 +898,7 @@ describe('integration', function () {
     describe('handling an event that denormalizes multiple viewmodels in same collection', function () {
 
       before(function (done) {
-        denorm.repository.clearAll(function () {
-          denorm.revisionGuardStore.clear(done);
-        });
+        denorm.clear(done);
       });
 
       it('it should publish 2 notification and it should callback without an error but with an extended event', function (done) {

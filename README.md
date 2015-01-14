@@ -554,13 +554,18 @@ or when catching some events:
 
 	});
 
+### if you want to clear the readModel before replaying...
+
+	denormalizer.clear(function (err) {
+	});
+
 
 [Release notes](https://github.com/adrai/node-cqrs-eventdenormalizer/blob/master/releasenotes.md)
 
 
 # License
 
-Copyright (c) 2014 Adriano Raiano
+Copyright (c) 2015 Adriano Raiano
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
