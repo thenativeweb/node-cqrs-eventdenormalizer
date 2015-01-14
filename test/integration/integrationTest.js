@@ -726,7 +726,7 @@ describe('integration', function () {
     describe('replaying some events', function () {
 
       before(function (done) {
-        denorm.repository.clear(function () {
+        denorm.repository.clearAll(function () {
           denorm.revisionGuardStore.clear(done);
         });
       });
@@ -900,7 +900,7 @@ describe('integration', function () {
     describe('handling an event that denormalizes multiple viewmodels in same collection', function () {
 
       before(function (done) {
-        denorm.repository.clear(function () {
+        denorm.repository.clearAll(function () {
           denorm.revisionGuardStore.clear(done);
         });
       });
