@@ -91,7 +91,7 @@ describe('replayHandler', function () {
         },
         revision: 5
       };
-      
+
       var evts = [evt1, evt2, evt3, evt4, evt5];
 
       var disp;
@@ -116,9 +116,9 @@ describe('replayHandler', function () {
       beforeEach(function (done) {
         store.clear(done);
       });
-      
+
       describe('normally', function () {
-        
+
         describe('having defined a revision', function () {
 
           it('it should work as expected', function (done) {
@@ -126,11 +126,11 @@ describe('replayHandler', function () {
             var called1 = false;
             var called2 = false;
             var called3 = false;
-            
+
             var evts1 = [];
             var evts2 = [];
             var evts3 = [];
-            
+
             var saveRvmsCalled1 = false;
             var saveRvmsCalled2 = false;
             var saveRvmsCalled3 = false;
@@ -184,7 +184,7 @@ describe('replayHandler', function () {
               expect(evts2[1]).to.eql(evt5);
               expect(evts3[0]).to.eql(evt3);
               expect(evts3[1]).to.eql(evt5);
-              
+
               expect(saveRvmsCalled1).to.eql(true);
               expect(saveRvmsCalled2).to.eql(true);
               expect(saveRvmsCalled3).to.eql(false);
@@ -203,13 +203,13 @@ describe('replayHandler', function () {
             });
 
           });
-          
+
         });
 
         describe('not having defined a revision', function () {
 
           it('it should work as expected', function (done) {
-            
+
             delete def.revision;
 
             var called1 = false;
@@ -294,7 +294,7 @@ describe('replayHandler', function () {
           });
 
         });
-        
+
       });
 
       describe('streamed', function () {
@@ -350,9 +350,9 @@ describe('replayHandler', function () {
             }, def);
 
             repl = new ReplayHandler(disp, store, def);
-            
+
             repl.replayStreamed(function (replay, finished) {
-              
+
               _.each(evts, function (e) {
                 replay(e);
               });
@@ -387,7 +387,7 @@ describe('replayHandler', function () {
                   });
                 });
               });
-              
+
             });
 
           });
@@ -492,9 +492,9 @@ describe('replayHandler', function () {
         });
 
       });
-      
+
     });
-    
+
   });
 
 });
