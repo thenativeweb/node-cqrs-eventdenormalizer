@@ -322,6 +322,71 @@ The values describes the path to that property in the notification message.
 	});
 
 
+## Request denormalizer information
+
+After the initialization you can request the denormalizer information:
+
+	denorm.init(function (err) {
+	  denorm.getInfo();
+	  // ==>
+	  // {
+	  //   "collections": [
+	  //     {
+	  //       "name": "person",
+	  //       "viewBuilders": [
+	  //         {
+	  //           "name": "enteredNewPerson",
+	  //           "aggregate": "person",
+	  //           "context": "hr",
+	  //           "version": 2
+	  //         },
+	  //         {
+	  //           "name": "registeredEMailAddress",
+	  //           "aggregate": "person",
+	  //           "context": "hr",
+	  //           "version": 2
+	  //         }
+	  //       ],
+	  //       "eventExtenders": [
+	  //         {
+	  //           "name": "enteredNewPerson",
+	  //           "aggregate": "person",
+	  //           "context": "hr",
+	  //           "version": 2
+	  //         }
+	  //       ]
+	  //     },
+	  //     {
+	  //       "name": "personDetail",
+	  //       "viewBuilders": [
+	  //         {
+	  //           "name": "enteredNewPerson",
+	  //           "aggregate": "person",
+	  //           "context": "hr",
+	  //           "version": 2
+	  //         },
+	  //         {
+	  //           "name": "registeredEMailAddress",
+	  //           "aggregate": "person",
+	  //           "context": "hr",
+	  //           "version": 2
+	  //         }
+	  //       ],
+	  //       "eventExtenders": []
+	  //     }
+	  //   ],
+	  //   "generalEventExtenders": [
+	  //     {
+	  //       "name": "",
+	  //       "aggregate": null,
+	  //       "context": null,
+	  //       "version": -1
+	  //     }
+	  //   ]
+	  // }
+	});
+
+
 # Components definition
 
 ## Collection

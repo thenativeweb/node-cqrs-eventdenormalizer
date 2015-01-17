@@ -41,7 +41,54 @@ describe('integration', function () {
         return evt;
       });
 
+      expect(function () {
+        denorm.getInfo();
+      }).to.throwError('/init');
+
       denorm.init(done);
+    });
+
+    describe('requesting information', function () {
+
+      it('it should return the expected information', function () {
+
+        var info = denorm.getInfo();
+        expect(info.collections.length).to.eql(2);
+        expect(info.collections[0].name).to.eql('person');
+        expect(info.collections[0].viewBuilders.length).to.eql(2);
+        expect(info.collections[0].viewBuilders[0].name).to.eql('enteredNewPerson');
+        expect(info.collections[0].viewBuilders[0].aggregate).to.eql('person');
+        expect(info.collections[0].viewBuilders[0].context).to.eql('hr');
+        expect(info.collections[0].viewBuilders[0].version).to.eql(2);
+        expect(info.collections[0].viewBuilders[1].name).to.eql('registeredEMailAddress');
+        expect(info.collections[0].viewBuilders[1].aggregate).to.eql('person');
+        expect(info.collections[0].viewBuilders[1].context).to.eql('hr');
+        expect(info.collections[0].viewBuilders[1].version).to.eql(2);
+        expect(info.collections[0].eventExtenders.length).to.eql(1);
+        expect(info.collections[0].eventExtenders[0].name).to.eql('enteredNewPerson');
+        expect(info.collections[0].eventExtenders[0].aggregate).to.eql('person');
+        expect(info.collections[0].eventExtenders[0].context).to.eql('hr');
+        expect(info.collections[0].eventExtenders[0].version).to.eql(2);
+        expect(info.collections[1].name).to.eql('personDetail');
+        expect(info.collections[1].viewBuilders.length).to.eql(2);
+        expect(info.collections[1].viewBuilders[0].name).to.eql('enteredNewPerson');
+        expect(info.collections[1].viewBuilders[0].aggregate).to.eql('person');
+        expect(info.collections[1].viewBuilders[0].context).to.eql('hr');
+        expect(info.collections[1].viewBuilders[0].version).to.eql(2);
+        expect(info.collections[1].viewBuilders[1].name).to.eql('registeredEMailAddress');
+        expect(info.collections[1].viewBuilders[1].aggregate).to.eql('person');
+        expect(info.collections[1].viewBuilders[1].context).to.eql('hr');
+        expect(info.collections[1].viewBuilders[1].version).to.eql(2);
+        expect(info.collections[1].eventExtenders.length).to.eql(0);
+
+        expect(info.generalEventExtenders.length).to.eql(1);
+        expect(info.generalEventExtenders[0].name).to.eql('');
+        expect(info.generalEventExtenders[0].aggregate).to.eql(null);
+        expect(info.generalEventExtenders[0].context).to.eql(null);
+        expect(info.generalEventExtenders[0].version).to.eql(-1);
+
+      });
+
     });
 
     describe('handling an event that is not a json object', function () {
