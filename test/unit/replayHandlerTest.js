@@ -189,11 +189,11 @@ describe('replayHandler', function () {
               expect(saveRvmsCalled2).to.eql(true);
               expect(saveRvmsCalled3).to.eql(false);
 
-              store.get('aggId1', function (err, rev) {
+              store.get('ctxagg1aggId1', function (err, rev) {
                 expect(err).not.to.be.ok();
                 expect(rev).to.eql(4);
 
-                store.get('aggId2', function (err, rev) {
+                store.get('ctxagg2aggId2', function (err, rev) {
                   expect(err).not.to.be.ok();
                   expect(rev).to.eql(6);
 
@@ -375,11 +375,11 @@ describe('replayHandler', function () {
                 expect(saveRvmsCalled2).to.eql(true);
                 expect(saveRvmsCalled3).to.eql(false);
 
-                store.get('aggId1', function (err, rev) {
+                store.get('ctxagg1aggId1', function (err, rev) {
                   expect(err).not.to.be.ok();
                   expect(rev).to.eql(4);
 
-                  store.get('aggId2', function (err, rev) {
+                  store.get('ctxagg2aggId2', function (err, rev) {
                     expect(err).not.to.be.ok();
                     expect(rev).to.eql(6);
 
