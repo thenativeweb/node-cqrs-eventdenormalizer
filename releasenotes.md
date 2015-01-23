@@ -1,3 +1,6 @@
+## [v1.2.1](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.2.0...v1.2.1)
+- fix revisionGuard in replay
+
 ## [v1.2.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.1.11...v1.2.0)
 - added getInfo function
 
