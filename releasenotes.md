@@ -1,3 +1,6 @@
+## [v1.2.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.2.4...v1.2.5)
+- added payload functionality for eventExtenders
+
 ## [v1.2.4](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.2.3...v1.2.4)
 - update viewmodel dependency
 

@@ -1,4 +1,5 @@
 var expect = require('expect.js'),
+  _ = require('lodash'),
   api = require('../../index');
 
 describe('integration', function () {
@@ -54,32 +55,41 @@ describe('integration', function () {
 
         var info = denorm.getInfo();
         expect(info.collections.length).to.eql(2);
-        expect(info.collections[0].name).to.eql('person');
-        expect(info.collections[0].viewBuilders.length).to.eql(2);
-        expect(info.collections[0].viewBuilders[0].name).to.eql('enteredNewPerson');
-        expect(info.collections[0].viewBuilders[0].aggregate).to.eql('person');
-        expect(info.collections[0].viewBuilders[0].context).to.eql('hr');
-        expect(info.collections[0].viewBuilders[0].version).to.eql(2);
-        expect(info.collections[0].viewBuilders[1].name).to.eql('registeredEMailAddress');
-        expect(info.collections[0].viewBuilders[1].aggregate).to.eql('person');
-        expect(info.collections[0].viewBuilders[1].context).to.eql('hr');
-        expect(info.collections[0].viewBuilders[1].version).to.eql(2);
-        expect(info.collections[0].eventExtenders.length).to.eql(1);
-        expect(info.collections[0].eventExtenders[0].name).to.eql('enteredNewPerson');
-        expect(info.collections[0].eventExtenders[0].aggregate).to.eql('person');
-        expect(info.collections[0].eventExtenders[0].context).to.eql('hr');
-        expect(info.collections[0].eventExtenders[0].version).to.eql(2);
-        expect(info.collections[1].name).to.eql('personDetail');
-        expect(info.collections[1].viewBuilders.length).to.eql(2);
-        expect(info.collections[1].viewBuilders[0].name).to.eql('enteredNewPerson');
-        expect(info.collections[1].viewBuilders[0].aggregate).to.eql('person');
-        expect(info.collections[1].viewBuilders[0].context).to.eql('hr');
-        expect(info.collections[1].viewBuilders[0].version).to.eql(2);
-        expect(info.collections[1].viewBuilders[1].name).to.eql('registeredEMailAddress');
-        expect(info.collections[1].viewBuilders[1].aggregate).to.eql('person');
-        expect(info.collections[1].viewBuilders[1].context).to.eql('hr');
-        expect(info.collections[1].viewBuilders[1].version).to.eql(2);
-        expect(info.collections[1].eventExtenders.length).to.eql(0);
+
+        var found = _.find(info.collections, function (col) {
+          return col.name === 'person';
+        });
+
+        expect(found.name).to.eql('person');
+        expect(found.viewBuilders.length).to.eql(2);
+        expect(found.viewBuilders[0].name).to.eql('enteredNewPerson');
+        expect(found.viewBuilders[0].aggregate).to.eql('person');
+        expect(found.viewBuilders[0].context).to.eql('hr');
+        expect(found.viewBuilders[0].version).to.eql(2);
+        expect(found.viewBuilders[1].name).to.eql('registeredEMailAddress');
+        expect(found.viewBuilders[1].aggregate).to.eql('person');
+        expect(found.viewBuilders[1].context).to.eql('hr');
+        expect(found.viewBuilders[1].version).to.eql(2);
+        expect(found.eventExtenders.length).to.eql(1);
+        expect(found.eventExtenders[0].name).to.eql('enteredNewPerson');
+        expect(found.eventExtenders[0].aggregate).to.eql('person');
+        expect(found.eventExtenders[0].context).to.eql('hr');
+        expect(found.eventExtenders[0].version).to.eql(2);
+
+        var found = _.find(info.collections, function (col) {
+          return col.name === 'personDetail';
+        });
+        expect(found.name).to.eql('personDetail');
+        expect(found.viewBuilders.length).to.eql(2);
+        expect(found.viewBuilders[0].name).to.eql('enteredNewPerson');
+        expect(found.viewBuilders[0].aggregate).to.eql('person');
+        expect(found.viewBuilders[0].context).to.eql('hr');
+        expect(found.viewBuilders[0].version).to.eql(2);
+        expect(found.viewBuilders[1].name).to.eql('registeredEMailAddress');
+        expect(found.viewBuilders[1].aggregate).to.eql('person');
+        expect(found.viewBuilders[1].context).to.eql('hr');
+        expect(found.viewBuilders[1].version).to.eql(2);
+        expect(found.eventExtenders.length).to.eql(0);
 
         expect(info.generalEventExtenders.length).to.eql(1);
         expect(info.generalEventExtenders[0].name).to.eql('');
@@ -267,7 +277,9 @@ describe('integration', function () {
 
         denorm.handle(evt, function (errs, e, notis) {
           expect(errs).not.to.be.ok();
-          expect(e).to.eql(evt);
+          for (var m in evt) {
+            expect(e[m]).to.eql(evt[m]);
+          }
           expect(e.defForAllExt).to.eql(true);
           expect(e.extended).to.eql(true);
           expect(e.extendedDefault).not.to.be.ok();
@@ -313,7 +325,9 @@ describe('integration', function () {
           expect(notis[personDetailIndex].meta.context.name).to.eql('hr');
 
           expect(publishedEvents.length).to.eql(1);
-          expect(publishedEvents[0]).to.eql(evt);
+          for (var m in evt) {
+            expect(publishedEvents[0][m]).to.eql(evt[m]);
+          }
           expect(publishedEvents[0].defForAllExt).to.eql(true);
           expect(publishedEvents[0].extended).to.eql(true);
           expect(publishedEvents[0].extendedDefault).not.to.be.ok();
@@ -1061,10 +1075,18 @@ describe('integration', function () {
                 expect(errs).not.to.be.ok();
 
                 expect(publishedEvents.length).to.eql(4);
-                expect(publishedEvents[0]).to.eql(evt11);
-                expect(publishedEvents[1]).to.eql(evt12);
-                expect(publishedEvents[2]).to.eql(evt21);
-                expect(publishedEvents[3]).to.eql(evt22);
+                for (var m in evt11) {
+                  expect(publishedEvents[0][m]).to.eql(evt11[m]);
+                }
+                for (var m in evt11) {
+                  expect(publishedEvents[1][m]).to.eql(evt12[m]);
+                }
+                for (var m in evt11) {
+                  expect(publishedEvents[2][m]).to.eql(evt21[m]);
+                }
+                for (var m in evt11) {
+                  expect(publishedEvents[3][m]).to.eql(evt22[m]);
+                }
 
                 expect(publishedNotis.length).to.eql(9);
                 expect(publishedNotis[0].name).to.eql('create');
@@ -1229,7 +1251,10 @@ describe('integration', function () {
 
         denorm.handle(evt, function (errs, e, notis) {
           expect(errs).not.to.be.ok();
-          expect(e).to.eql(evt);
+
+          for (var m in evt) {
+            expect(e[m]).to.eql(evt[m]);
+          }
           expect(e.defForAllExt).to.eql(true);
           expect(e.extended).to.eql(true);
           expect(e.extendedDefault).not.to.be.ok();
@@ -1275,7 +1300,9 @@ describe('integration', function () {
           expect(notis[personDetailIndex].meta.context).not.to.be.ok();
 
           expect(publishedEvents.length).to.eql(1);
-          expect(publishedEvents[0]).to.eql(evt);
+          for (var m in evt) {
+            expect(publishedEvents[0][m]).to.eql(evt[m]);
+          }
           expect(publishedEvents[0].defForAllExt).to.eql(true);
           expect(publishedEvents[0].extended).to.eql(true);
           expect(publishedEvents[0].extendedDefault).not.to.be.ok();

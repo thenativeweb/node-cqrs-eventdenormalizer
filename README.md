@@ -505,7 +505,10 @@ A lot of viewmodels can slow down the denormalization process!
 
 	  // optional, default is 0
 	  // if set to -1, it will ignore the version
-	  version: 2
+	  version: 2//,
+
+	  // optional, if not defined it will pass the whole event...
+	  // payload: 'payload'
 	}, function (evt, col, callback) {
 	  // col.loadViewModel()... or from somewhere else... (col.findViewModels( /* see https://github.com/adrai/node-viewmodel#find */ ))
 	  evt.extended = true;
@@ -530,11 +533,42 @@ A lot of viewmodels can slow down the denormalization process!
 	  version: 2,
 
 	  // if defined it will load the viewmodel
-	  id: 'payload.id'
+	  id: 'payload.id'//,
+
+	  // optional, if not defined it will pass the whole event...
+	  // payload: 'payload'
 	},
 	function (evt, vm) {
 	  evt.extended = vm.get('myValue');
 	  return evt;
+	});
+
+	// or
+
+	module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
+	  // optional, default is file name without extension,
+	  // if name is '' it will handle all events that matches
+	  name: 'enteredNewPerson',
+
+	  // optional
+	  aggregate: 'person',
+
+	  // optional
+	  context: 'hr',
+
+	  // optional, default is 0
+	  // if set to -1, it will ignore the version
+	  version: 2,
+
+	  // if defined it will load the viewmodel
+	  id: 'payload.id'//,
+
+	  // optional, if not defined it will pass the whole event...
+	  // payload: 'payload'
+	},
+	function (evt, vm, callback) {
+	  evt.extended = vm.get('myValue');
+	  callback(null, evt);
 	});
 
 ### not for a collection
@@ -552,7 +586,10 @@ A lot of viewmodels can slow down the denormalization process!
 
 	  // optional, default is 0
 	  // if set to -1, it will ignore the version
-	  version: 2
+	  version: 2//,
+
+	  // optional, if not defined it will pass the whole event...
+	  // payload: 'payload'
 	}, function (evt) {
 	  evt.extended = true;
 	  return evt;
@@ -573,7 +610,10 @@ A lot of viewmodels can slow down the denormalization process!
 
 	  // optional, default is 0
 	  // if set to -1, it will ignore the version
-	  version: 2
+	  version: 2//,
+
+	  // optional, if not defined it will pass the whole event...
+	  // payload: 'payload'
 	}, function (evt, callback) {
 	  evt.extended = true;
 	  callback(null, evt);

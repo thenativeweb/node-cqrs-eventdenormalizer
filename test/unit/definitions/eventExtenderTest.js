@@ -116,27 +116,62 @@ describe('eventExtender definition', function () {
 
       describe('having an event extender function that wants expects 3 arguments', function () {
 
-        it('it should work as expected', function (done) {
-          var extendedEvt = { ext: 'evt' };
-          var evtExtFn = function (evt, col, callback) {
-            expect(evt.my).to.eql('evt');
-            expect(col.name).to.eql('myCol');
-            callback(null, extendedEvt);
-          };
-          evtExt = api.defineEventExtender({
-            name: 'eventName',
-            version: 3
-          }, evtExtFn);
+        describe('not defining an id', function () {
 
-          evtExt.useCollection({
-            name: 'myCol'
+          it('it should work as expected', function (done) {
+            var extendedEvt = { ext: 'evt' };
+            var evtExtFn = function (evt, col, callback) {
+              expect(evt.my).to.eql('evt');
+              expect(col.name).to.eql('myCol');
+              callback(null, extendedEvt);
+            };
+            evtExt = api.defineEventExtender({
+              name: 'eventName',
+              version: 3
+            }, evtExtFn);
+
+            evtExt.useCollection({
+              name: 'myCol'
+            });
+
+            evtExt.extend({ my: 'evt' }, function (err, eEvt) {
+              expect(err).not.to.be.ok();
+              expect(eEvt).to.eql(extendedEvt);
+              done();
+            });
           });
 
-          evtExt.extend({ my: 'evt' }, function (err, eEvt) {
-            expect(err).not.to.be.ok();
-            expect(eEvt).to.eql(extendedEvt);
-            done();
+        });
+
+        describe('defining an id', function () {
+
+          it('it should work as expected', function (done) {
+            var viewM = { my: 'view' };
+            var extendedEvt = { ext: 'evt', myId: '1234' };
+            var evtExtFn = function (evt, vm, callback) {
+              expect(evt.my).to.eql('evt');
+              expect(vm.id).to.eql('1234');
+              callback(null, extendedEvt);
+            };
+            evtExt = api.defineEventExtender({
+              name: 'eventName',
+              version: 3,
+              id: 'myId'
+            }, evtExtFn);
+
+            evtExt.useCollection({
+              name: 'myCol',
+              getNewId: function (callback) { callback(null, 'newId'); },
+              loadViewModel: function (id, callback) { viewM.id = id; callback(null, viewM); }
+            });
+
+            evtExt.extend({ my: 'evt', myId: '1234' }, function (err, eEvt) {
+              expect(err).not.to.be.ok();
+              expect(eEvt).to.eql(extendedEvt);
+              done();
+            });
           });
+
         });
 
       });
@@ -260,7 +295,7 @@ describe('eventExtender definition', function () {
             });
 
           });
-          
+
         });
 
       });
