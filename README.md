@@ -416,7 +416,11 @@ After the initialization you can request the denormalizer information:
 If you need an information from an other collection while denormalizing an event, you can require such a collection and make some lookups.
 for example
 
-	col.find({ my: 'value' }, function (err, vms) {});
+	col.findViewModels({ my: 'value' }, function (err, vms) {});
+
+or
+
+	col.loadViewModel('id', function (err, vm) {});
 
 But be careful with this!
 
