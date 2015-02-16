@@ -1006,6 +1006,219 @@ describe('viewBuilder definition', function () {
 
       });
 
+      describe('defining an executeForEach function', function () {
+
+        describe('sync', function () {
+
+          it('it should work as expected', function (done) {
+
+            var counter = 0;
+
+            var vb = api.defineViewBuilder({  }, function (evt, vm) {
+              var data = vm.toJSON();
+              data.index = counter++;
+              vm.set(data);
+            }).executeForEach(function (evt) {
+              return [{ my: evt.payload.firstname }, { id: '1234', my: evt.payload.firstname + 2 }];
+            });
+
+            vb.defineEvent({
+              correlationId: 'correlationId',
+              id: 'id',
+              name: 'name',
+              aggregateId: 'aggregate.id',
+              context: 'context.name',
+              aggregate: 'aggregate.name',
+              payload: 'payload',
+              revision: 'revision',
+              version: 'version',
+              meta: 'meta'
+            });
+
+            vb.defineNotification({
+              correlationId: 'correlationId',
+              id: 'id',
+              action: 'name',
+              collection: 'collection',
+              payload: 'payload',
+              context: 'meta.context.name',
+              aggregate: 'meta.aggregate.name',
+              aggregateId: 'meta.aggregate.id',
+              revision: 'meta.aggregate.revision',
+              eventId: 'meta.event.id',
+              event: 'meta.event.name',
+              meta: 'meta'
+            });
+
+            var vm = {
+              actionOnCommit: 'update',
+              set: function (data) {
+                this.attr = data;
+              },
+              toJSON: function () {
+                return this.attr;
+              }
+            };
+
+            var col = { name: 'dummy',
+              getNewId: function (callback) { callback(null, 'newId'); },
+              loadViewModel: function (id, callback) {
+                vm.id = id;
+                callback(null, vm);
+              },
+              saveViewModel: function (vm, callback) {
+                callback(null);
+              }
+            };
+            vb.useCollection(col);
+
+            var evt = {
+              correlationId: 'cmdId',
+              id: 'evtId',
+              name: 'enteredNewPerson',
+              aggregate: {
+                id: 'aggId',
+                name: 'person'
+              },
+              context: {
+                name: 'hr'
+              },
+              payload: {
+                firstname: 'Jack',
+                lastname: 'Joe'
+              },
+              revision: 1,
+              version: 4,
+              meta: {
+                userId: 'usrId'
+              }
+            };
+
+            vb.denormalize(evt, function (err, notis) {
+              expect(err).not.to.be.ok();
+              expect(notis.length).to.eql(2);
+              expect(notis[0].payload.my).to.eql('Jack');
+              expect(notis[1].payload.my).to.eql('Jack2');
+              expect(notis[0].payload.id).to.eql('newId');
+              expect(notis[1].payload.id).to.eql('1234');
+              expect(notis[0].payload.index).to.eql(0);
+              expect(notis[1].payload.index).to.eql(1);
+
+              expect(evt.deep).not.to.be.ok();
+              done();
+            });
+
+          });
+
+        });
+
+        describe('async', function () {
+
+          var counter = 0;
+
+          it('it should work as expected', function (done) {
+
+            var vb = api.defineViewBuilder({  }, function (evt, vm) {
+              var data = vm.toJSON();
+              data.index = counter++;
+              vm.set(data);
+            }).executeForEach(function (evt, callback) {
+              callback(null, [{ my: evt.payload.firstname }, { id: '1234', my: evt.payload.firstname + 2 }]);
+            });
+
+            vb.defineEvent({
+              correlationId: 'correlationId',
+              id: 'id',
+              name: 'name',
+              aggregateId: 'aggregate.id',
+              context: 'context.name',
+              aggregate: 'aggregate.name',
+              payload: 'payload',
+              revision: 'revision',
+              version: 'version',
+              meta: 'meta'
+            });
+
+            vb.defineNotification({
+              correlationId: 'correlationId',
+              id: 'id',
+              action: 'name',
+              collection: 'collection',
+              payload: 'payload',
+              context: 'meta.context.name',
+              aggregate: 'meta.aggregate.name',
+              aggregateId: 'meta.aggregate.id',
+              revision: 'meta.aggregate.revision',
+              eventId: 'meta.event.id',
+              event: 'meta.event.name',
+              meta: 'meta'
+            });
+
+            var vm = {
+              actionOnCommit: 'update',
+              set: function (data) {
+                this.attr = data;
+              },
+              toJSON: function () {
+                return this.attr;
+              }
+            };
+
+            var col = { name: 'dummy',
+              getNewId: function (callback) { callback(null, 'newId'); },
+              loadViewModel: function (id, callback) {
+                vm.id = id;
+                callback(null, vm);
+              },
+              saveViewModel: function (vm, callback) {
+                callback(null);
+              }
+            };
+            vb.useCollection(col);
+
+            var evt = {
+              correlationId: 'cmdId',
+              id: 'evtId',
+              name: 'enteredNewPerson',
+              aggregate: {
+                id: 'aggId',
+                name: 'person'
+              },
+              context: {
+                name: 'hr'
+              },
+              payload: {
+                firstname: 'Jack',
+                lastname: 'Joe'
+              },
+              revision: 1,
+              version: 4,
+              meta: {
+                userId: 'usrId'
+              }
+            };
+
+            vb.denormalize(evt, function (err, notis) {
+              expect(err).not.to.be.ok();
+              expect(notis.length).to.eql(2);
+              expect(notis.length).to.eql(2);
+              expect(notis[0].payload.my).to.eql('Jack');
+              expect(notis[1].payload.my).to.eql('Jack2');
+              expect(notis[0].payload.id).to.eql('newId');
+              expect(notis[1].payload.id).to.eql('1234');
+              expect(notis[0].payload.index).to.eql(0);
+              expect(notis[1].payload.index).to.eql(1);
+
+              expect(evt.deep).not.to.be.ok();
+              done();
+            });
+
+          });
+
+        });
+
+      });
+
     });
 
   });

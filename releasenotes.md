@@ -1,3 +1,6 @@
+## [v1.3.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.2.5...v1.3.0)
+- added executeForEach function for viewBuilders
+
 ## [v1.2.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.2.4...v1.2.5)
 - added payload functionality for eventExtenders
 

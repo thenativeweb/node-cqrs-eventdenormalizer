@@ -483,13 +483,21 @@ A lot of viewmodels can slow down the denormalization process!
 	  vm.set('firstname', data.firstname);
 	  vm.set('lastname', data.lastname);
 	});
-	// optional define a function to that returns a query that will be used as query to find the viewmodels (but do not define the query in the options)
+	// optional define a function that returns a query that will be used as query to find the viewmodels (but do not define the query in the options)
 	//.useAsQuery(function (evt) {
 	//  return { my: evt.payload.my };
 	//});
 	// or async
 	//.useAsQuery(function (evt, callback) {
 	//  callback(null, { my: evt.payload.my });
+	//});
+	// optional define a function that returns a list of items, for each the viewbuilder will run.
+	//.executeForEach(function (evt) {
+	//  return [{ init: 'value1' }, { init: 'value2' }];
+	//});
+	// or async
+	//.executeForEach(function (evt, callback) {
+	//  callback(null, [{ init: 'value1' }, { init: 'value2' }]);
 	//});
 
 ## EventExtender
