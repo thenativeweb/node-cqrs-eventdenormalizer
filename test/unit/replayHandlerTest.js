@@ -126,14 +126,17 @@ describe('replayHandler', function () {
             var called1 = false;
             var called2 = false;
             var called3 = false;
+            var called4 = false;
 
             var evts1 = [];
             var evts2 = [];
             var evts3 = [];
+            var evts4 = [];
 
             var saveRvmsCalled1 = false;
             var saveRvmsCalled2 = false;
             var saveRvmsCalled3 = false;
+            var saveRvmsCalled4 = false;
 
             disp = new EventDispatcher({
               getViewBuilders: function (query) {
@@ -164,6 +167,14 @@ describe('replayHandler', function () {
                       called3 = true;
                       callback(null);
                     }
+                  },{
+                    collection: { noReplay: true, workerId: '33', saveReplayingVms: function (clb) {saveRvmsCalled4 = true; clb(null);} },
+                    workerId: '4',
+                    denormalize: function (evt, callback) {
+                      evts4.push(evt);
+                      called4 = true;
+                      callback(null);
+                    }
                   }];
                 }
               }
@@ -176,6 +187,7 @@ describe('replayHandler', function () {
               expect(called1).to.eql(true);
               expect(called2).to.eql(true);
               expect(called3).to.eql(true);
+              expect(called4).to.eql(false);
 
               expect(evts1[0]).to.eql(evt1);
               expect(evts1[1]).to.eql(evt2);
@@ -184,10 +196,12 @@ describe('replayHandler', function () {
               expect(evts2[1]).to.eql(evt5);
               expect(evts3[0]).to.eql(evt3);
               expect(evts3[1]).to.eql(evt5);
+              expect(evts4.length).to.eql(0);
 
               expect(saveRvmsCalled1).to.eql(true);
               expect(saveRvmsCalled2).to.eql(true);
               expect(saveRvmsCalled3).to.eql(false);
+              expect(saveRvmsCalled4).to.eql(false);
 
               store.get('ctxagg1aggId1', function (err, rev) {
                 expect(err).not.to.be.ok();
