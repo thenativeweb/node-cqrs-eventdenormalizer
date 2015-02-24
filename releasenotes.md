@@ -1,3 +1,6 @@
+## [v1.3.3](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.2...v1.3.3)
+- optimize structureParser
+
 ## [v1.3.2](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.1...v1.3.2)
 - introduce noReplay flag on collection
 
