@@ -1,3 +1,6 @@
+## [v1.3.7](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.6...v1.3.7)
+- update viewmodel dependency
+
 ## [v1.3.6](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.2...v1.3.6)
 - optimize structureParser
 
