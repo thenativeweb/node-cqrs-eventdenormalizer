@@ -1,3 +1,7 @@
+## [v1.3.8](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.7...v1.3.8)
+- update viewmodel dependency
+- add autoCreate option to view builder thanks to [#9](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/9) thanks to [andywer](https://github.com/andywer)
+
 ## [v1.3.7](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.6...v1.3.7)
 - update viewmodel dependency
 
@@ -39,7 +43,7 @@
 - update viewmodel dependency
 
 ## [v1.1.8](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.1.7...v1.1.8)
-- prevent events being denormalized out of order during replayStreamed thanks to [#6](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/#6) thanks to [andywer](https://github.com/andywer)
+- prevent events being denormalized out of order during replayStreamed thanks to [#6](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/6) thanks to [andywer](https://github.com/andywer)
 
 ## [v1.1.7](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.1.6...v1.1.7)
 - added possibility to denormalize multiple viewmodels in same collection with intelligent queries in an async way

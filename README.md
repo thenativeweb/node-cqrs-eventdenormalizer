@@ -446,6 +446,9 @@ But be careful with this!
 	  // optional, if not defined or not found it will generate a new viewmodel with new id
 	  id: 'aggregate.id',
 	
+	  // optional, suppresses auto-creation of new view model if none matching the id can be found, default is true
+    autoCreate: true,
+		
 	  // optional, if not defined it will pass the whole event...
 	  payload: 'payload'
 	}, function (data, vm) { // instead of function you can define
