@@ -1,3 +1,7 @@
+## [v1.3.9](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.8...v1.3.9)
+- update viewmodel dependency
+- added mongodb driver 2.x support
+
 ## [v1.3.8](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.7...v1.3.8)
 - update viewmodel dependency
 - add autoCreate option to view builder thanks to [#9](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/9) thanks to [andywer](https://github.com/andywer)
