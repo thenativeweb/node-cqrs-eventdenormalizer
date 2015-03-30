@@ -1,3 +1,6 @@
+## [v1.3.10](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.9...v1.3.10)
+- correct actionOnCommit handling during replay
+
 ## [v1.3.9](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.8...v1.3.9)
 - update viewmodel dependency
 - added mongodb driver 2.x support
