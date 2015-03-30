@@ -1,3 +1,6 @@
+## [v1.3.11](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.10...v1.3.11)
+- update viewmodel dependency
+
 ## [v1.3.10](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.9...v1.3.10)
 - correct actionOnCommit handling during replay
 
