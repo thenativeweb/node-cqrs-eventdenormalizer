@@ -509,7 +509,7 @@ describe('integration', function () {
           correlationId: 'cmdId',
           name: 'registeredEMailAddress',
           aggregate: {
-            id: '1234',
+            id: '1234'
 //            name: 'person'
           },
           context: {
@@ -778,6 +778,155 @@ describe('integration', function () {
           expect(eventMissingCalled).to.eql(true);
 
           done();
+        });
+
+      });
+
+    });
+
+    describe.only('handling some events multiple times', function () {
+
+      before(function (done) {
+        denorm.clear(done);
+      });
+
+      it('it should work as expected', function (done) {
+
+        var publishedEvents = [];
+        denorm.onEvent(function (evt) {
+          publishedEvents.push(evt);
+        });
+
+        var publishedNotis = [];
+        denorm.onNotification(function (noti) {
+          publishedNotis.push(noti);
+        });
+
+        var evt1 = {
+          id: 'evtIdb',
+          correlationId: 'cmdIdb',
+          name: 'enteredNewPerson',
+          aggregate: {
+            id: '12345678b',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            firstname: 'Jack',
+            lastname: 'Joe',
+            email: 'a@b.c'
+          },
+          revision: 1,
+          version: 2,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        var evt2 = {
+          id: 'evtId2b',
+          correlationId: 'cmdId2b',
+          name: 'registeredEMailAddress',
+          aggregate: {
+            id: '12345678b',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            email: 'd@e.f'
+          },
+          revision: 2,
+          version: 2,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        var evt3 = {
+          id: 'evtId3b',
+          correlationId: 'cmdId3b',
+          name: 'registeredEMailAddress',
+          aggregate: {
+            id: '12345678b',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            email: 'g@h.i'
+          },
+          revision: 3,
+          version: 2,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        var evt4 = {
+          id: 'evtId4b',
+          correlationId: 'cmdId4b',
+          name: 'registeredEMailAddress',
+          aggregate: {
+            id: '12345678b',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            email: 'g@h.i'
+          },
+          revision: 4,
+          version: 2,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        denorm.handle(evt1, function (errs, e, notis) {
+          var count = 1;
+
+          function check () {
+            count++;
+
+            if (count >= 10) {
+              done();
+            }
+          }
+          denorm.handle(evt4, function (errs, e, notis) {
+            check();
+          });
+          denorm.handle(evt3, function (errs, e, notis) {
+            check();
+          });
+          denorm.handle(evt2, function (errs, e, notis) {
+            check();
+          });
+          denorm.handle(evt2, function (errs, e, notis) {
+            check();
+          });
+          denorm.handle(evt2, function (errs, e, notis) {
+            check();
+          });
+          denorm.handle(evt4, function (errs, e, notis) {
+            check();
+          });
+
+          denorm.handle(evt2, function (errs, e, notis) {
+            check();
+          });
+          denorm.handle(evt3, function (errs, e, notis) {
+            check();
+          });
+          denorm.handle(evt4, function (errs, e, notis) {
+            check();
+          });
+
         });
 
       });
