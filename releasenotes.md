@@ -1,3 +1,6 @@
+## [v1.5.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.4.0...v1.5.0)
+- add retry mechanism for viewBuilder
+
 ## [v1.4.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.3.11...v1.4.0)
 - fix revisionGuard when handling duplicate events at the same time
 

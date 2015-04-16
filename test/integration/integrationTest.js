@@ -784,7 +784,7 @@ describe('integration', function () {
 
     });
 
-    describe.only('handling some events multiple times', function () {
+    describe('handling some events multiple times', function () {
 
       before(function (done) {
         denorm.clear(done);
