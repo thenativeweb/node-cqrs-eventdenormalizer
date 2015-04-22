@@ -5,6 +5,48 @@
 Node-cqrs-eventdenormalizer is a node.js module that implements the cqrs pattern.
 It can be very useful as eventdenormalizer component if you work with (d)ddd, cqrs, domain, host, etc.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**
+
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Catch connect ad disconnect events](#catch-connect-ad-disconnect-events)
+  - [Define the event structure](#define-the-event-structure)
+  - [Define the notification structure](#define-the-notification-structure)
+  - [Define the id generator function [optional]](#define-the-id-generator-function-optional)
+    - [you can define a synchronous function](#you-can-define-a-synchronous-function)
+    - [or you can define an asynchronous function](#or-you-can-define-an-asynchronous-function)
+  - [Wire up events [optional]](#wire-up-events-optional)
+    - [you can define a synchronous function](#you-can-define-a-synchronous-function-1)
+    - [or you can define an asynchronous function](#or-you-can-define-an-asynchronous-function-1)
+  - [Wire up notifications [optional]](#wire-up-notifications-optional)
+    - [you can define a synchronous function](#you-can-define-a-synchronous-function-2)
+    - [or you can define an asynchronous function](#or-you-can-define-an-asynchronous-function-2)
+  - [Wire up event missing [optional]](#wire-up-event-missing-optional)
+    - [you can define a synchronous function](#you-can-define-a-synchronous-function-3)
+  - [Define default event extension [optional]](#define-default-event-extension-optional)
+    - [you can define a synchronous function](#you-can-define-a-synchronous-function-4)
+    - [or you can define an asynchronous function](#or-you-can-define-an-asynchronous-function-3)
+  - [Initialization](#initialization)
+  - [Handling an event](#handling-an-event)
+    - [or](#or)
+  - [Request denormalizer information](#request-denormalizer-information)
+- [Components definition](#components-definition)
+  - [Collection](#collection)
+  - [ViewBuilder](#viewbuilder)
+    - [ViewBuilder for multiple viewmodels in a collection](#viewbuilder-for-multiple-viewmodels-in-a-collection)
+  - [EventExtender](#eventextender)
+    - [for a collection (in a collection folder)](#for-a-collection-in-a-collection-folder)
+    - [not for a collection](#not-for-a-collection)
+  - [Replay events](#replay-events)
+    - [streamed](#streamed)
+    - [if you want to clear the readModel before replaying...](#if-you-want-to-clear-the-readmodel-before-replaying)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Installation
 
     npm install cqrs-eventdenormalizer
@@ -17,16 +59,16 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
 	  // [set 1](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/test/integration/fixture/set1) or
 	  // [set 2](https://github.com/adrai/node-cqrs-eventdenormalizer/tree/master/test/integration/fixture/set2)
 	  denormalizerPath: '/path/to/my/files',
-	  
+
 	  // optional, default is 'commandRejected'
 	  // will be used to catch AggregateDestroyedError from cqrs-domain
 	  commandRejectedEventName: 'rejectedCommand',
-	  
+
 	  // optional, default is 800
 	  // if using in scaled systems, this module tries to catch the concurrency issues and
 	  // retries to handle the event after a timeout between 0 and the defined value
 	  retryOnConcurrencyTimeout: 1000,
-	  
+
 	  // optional, default is in-memory
 	  // currently supports: mongodb, redis, tingodb, couchdb, azuretable and inmemory
 	  // hint: [viewmodel](https://github.com/adrai/node-viewmodel#connecting-to-any-repository-mongodb-in-the-example--modewrite)
@@ -40,14 +82,14 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
 	    // username: 'technicalDbUser',                // optional
 	    // password: 'secret'                          // optional
 	  },
-	  
+
 	  // optional, default is in-memory
 	  // currently supports: mongodb, redis, tingodb and inmemory
 	  // hint settings like: [eventstore](https://github.com/adrai/node-eventstore#provide-implementation-for-storage)
 	  revisionGuard: {
 	    queueTimeout: 1000,                         // optional, timeout for non-handled events in the internal in-memory queue
 	    queueTimeoutMaxLoops: 3                     // optional, maximal loop count for non-handled event in the internal in-memory queue
-	  
+
 	    type: 'redis',
 	    host: 'localhost',                          // optional
 	    port: 6379,                                 // optional
@@ -65,26 +107,26 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
 	denormalizer.repository.on('connect', function() {
 	  console.log('repository connected');
 	});
-	
+
 	denormalizer.repository.on('disconnect', function() {
 	  console.log('repository disconnected');
 	});
-	
+
 	// revisionGuardStore
 	denormalizer.revisionGuardStore.on('connect', function() {
 	  console.log('revisionGuardStore connected');
 	});
-	
+
 	denormalizer.revisionGuardStore.on('disconnect', function() {
 	  console.log('revisionGuardStore disconnected');
 	});
-	
-	
+
+
 	// anything (repository or revisionGuardStore)
 	denormalizer.on('connect', function() {
 	  console.log('something connected');
 	});
-	
+
 	denormalizer.on('disconnect', function() {
 	  console.log('something disconnected');
 	});
@@ -98,32 +140,32 @@ The values describes the path to that property in the event message.
 	  // will use the command id as correlationId, so you can match it in the sender
 	  // will be used to copy the correlationId to the notification
 	  correlationId: 'correlationId',
-	
+
 	  // optional, default is 'id'
 	  id: 'id',
-	
+
 	  // optional, default is 'name'
 	  name: 'name',
-	
+
 	  // optional, default is 'aggregate.id'
 	  aggregateId: 'aggregate.id',
-	
+
 	  // optional
 	  context: 'context.name',
-	
+
 	  // optional
 	  aggregate: 'aggregate.name',
-	
+
 	  // optional, default is 'payload'
 	  payload: 'payload',
-	
+
 	  // optional, default is 'revision'
 	  // will represent the aggregate revision, can be used in next command
 	  revision: 'revision',
-	
+
 	  // optional
 	  version: 'version',
-	
+
 	  // optional, if defined the values of the command will be copied to the event (can be used to transport information like userId, etc..)
 	  meta: 'meta'
 	});
@@ -137,38 +179,38 @@ The values describes the path to that property in the notification message.
 	  // will use the command id as correlationId, so you can match it in the sender
 	  // will be used to copy the correlationId from the event
 	  correlationId: 'correlationId',
-	
+
 	  // optional, default is 'id'
 	  id: 'id',
-	
+
 	  // optional, default is 'name'
 	  action: 'name',
-	
+
 	  // optional, default is 'collection'
 	  collection: 'collection',
-	
+
 	  // optional, default is 'payload'
 	  payload: 'payload',
-	
+
 	  // optional, will be copied from event
 	  aggregateId: 'meta.aggregate.id',
-	
+
 	  // optional, will be copied from event
 	  context: 'meta.context.name',
-	
+
 	  // optional, will be copied from event
 	  aggregate: 'meta.aggregate.name',
-	
+
 	  // optional, will be copied from event
 	  // will represent the aggregate revision, can be used in next command
 	  revision: 'meta.aggregate.revision',
-	
+
 	  // optional, will be copied from event
 	  eventId: 'meta.event.id',
-	
+
 	  // optional, will be copied from event
 	  event: 'meta.event.name',
-	
+
 	  // optional, if defined the values of the event will be copied to the notification (can be used to transport information like userId, etc..)
 	  meta: 'meta'
 	});
@@ -258,9 +300,9 @@ The values describes the path to that property in the notification message.
 	denormalizer.init(function (err) {
 	  // this callback is called when all is ready...
 	});
-	
+
 	// or
-	
+
 	denormalizer.init(); // callback is optional
 
 
@@ -394,13 +436,13 @@ After the initialization you can request the denormalizer information:
 	module.exports = require('cqrs-eventdenormalizer').defineCollection({
 	  // optional, default is folder name
     name: 'personDetail'
-	  
+
 	  // optional, default ''
 	  defaultPayload: 'payload',
-	
+
 	  // optional, default false
 	  noReplay: false,
-	
+
 	  // indexes: [ // for mongodb
 	  //   'profileId',
 	  //   // or:
@@ -409,7 +451,7 @@ After the initialization you can request the denormalizer information:
 	  //   { index: {profileId: 1}, options: {} }
 	  // ]
 	},
-	
+
 	// optionally, define some initialization data for new view models...
 	{
 	  emails: ['default@mycomp.org'],
@@ -433,29 +475,29 @@ But be careful with this!
 	  // optional, default is file name without extension,
 	  // if name is '' it will handle all events that matches
 	  name: 'enteredNewPerson',
-	
+
 	  // optional
 	  aggregate: 'person',
-	
+
 	  // optional
 	  context: 'hr',
-	
+
 	  // optional, default is 0
 	  version: 2,
-	
+
 	  // optional, if not defined or not found it will generate a new viewmodel with new id
 	  id: 'aggregate.id',
-	
+
 	  // optional, suppresses auto-creation of new view model if none matching the id can be found, default is true
     autoCreate: true,
-		
+
 	  // optional, if not defined it will pass the whole event...
 	  payload: 'payload'
 	}, function (data, vm) { // instead of function you can define
 	                         // a string with default handling ('create', 'update', 'delete')
 	                         // or function that expects a callback (i.e. function (data, vm, callback) {})
-	  
-	  // if you have multiple concurrent events that targets the same vm, you can catch it like this: 
+
+	  // if you have multiple concurrent events that targets the same vm, you can catch it like this:
 	  if (vm.actionOnCommit === 'create') {
 	  	return this.retry();
 	  	// or
@@ -463,7 +505,7 @@ But be careful with this!
 	  	// or
 	  	//return this.retry({ from: 500, to: 8000 }); // retries to denormalize again in 500-8000ms
 	  }
-	  // and if you pass in a callback, then: 
+	  // and if you pass in a callback, then:
 	  //if (vm.actionOnCommit === 'create') {
 	  //	return this.retry(callback);
 	  //	// or
@@ -471,7 +513,7 @@ But be careful with this!
 	  //	// or
 	  //	//return this.retry({ from: 500, to: 8000 }, callback); // retries to denormalize again in 500-8000ms
 	  //}
-	  
+
 	  vm.set('firstname', data.firstname);
 	  vm.set('lastname', data.lastname);
 	});
@@ -486,19 +528,19 @@ A lot of viewmodels can slow down the denormalization process!
 	  // optional, default is file name without extension,
 	  // if name is '' it will handle all events that matches
 	  name: 'enteredNewPerson',
-	
+
 	  // optional
 	  aggregate: 'person',
-	
+
 	  // optional
 	  context: 'hr',
-	
+
 	  // optional, default is 0
 	  version: 2,
-	
+
 	  // optional, if not defined or not found it will generate a new viewmodel with new id
 	  query: { group: 'admins' },
-	
+
 	  // optional, if not defined it will pass the whole event...
 	  payload: 'payload'
 	}, function (data, vm) { // instead of function you can define
@@ -532,17 +574,17 @@ A lot of viewmodels can slow down the denormalization process!
 	  // optional, default is file name without extension,
 	  // if name is '' it will handle all events that matches
 	  name: 'enteredNewPerson',
-	
+
 	  // optional
 	  aggregate: 'person',
-	
+
 	  // optional
 	  context: 'hr',
-	
+
 	  // optional, default is 0
 	  // if set to -1, it will ignore the version
 	  version: 2//,
-	
+
 	  // optional, if not defined it will pass the whole event...
 	  // payload: 'payload'
 	}, function (evt, col, callback) {
@@ -557,20 +599,20 @@ A lot of viewmodels can slow down the denormalization process!
 	  // optional, default is file name without extension,
 	  // if name is '' it will handle all events that matches
 	  name: 'enteredNewPerson',
-	
+
 	  // optional
 	  aggregate: 'person',
-	
+
 	  // optional
 	  context: 'hr',
-	
+
 	  // optional, default is 0
 	  // if set to -1, it will ignore the version
 	  version: 2,
-	
+
 	  // if defined it will load the viewmodel
 	  id: 'payload.id'//,
-	
+
 	  // optional, if not defined it will pass the whole event...
 	  // payload: 'payload'
 	},
@@ -585,20 +627,20 @@ A lot of viewmodels can slow down the denormalization process!
 	  // optional, default is file name without extension,
 	  // if name is '' it will handle all events that matches
 	  name: 'enteredNewPerson',
-	
+
 	  // optional
 	  aggregate: 'person',
-	
+
 	  // optional
 	  context: 'hr',
-	
+
 	  // optional, default is 0
 	  // if set to -1, it will ignore the version
 	  version: 2,
-	
+
 	  // if defined it will load the viewmodel
 	  id: 'payload.id'//,
-	
+
 	  // optional, if not defined it will pass the whole event...
 	  // payload: 'payload'
 	},
@@ -613,17 +655,17 @@ A lot of viewmodels can slow down the denormalization process!
 	  // optional, default is file name without extension,
 	  // if name is '' it will handle all events that matches
 	  name: 'enteredNewPerson',
-	
+
 	  // optional
 	  aggregate: 'person',
-	
+
 	  // optional
 	  context: 'hr',
-	
+
 	  // optional, default is 0
 	  // if set to -1, it will ignore the version
 	  version: 2//,
-	
+
 	  // optional, if not defined it will pass the whole event...
 	  // payload: 'payload'
 	}, function (evt) {
@@ -637,17 +679,17 @@ A lot of viewmodels can slow down the denormalization process!
 	  // optional, default is file name without extension,
 	  // if name is '' it will handle all events that matches
 	  name: 'enteredNewPerson',
-	
+
 	  // optional
 	  aggregate: 'person',
-	
+
 	  // optional
 	  context: 'hr',
-	
+
 	  // optional, default is 0
 	  // if set to -1, it will ignore the version
 	  version: 2//,
-	
+
 	  // optional, if not defined it will pass the whole event...
 	  // payload: 'payload'
 	}, function (evt, callback) {
@@ -667,7 +709,7 @@ Replay whenever you want...
 or when catching some events:
 
 	denormalizer.onEventMissing(function (info, evt) {
-	
+
 	  // grab the missing events, depending from info values...
 	  // info.aggregateId
 	  // info.aggregateRevision
@@ -678,21 +720,21 @@ or when catching some events:
 	  denormalizer.handle(missingEvent, function (err) {
 	    if (err) { console.log(err); }
 	  });
-	
+
 	});
 
 ### streamed
 
 	denormalizer.replayStreamed(function (replay, done) {
-	
+
 	  replay(evt1);
 	  replay(evt2);
 	  replay(evt3);
-	
+
 	  done(function (err) {
 	    if (err) { console.log(err); }
 	  });
-	
+
 	});
 
 ### if you want to clear the readModel before replaying...
