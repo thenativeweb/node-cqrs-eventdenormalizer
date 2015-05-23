@@ -50,6 +50,7 @@ describe('denormalizer', function () {
         expect(denorm.defaultEventExtension).to.be.a('function');
         expect(denorm.init).to.be.a('function');
         expect(denorm.handle).to.be.a('function');
+        expect(denorm.getLastEvent).to.be.a('function');
 
         expect(denorm.options.retryOnConcurrencyTimeout).to.eql(800);
         expect(denorm.options.commandRejectedEventName).to.eql('commandRejected');

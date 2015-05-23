@@ -1,3 +1,7 @@
+## [v1.6.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.5.1...v1.6.0)
+- when using revisionGuard, always save the last event
+- when using revisionGuard, added possibility to fetch the last denormalized event
+
 ## [v1.5.1](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.5.0...v1.5.1)
 - little fix
 

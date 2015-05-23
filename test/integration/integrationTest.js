@@ -895,7 +895,13 @@ describe('integration', function () {
             count++;
 
             if (count >= 10) {
-              done();
+              denorm.getLastEvent(function (err, evt) {
+                expect(err).not.be.ok();
+
+                expect(evt.revision).to.eql(4);
+
+                done();
+              });
             }
           }
           denorm.handle(evt4, function (errs, e, notis) {

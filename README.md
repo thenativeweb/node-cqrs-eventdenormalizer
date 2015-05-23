@@ -723,6 +723,16 @@ or when catching some events:
 
 	});
 
+or depending on the last guarded event:
+
+	denormalizer.getLastEvent(function (err, evt) {
+		
+	  if (event.occurredAt < Date.now()) {
+	  	// ...
+	  }
+
+	});
+
 ### streamed
 
 	denormalizer.replayStreamed(function (replay, done) {
