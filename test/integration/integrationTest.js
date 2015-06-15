@@ -14,9 +14,9 @@ describe('integration', function () {
         correlationId: 'correlationId',
         id: 'id',
         name: 'name',
-        aggregateId: 'aggregate.id',
-        context: 'context.name',
-        aggregate: 'aggregate.name',
+        aggregateId: 'aggregateId',
+        context: 'contextName',
+        aggregate: 'aggregateName',
         payload: 'payload',
         revision: 'revision',
         version: 'version',
@@ -256,13 +256,9 @@ describe('integration', function () {
           id: 'evtId',
           correlationId: 'cmdId',
           name: 'enteredNewPerson',
-          aggregate: {
-            id: '1234',
-            name: 'person'
-          },
-          context: {
-            name: 'hr'
-          },
+          aggregateId: '1234',
+          aggregateName: 'person',
+          contextName: 'hr',
           payload: {
             firstname: 'Jack',
             lastname: 'Joe',
