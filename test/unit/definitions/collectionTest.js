@@ -800,8 +800,8 @@ describe('collection definition', function () {
             };
 
             col.isReplaying = true;
-            col.replayingVms['423'] = { id: '423', cached: true };
-            col.replayingVmsToDelete['5123'] = { id: '5123', cached: true };
+            col.replayingVms['423'] = { id: '423', cached: true, actionOnCommitForReplay: 'create' };
+            col.replayingVmsToDelete['5123'] = { id: '5123', cached: true, actionOnCommitForReplay: 'delete' };
             col.saveReplayingVms(function (err) {
               expect(err).not.to.be.ok();
               expect(commitCalled.length).to.eql(2);
