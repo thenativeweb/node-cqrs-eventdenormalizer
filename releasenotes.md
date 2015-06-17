@@ -1,3 +1,6 @@
+## [v1.7.2](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.1...v1.7.2)
+- filter null notifications
+
 ## [v1.7.1](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.0...v1.7.1)
 - fix replay handling caused by introduction of shouldHandle
 
