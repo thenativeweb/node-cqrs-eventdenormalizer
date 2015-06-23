@@ -33,7 +33,6 @@ describe('collection definition', function () {
       expect(col.useRepository).to.be.a('function');
       expect(col.addViewBuilder).to.be.a('function');
       expect(col.addEventExtender).to.be.a('function');
-      expect(col.getViewBuilder).to.be.a('function');
       expect(col.getViewBuilders).to.be.a('function');
       expect(col.getEventExtender).to.be.a('function');
       expect(col.getEventExtenders).to.be.a('function');
@@ -238,61 +237,62 @@ describe('collection definition', function () {
 
         it('it should work as expected', function () {
 
-          var ex0 = col.getViewBuilder({ name: 'someEvtName' });
-          expect(ex0).not.to.be.ok();
+          var ex0 = col.getViewBuilders({ name: 'someEvtName' });
+          expect(ex0.length).to.eql(0);
 
-          var ex1 = col.getViewBuilder({ name: 'evt1', version: 3 });
-          expect(ex1).not.to.be.ok();
+          var ex1 = col.getViewBuilders({ name: 'evt1', version: 3 });
+          expect(ex1.length).to.eql(0);
 
-          var ex2 = col.getViewBuilder({ name: 'evt1', version: 0 });
-          expect(ex2.name).to.eql('evt1');
-          expect(ex2.version).to.eql(0);
+          var ex2 = col.getViewBuilders({ name: 'evt1', version: 0 });
+          expect(ex2.length).to.eql(1);
+          expect(ex2[0].name).to.eql('evt1');
+          expect(ex2[0].version).to.eql(0);
 
-          var ex3 = col.getViewBuilder({ name: 'evt2', version: 0 });
-          expect(ex3.name).to.eql('evt2');
-          expect(ex3.version).to.eql(0);
+          var ex3 = col.getViewBuilders({ name: 'evt2', version: 0 });
+          expect(ex3[0].name).to.eql('evt2');
+          expect(ex3[0].version).to.eql(0);
 
-          var ex4 = col.getViewBuilder({ name: 'evt2', version: 1 });
-          expect(ex4.name).to.eql('evt2');
-          expect(ex4.version).to.eql(1);
+          var ex4 = col.getViewBuilders({ name: 'evt2', version: 1 });
+          expect(ex4[0].name).to.eql('evt2');
+          expect(ex4[0].version).to.eql(1);
 
-          var ex5 = col.getViewBuilder({ name: 'evt2', version: 2 });
-          expect(ex5.name).to.eql('evt2');
-          expect(ex5.version).to.eql(2);
+          var ex5 = col.getViewBuilders({ name: 'evt2', version: 2 });
+          expect(ex5[0].name).to.eql('evt2');
+          expect(ex5[0].version).to.eql(2);
 
-          var ex6 = col.getViewBuilder({ name: 'evt3', version: 0 });
-          expect(ex6.name).to.eql('evt3');
-          expect(ex6.aggregate).not.to.be.ok();
-          expect(ex6.context).not.to.be.ok();
-          expect(ex6.version).to.eql(0);
+          var ex6 = col.getViewBuilders({ name: 'evt3', version: 0 });
+          expect(ex6[0].name).to.eql('evt3');
+          expect(ex6[0].aggregate).not.to.be.ok();
+          expect(ex6[0].context).not.to.be.ok();
+          expect(ex6[0].version).to.eql(0);
 
-          var ex7 = col.getViewBuilder({ name: 'evt3' });
-          expect(ex7.name).to.eql('evt3');
-          expect(ex7.aggregate).not.to.be.ok();
-          expect(ex7.context).not.to.be.ok();
-          expect(ex7.version).to.eql(0);
+          var ex7 = col.getViewBuilders({ name: 'evt3' });
+          expect(ex7[0].name).to.eql('evt3');
+          expect(ex7[0].aggregate).not.to.be.ok();
+          expect(ex7[0].context).not.to.be.ok();
+          expect(ex7[0].version).to.eql(0);
 
-          var ex8 = col.getViewBuilder({ name: 'evt2' });
-          expect(ex8.name).to.eql('evt2');
-          expect(ex8.version).to.eql(0);
+          var ex8 = col.getViewBuilders({ name: 'evt2' });
+          expect(ex8[0].name).to.eql('evt2');
+          expect(ex8[0].version).to.eql(0);
 
-          var ex9 = col.getViewBuilder({ name: 'evt3', aggregate: 'agg' });
-          expect(ex9.name).to.eql('evt3');
-          expect(ex9.aggregate).to.eql('agg');
-          expect(ex9.context).not.to.be.ok();
-          expect(ex9.version).to.eql(0);
+          var ex9 = col.getViewBuilders({ name: 'evt3', aggregate: 'agg' });
+          expect(ex9[0].name).to.eql('evt3');
+          expect(ex9[0].aggregate).to.eql('agg');
+          expect(ex9[0].context).not.to.be.ok();
+          expect(ex9[0].version).to.eql(0);
 
-          var ex10 = col.getViewBuilder({ name: 'evt3', aggregate: 'agg', context: 'ctx' });
-          expect(ex10.name).to.eql('evt3');
-          expect(ex10.aggregate).to.eql('agg');
-          expect(ex10.context).to.eql('ctx');
-          expect(ex10.version).to.eql(0);
+          var ex10 = col.getViewBuilders({ name: 'evt3', aggregate: 'agg', context: 'ctx' });
+          expect(ex10[0].name).to.eql('evt3');
+          expect(ex10[0].aggregate).to.eql('agg');
+          expect(ex10[0].context).to.eql('ctx');
+          expect(ex10[0].version).to.eql(0);
 
-          var ex11 = col.getViewBuilder({ name: 'evt3', context: 'ctx' });
-          expect(ex11.name).to.eql('evt3');
-          expect(ex11.aggregate).to.eql('agg');
-          expect(ex11.context).to.eql('ctx');
-          expect(ex11.version).to.eql(0);
+          var ex11 = col.getViewBuilders({ name: 'evt3', context: 'ctx' });
+          expect(ex11[0].name).to.eql('evt3');
+          expect(ex11[0].aggregate).to.eql('agg');
+          expect(ex11[0].context).to.eql('ctx');
+          expect(ex11[0].version).to.eql(0);
 
         });
 

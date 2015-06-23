@@ -1,3 +1,6 @@
+## [v1.7.3](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.2...v1.7.3)
+- because of shouldHandle, return all possible viewBuilders (not just one)
+
 ## [v1.7.2](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.1...v1.7.2)
 - filter null notifications
 
