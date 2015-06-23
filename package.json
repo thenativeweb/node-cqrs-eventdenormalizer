@@ -19,7 +19,7 @@
     "node-uuid": "1.4.3",
     "sift": "1.1.1",
     "tolerance": "1.0.0",
-    "viewmodel": "1.3.3"
+    "viewmodel": "1.3.4"
   },
   "devDependencies": {
     "cradle": ">=0.6.7",

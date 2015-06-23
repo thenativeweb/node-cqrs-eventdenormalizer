@@ -1,3 +1,6 @@
+## [v1.7.4](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.3...v1.7.4)
+- update viewmodel dependency
+
 ## [v1.7.3](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.2...v1.7.3)
 - because of shouldHandle, return all possible viewBuilders (not just one)
 
