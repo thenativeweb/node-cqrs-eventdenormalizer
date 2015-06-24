@@ -1,3 +1,6 @@
+## [v1.7.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.4...v1.7.5)
+- fix alreadyInQueue check
+
 ## [v1.7.4](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.3...v1.7.4)
 - update viewmodel dependency
 
