@@ -1,4 +1,4 @@
-## [v1.7.7](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.5...v1.7.7)
+## [v1.7.6](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.5...v1.7.6)
 - better catch for userland errors
 
 ## [v1.7.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.4...v1.7.5)
