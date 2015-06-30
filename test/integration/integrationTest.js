@@ -46,7 +46,10 @@ describe('integration', function () {
         denorm.getInfo();
       }).to.throwError('/init');
 
-      denorm.init(done);
+      denorm.init(function (err, warns) {
+        expect(warns).not.to.be.ok();
+        done(err);
+      });
     });
 
     describe('requesting information', function () {

@@ -1,3 +1,6 @@
+## [v1.7.7](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.6...v1.7.7)
+- expose warnings during initialization
+
 ## [v1.7.6](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.5...v1.7.6)
 - better catch for userland errors
 
