@@ -20,7 +20,7 @@
     "sift": "2.0.0",
     "tolerance": "1.0.0",
     "trycatch": "1.5.11",
-    "viewmodel": "1.3.4"
+    "viewmodel": "1.4.0"
   },
   "devDependencies": {
     "cradle": ">=0.6.7",
