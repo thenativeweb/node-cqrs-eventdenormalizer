@@ -1,4 +1,4 @@
-## [v1.7.10](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.9...v1.7.10)
+## [v1.7.11](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.9...v1.7.11)
 - catch throwing errors when calling callback
 
 ## [v1.7.9](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.7...v1.7.9)
