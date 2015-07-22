@@ -1,3 +1,6 @@
+## [v1.7.12](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.11...v1.7.12)
+- do not use defaultPayload of collection for event extenders
+
 ## [v1.7.11](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.9...v1.7.11)
 - catch throwing errors when calling callback
 
