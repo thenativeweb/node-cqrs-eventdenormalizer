@@ -1,3 +1,6 @@
+## [v1.8.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.12...v1.8.0)
+- introduce priority for viewBuilder
+
 ## [v1.7.12](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.11...v1.7.12)
 - do not use defaultPayload of collection for event extenders
 

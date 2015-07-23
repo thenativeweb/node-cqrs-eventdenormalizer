@@ -381,13 +381,15 @@ After the initialization you can request the denormalizer information:
 	  //           "name": "enteredNewPerson",
 	  //           "aggregate": "person",
 	  //           "context": "hr",
-	  //           "version": 2
+	  //           "version": 2,
+      //           "priority": 223
 	  //         },
 	  //         {
 	  //           "name": "registeredEMailAddress",
 	  //           "aggregate": "person",
 	  //           "context": "hr",
-	  //           "version": 2
+	  //           "version": 2,
+      //           "priority": 312
 	  //         }
 	  //       ],
 	  //       "eventExtenders": [
@@ -406,13 +408,15 @@ After the initialization you can request the denormalizer information:
 	  //           "name": "enteredNewPerson",
 	  //           "aggregate": "person",
 	  //           "context": "hr",
-	  //           "version": 2
+	  //           "version": 2,
+      //           "priority": 110
 	  //         },
 	  //         {
 	  //           "name": "registeredEMailAddress",
 	  //           "aggregate": "person",
 	  //           "context": "hr",
-	  //           "version": 2
+	  //           "version": 2,
+      //           "priority": Infinity
 	  //         }
 	  //       ],
 	  //       "eventExtenders": []
@@ -490,10 +494,13 @@ But be careful with this!
 	  id: 'aggregate.id',
 
 	  // optional, suppresses auto-creation of new view model if none matching the id can be found, default is true
-    autoCreate: true,
+      autoCreate: true,
 
 	  // optional, if not defined it will pass the whole event...
-	  payload: 'payload'
+	  payload: 'payload',
+	  
+	  // optional, default Infinity, all view-builders will be sorted by this value
+      priority: 1
 	}, function (data, vm) { // instead of function you can define
 	                         // a string with default handling ('create', 'update', 'delete')
 	                         // or function that expects a callback (i.e. function (data, vm, callback) {})
@@ -543,7 +550,10 @@ A lot of viewmodels can slow down the denormalization process!
 	  query: { group: 'admins' },
 
 	  // optional, if not defined it will pass the whole event...
-	  payload: 'payload'
+	  payload: 'payload',
+	  
+	  // optional, default Infinity, all view-builders will be sorted by this value
+	  priority: 1
 	}, function (data, vm) { // instead of function you can define
 	                         // a string with default handling ('create', 'update', 'delete')
 	                         // or function that expects a callback (i.e. function (data, vm, callback) {})handling ('create', 'update', 'delete')
