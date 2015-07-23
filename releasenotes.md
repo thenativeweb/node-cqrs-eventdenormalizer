@@ -1,3 +1,6 @@
+## [v1.8.1](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.8.0...v1.8.1)
+- update viewmodel dependency
+
 ## [v1.8.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.7.12...v1.8.0)
 - introduce priority for viewBuilder
 
