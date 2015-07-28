@@ -203,6 +203,7 @@ describe('collection definition', function () {
         col.addViewBuilder({ name: 'evt3', version: 0, aggregate: null, context: null, useCollection: function () {} });
         col.addViewBuilder({ name: 'evt3', version: 0, aggregate: 'agg', context: null, useCollection: function () {} });
         col.addViewBuilder({ name: 'evt3', version: 0, aggregate: 'agg', context: 'ctx', useCollection: function () {} });
+        col.addViewBuilder({ name: '', version: 0, aggregate: 'aggOnly', context: null, useCollection: function () {} });
       });
 
       describe('calling getViewBuilders', function () {
@@ -210,7 +211,7 @@ describe('collection definition', function () {
         it('it should return all viewBuilders', function () {
 
           var viewBuilders = col.getViewBuilders();
-          expect(viewBuilders.length).to.eql(7);
+          expect(viewBuilders.length).to.eql(8);
           expect(viewBuilders[0].name).to.eql('evt1');
           expect(viewBuilders[0].version).to.eql(0);
           expect(viewBuilders[1].name).to.eql('evt2');
@@ -228,6 +229,9 @@ describe('collection definition', function () {
           expect(viewBuilders[6].aggregate).to.eql('agg');
           expect(viewBuilders[6].context).to.eql('ctx');
           expect(viewBuilders[6].version).to.eql(0);
+          expect(viewBuilders[7].name).to.eql('');
+          expect(viewBuilders[7].aggregate).to.eql('aggOnly');
+          expect(viewBuilders[7].version).to.eql(0);
 
         });
 
@@ -237,7 +241,7 @@ describe('collection definition', function () {
 
         it('it should work as expected', function () {
 
-          var ex0 = col.getViewBuilders({ name: 'someEvtName' });
+          var ex0 = col.getViewBuilders({ name: 'someEvtName', aggregate: 'wrong' });
           expect(ex0.length).to.eql(0);
 
           var ex1 = col.getViewBuilders({ name: 'evt1', version: 3 });
@@ -293,6 +297,19 @@ describe('collection definition', function () {
           expect(ex11[0].aggregate).to.eql('agg');
           expect(ex11[0].context).to.eql('ctx');
           expect(ex11[0].version).to.eql(0);
+
+          var ex12 = col.getViewBuilders({ name: 'evt3', aggregate: 'aggOnly' });
+          expect(ex12[0].name).to.eql('');
+          expect(ex12[0].aggregate).to.eql('aggOnly');
+          expect(ex12[0].context).not.to.be.ok();
+          expect(ex12[0].version).to.eql(0);
+
+          var ex13 = col.getViewBuilders({ name: 'someEvtName' });
+          expect(ex13.length).to.eql(1);
+          expect(ex13[0].name).to.eql('');
+          expect(ex13[0].aggregate).to.eql('aggOnly');
+          expect(ex13[0].context).not.to.be.ok();
+          expect(ex13[0].version).to.eql(0);
 
         });
 

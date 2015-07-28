@@ -1,3 +1,7 @@
+## [v1.8.4](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.8.3...v1.8.4)
+- optimization for `npm link`'ed development
+- viewbuilder for multiple events [#24](https://github.com/adrai/node-cqrs-eventdenormalizer/issues/24) thanks to [TomKaltz](https://github.com/TomKaltz)
+
 ## [v1.8.3](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.8.0...v1.8.3)
 - update viewmodel dependency
 
