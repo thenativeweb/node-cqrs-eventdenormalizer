@@ -1,3 +1,6 @@
+## [v1.8.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.8.4...v1.8.5)
+- fix defaultPayload stuff for viewbuilder
+
 ## [v1.8.4](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.8.3...v1.8.4)
 - optimization for `npm link`'ed development
 - viewbuilder for multiple events [#24](https://github.com/adrai/node-cqrs-eventdenormalizer/issues/24) thanks to [TomKaltz](https://github.com/TomKaltz)
