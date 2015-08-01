@@ -913,9 +913,13 @@ describe('viewBuilder definition', function () {
 
           var vb = api.defineViewBuilder({}, function (evt, vm, clb) {
             expect(this.retry).to.be.a('function');
+            expect(this.remindMe).to.be.a('function');
+            expect(this.getReminder).to.be.a('function');
             var self = this;
             setTimeout(function () {
               expect(self.retry).to.be.a('function');
+              expect(self.remindMe).to.be.a('function');
+              expect(self.getReminder).to.be.a('function');
               evt.deep = 'duup';
               vm.set(evt.payload);
               clb();

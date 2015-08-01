@@ -64,15 +64,19 @@ describe('integration', function () {
         });
 
         expect(found.name).to.eql('person');
-        expect(found.viewBuilders.length).to.eql(2);
+        expect(found.viewBuilders.length).to.eql(3);
         expect(found.viewBuilders[0].name).to.eql('enteredNewPerson');
         expect(found.viewBuilders[0].aggregate).to.eql('person');
         expect(found.viewBuilders[0].context).to.eql('hr');
         expect(found.viewBuilders[0].version).to.eql(2);
-        expect(found.viewBuilders[1].name).to.eql('registeredEMailAddress');
+        expect(found.viewBuilders[1].name).to.eql('personLeaved');
         expect(found.viewBuilders[1].aggregate).to.eql('person');
         expect(found.viewBuilders[1].context).to.eql('hr');
-        expect(found.viewBuilders[1].version).to.eql(2);
+        expect(found.viewBuilders[1].version).to.eql(0);
+        expect(found.viewBuilders[2].name).to.eql('registeredEMailAddress');
+        expect(found.viewBuilders[2].aggregate).to.eql('person');
+        expect(found.viewBuilders[2].context).to.eql('hr');
+        expect(found.viewBuilders[2].version).to.eql(2);
         expect(found.eventExtenders.length).to.eql(1);
         expect(found.eventExtenders[0].name).to.eql('enteredNewPerson');
         expect(found.eventExtenders[0].aggregate).to.eql('person');
@@ -1279,6 +1283,82 @@ describe('integration', function () {
               });
             });
           });
+        });
+
+      });
+
+    });
+
+    describe('handling an event that will be handled by 1 viewBuilder and an onAfterCommit function', function () {
+
+      it('it should publish 1 notification and it should callback without an error', function (done) {
+
+        var publishedEvents = [];
+        denorm.onEvent(function (evt) {
+          publishedEvents.push(evt);
+        });
+
+        var publishedNotis = [];
+        denorm.onNotification(function (noti) {
+          publishedNotis.push(noti);
+        });
+
+        var evt = {
+          id: 'evtId',
+          correlationId: 'cmdId',
+          name: 'personLeaved',
+          aggregate: {
+            id: '1234special'
+//            name: 'person'
+          },
+          context: {
+//            name: 'hr'
+          },
+          payload: {
+            special: 'important value'
+          },
+          revision: 1,
+          version: 0,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        denorm.handle(evt, function (errs, e, notis) {
+          expect(errs).not.to.be.ok();
+          expect(e).to.eql(evt);
+          expect(notis).to.be.an('array');
+          expect(notis.length).to.eql(1);
+          expect(notis[0].name).to.eql('create');
+          expect(notis[0].collection).to.eql('person');
+          expect(notis[0].payload.sp).to.eql('important value');
+          expect(notis[0].id).to.be.a('string');
+          expect(notis[0].correlationId).to.eql('cmdId');
+          expect(notis[0].meta.event.id).to.eql('evtId');
+          expect(notis[0].meta.event.name).to.eql('personLeaved');
+          expect(notis[0].meta.userId).to.eql('userId');
+          expect(notis[0].meta.aggregate.id).to.eql('1234special');
+          expect(notis[0].meta.aggregate.name).not.to.be.ok();
+          expect(notis[0].meta.aggregate.revision).to.eql(1);
+          expect(notis[0].meta.context.name).not.to.be.ok();
+
+          expect(publishedEvents.length).to.eql(1);
+          expect(publishedEvents[0]).to.eql(evt);
+          expect(publishedNotis.length).to.eql(1);
+          expect(publishedNotis[0].name).to.eql('create');
+          expect(publishedNotis[0].collection).to.eql('person');
+          expect(publishedNotis[0].payload.sp).to.eql('important value');
+          expect(publishedNotis[0].id).to.be.a('string');
+          expect(publishedNotis[0].correlationId).to.eql('cmdId');
+          expect(publishedNotis[0].meta.event.id).to.eql('evtId');
+          expect(publishedNotis[0].meta.event.name).to.eql('personLeaved');
+          expect(publishedNotis[0].meta.userId).to.eql('userId');
+          expect(publishedNotis[0].meta.aggregate.id).to.eql('1234special');
+          expect(publishedNotis[0].meta.aggregate.name).not.to.be.ok();
+          expect(publishedNotis[0].meta.aggregate.revision).to.eql(1);
+          expect(publishedNotis[0].meta.context.name).not.to.be.ok();
+
+          done();
         });
 
       });

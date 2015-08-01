@@ -559,6 +559,8 @@ A lot of viewmodels can slow down the denormalization process!
 	                         // or function that expects a callback (i.e. function (data, vm, callback) {})handling ('create', 'update', 'delete')
 	  vm.set('firstname', data.firstname);
 	  vm.set('lastname', data.lastname);
+	  //this.remindMe({ that: 'important value' });
+	  //this.retry();
 	});
 	// optional define a function that returns a query that will be used as query to find the viewmodels (but do not define the query in the options)
 	//.useAsQuery(function (evt) {
@@ -584,6 +586,20 @@ A lot of viewmodels can slow down the denormalization process!
 	// or
 	//.defineShouldHandle(function (evt, vm, callback) {
 	//  callback(null, true');
+	//});
+	// 
+	// optional define a function that checks if an event should be handled
+	//.onAfterCommit(function (evt, vm) {
+	//  //var memories = this.getReminder();
+	//  //console.log(memories.that); // 'important value'
+	//  //doSomethingStrange()
+	//});
+	// or
+	//.onAfterCommit(function (evt, vm, callback) {
+	//  var memories = this.getReminder();
+	//  //console.log(memories.that); // 'important value'
+	//  // doSomethingStrange(callback)
+	//  callback(memories.that === 'important value' ? null : new Error('important value not set'));
 	//});
 
 ## EventExtender

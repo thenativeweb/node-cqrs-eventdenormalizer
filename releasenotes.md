@@ -1,3 +1,6 @@
+## [v1.9.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.8.5...v1.9.0)
+- viewbuilder: introduce onAfterCommit function
+
 ## [v1.8.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.8.4...v1.8.5)
 - fix defaultPayload stuff for viewbuilder
 
