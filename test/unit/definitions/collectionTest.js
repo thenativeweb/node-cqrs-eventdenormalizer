@@ -512,7 +512,7 @@ describe('collection definition', function () {
               var orgRepo = col.repository;
               col.repository = {
                 get: function (id, clb) {
-                  clb(null, {theId: id, has: function () { return true }});
+                  clb(null, {theId: id, has: function () { return true }, toJSON: function () { return { theId: id }; }});
                 }
               };
               col.isReplaying = true;
@@ -539,7 +539,7 @@ describe('collection definition', function () {
               var orgRepo = col.repository;
               col.repository = {
                 get: function (id, clb) {
-                  clb(null, {theId: id, has: function () { return true }});
+                  clb(null, {theId: id, has: function () { return true }, toJSON: function () { return { theId: id }; }});
                 }
               };
               col.isReplaying = true;
@@ -629,11 +629,11 @@ describe('collection definition', function () {
               col.repository = {
                 find: function (query, queryOpt, clb) {
                   expect(query.id).to.eql('8372');
-                  clb(null, [{id: '8372', has: function () { return true }}]);
+                  clb(null, [{id: '8372', has: function () { return true }, toJSON: function () { return { id: '8372' }; }}]);
                 }
               };
               col.isReplaying = true;
-              col.replayingVms['8372'] = { id: '8372', cached: true };
+              col.replayingVms['8372'] = { id: '8372', cached: true, toJSON: function () { return { id: '8372' }; } };
               col.findViewModels({ id: '8372' }, function (err, vms) {
                 expect(err).not.to.be.ok();
                 expect(vms.length).to.eql(1);
