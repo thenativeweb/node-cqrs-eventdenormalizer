@@ -1,3 +1,6 @@
+## [v1.9.3](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.2...v1.9.3)
+- update some deps
+
 ## [v1.9.2](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.1...v1.9.2)
 - fix replay handling when fetching by query
 
