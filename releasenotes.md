@@ -1,3 +1,6 @@
+## [v1.9.4](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.3...v1.9.4)
+- warn log when async try catch
+
 ## [v1.9.3](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.2...v1.9.3)
 - update some deps
 
