@@ -79,6 +79,7 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
 	    port: 27017,                                // optional
 	    dbName: 'readmodel',                        // optional
 	    timeout: 10000                              // optional
+      // authSource: 'authedicationDatabase',        // optional
 	    // username: 'technicalDbUser',                // optional
 	    // password: 'secret'                          // optional
 	  },
@@ -498,7 +499,7 @@ But be careful with this!
 
 	  // optional, if not defined it will pass the whole event...
 	  payload: 'payload',
-	  
+
 	  // optional, default Infinity, all view-builders will be sorted by this value
       priority: 1
 	}, function (data, vm) { // instead of function you can define
@@ -551,7 +552,7 @@ A lot of viewmodels can slow down the denormalization process!
 
 	  // optional, if not defined it will pass the whole event...
 	  payload: 'payload',
-	  
+
 	  // optional, default Infinity, all view-builders will be sorted by this value
 	  priority: 1
 	}, function (data, vm) { // instead of function you can define
@@ -578,7 +579,7 @@ A lot of viewmodels can slow down the denormalization process!
 	//.executeForEach(function (evt, callback) {
 	//  callback(null, [{ init: 'value1' }, { init: 'value2' }]);
 	//});
-	// 
+	//
 	// optional define a function that checks if an event should be handled
 	//.defineShouldHandle(function (evt, vm) {
 	//  return true;
@@ -587,7 +588,7 @@ A lot of viewmodels can slow down the denormalization process!
 	//.defineShouldHandle(function (evt, vm, callback) {
 	//  callback(null, true');
 	//});
-	// 
+	//
 	// optional define a function that checks if an event should be handled
 	//.onAfterCommit(function (evt, vm) {
 	//  //var memories = this.getReminder();
@@ -762,7 +763,7 @@ or when catching some events:
 or depending on the last guarded event:
 
 	denormalizer.getLastEvent(function (err, evt) {
-		
+
 	  if (event.occurredAt < Date.now()) {
 	  	// ...
 	  }

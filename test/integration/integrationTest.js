@@ -1118,6 +1118,219 @@ describe('integration', function () {
 
     });
 
+    describe('replaying some events in parts', function () {
+
+      before(function (done) {
+        denorm.clear(done);
+      });
+
+      it('it should work as expected', function (done) {
+
+        var publishedEvents = [];
+        denorm.onEvent(function (evt) {
+          publishedEvents.push(evt);
+        });
+
+        var publishedNotis = [];
+        denorm.onNotification(function (noti) {
+          publishedNotis.push(noti);
+        });
+
+        var evt1 = {
+          id: 'evtIdp',
+          correlationId: 'cmdIdp',
+          name: 'enteredNewPerson',
+          aggregate: {
+            id: '12345678p',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            firstname: 'Jack',
+            lastname: 'Joe',
+            email: 'a@b.c'
+          },
+          revision: 1,
+          version: 2,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        var evt2 = {
+          id: 'evtId2p',
+          correlationId: 'cmdId2p',
+          name: 'registeredEMailAddress',
+          aggregate: {
+            id: '12345678p',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            email: 'd@e.f'
+          },
+          revision: 2,
+          version: 2,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        var evt3 = {
+          id: 'evtId3p',
+          correlationId: 'cmdId3p',
+          name: 'registeredEMailAddress',
+          aggregate: {
+            id: '12345678p',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            email: 'g@h.i'
+          },
+          revision: 3,
+          version: 2,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        var evt4 = {
+          id: 'evtId4p',
+          correlationId: 'cmdId4p',
+          name: 'registeredEMailAddress',
+          aggregate: {
+            id: '12345678p',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            email: 'g@h.i2'
+          },
+          revision: 4,
+          version: 2,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        denorm.replayStreamed(function (replay, finished) {
+
+          replay(evt1);
+          replay(evt2);
+
+          process.nextTick(function () {
+            finished(function (err) {
+              expect(err).not.to.be.ok();
+
+              denorm.replayStreamed(function (replay, finished) {
+
+                replay(evt3);
+
+                finished(function (err) {
+                  expect(err).not.to.be.ok();
+
+                  denorm.handle(evt4, function (errs, e, notis) {
+                    expect(errs).not.to.be.ok();
+                    expect(e).to.eql(evt4);
+                    expect(e.defForAllExt).to.eql(true);
+                    expect(e.extended).not.to.be.ok();
+                    expect(e.extendedDefault).to.eql(true);
+                    expect(notis).to.be.an('array');
+                    expect(notis.length).to.eql(2);
+                    expect(notis[0].name).to.eql('update');
+                    expect(notis[0].collection).to.eql('person');
+                    expect(notis[0].payload.id).to.eql('12345678p');
+                    expect(notis[0].payload.firstname).to.eql('Jack');
+                    expect(notis[0].payload.lastname).to.eql('Joe');
+                    expect(notis[0].payload.email).not.to.be.ok();
+                    expect(notis[0].payload.generalEmail).to.eql('g@h.i2');
+                    expect(notis[0].id).to.be.a('string');
+                    expect(notis[0].correlationId).to.eql('cmdId4p');
+                    expect(notis[0].meta.event.id).to.eql('evtId4p');
+                    expect(notis[0].meta.event.name).to.eql('registeredEMailAddress');
+                    expect(notis[0].meta.userId).to.eql('userId');
+                    expect(notis[0].meta.aggregate.id).to.eql('12345678p');
+                    expect(notis[0].meta.aggregate.name).to.eql('person');
+                    expect(notis[0].meta.aggregate.revision).to.eql(4);
+                    expect(notis[0].meta.context.name).to.eql('hr');
+                    expect(notis[1].name).to.eql('update');
+                    expect(notis[1].collection).to.eql('personDetail');
+                    expect(notis[1].payload.id).to.eql('12345678p');
+                    expect(notis[1].payload.firstname).to.eql('Jack');
+                    expect(notis[1].payload.lastname).to.eql('Joe');
+                    expect(notis[1].payload.email).to.eql('g@h.i2');
+                    expect(notis[1].id).to.be.a('string');
+                    expect(notis[1].correlationId).to.eql('cmdId4p');
+                    expect(notis[1].meta.event.id).to.eql('evtId4p');
+                    expect(notis[1].meta.event.name).to.eql('registeredEMailAddress');
+                    expect(notis[1].meta.userId).to.eql('userId');
+                    expect(notis[1].meta.aggregate.id).to.eql('12345678p');
+                    expect(notis[1].meta.aggregate.name).to.eql('person');
+                    expect(notis[1].meta.aggregate.revision).to.eql(4);
+                    expect(notis[1].meta.context.name).to.eql('hr');
+
+                    expect(publishedEvents.length).to.eql(1);
+                    expect(publishedEvents[0]).to.eql(evt4);
+                    expect(publishedEvents[0].defForAllExt).to.eql(true);
+                    expect(publishedEvents[0].extended).not.to.be.ok();
+                    expect(publishedEvents[0].extendedDefault).to.eql(true);
+                    expect(publishedNotis.length).to.eql(2);
+                    expect(publishedNotis[0].name).to.eql('update');
+                    expect(publishedNotis[0].collection).to.eql('person');
+                    expect(publishedNotis[0].payload.id).to.eql('12345678p');
+                    expect(publishedNotis[0].payload.firstname).to.eql('Jack');
+                    expect(publishedNotis[0].payload.lastname).to.eql('Joe');
+                    expect(publishedNotis[0].payload.email).not.to.be.ok();
+                    expect(publishedNotis[0].payload.generalEmail).to.eql('g@h.i2');
+                    expect(publishedNotis[0].id).to.be.a('string');
+                    expect(publishedNotis[0].correlationId).to.eql('cmdId4p');
+                    expect(publishedNotis[0].meta.event.id).to.eql('evtId4p');
+                    expect(publishedNotis[0].meta.event.name).to.eql('registeredEMailAddress');
+                    expect(publishedNotis[0].meta.userId).to.eql('userId');
+                    expect(publishedNotis[0].meta.aggregate.id).to.eql('12345678p');
+                    expect(publishedNotis[0].meta.aggregate.name).to.eql('person');
+                    expect(publishedNotis[0].meta.aggregate.revision).to.eql(4);
+                    expect(publishedNotis[0].meta.context.name).to.eql('hr');
+                    expect(publishedNotis[1].name).to.eql('update');
+                    expect(publishedNotis[1].collection).to.eql('personDetail');
+                    expect(publishedNotis[1].payload.id).to.eql('12345678p');
+                    expect(publishedNotis[1].payload.firstname).to.eql('Jack');
+                    expect(publishedNotis[1].payload.lastname).to.eql('Joe');
+                    expect(publishedNotis[1].payload.email).to.eql('g@h.i2');
+                    expect(publishedNotis[1].id).to.be.a('string');
+                    expect(publishedNotis[1].correlationId).to.eql('cmdId4p');
+                    expect(publishedNotis[1].meta.event.id).to.eql('evtId4p');
+                    expect(publishedNotis[1].meta.event.name).to.eql('registeredEMailAddress');
+                    expect(publishedNotis[1].meta.userId).to.eql('userId');
+                    expect(publishedNotis[1].meta.aggregate.id).to.eql('12345678p');
+                    expect(publishedNotis[1].meta.aggregate.name).to.eql('person');
+                    expect(publishedNotis[1].meta.aggregate.revision).to.eql(4);
+                    expect(publishedNotis[1].meta.context.name).to.eql('hr');
+
+                    done();
+                  });
+
+                });
+
+              });
+            });
+          });
+
+        });
+
+      });
+
+    });
+
     describe('handling an event that denormalizes multiple viewmodels in same collection', function () {
 
       before(function (done) {

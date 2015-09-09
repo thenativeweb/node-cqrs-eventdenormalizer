@@ -1,3 +1,7 @@
+## [v1.9.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.4...v1.9.5)
+- fix replay behaviour
+- give possibility to use mongodb with authSource
+
 ## [v1.9.4](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.3...v1.9.4)
 - warn log when async try catch
 
