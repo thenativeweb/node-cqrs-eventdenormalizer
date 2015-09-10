@@ -633,7 +633,7 @@ describe('collection definition', function () {
                 }
               };
               col.isReplaying = true;
-              col.replayingVms['8372'] = { id: '8372', cached: true, toJSON: function () { return { id: '8372' }; } };
+              col.replayingVms['8372'] = { id: '8372', cached: true, attributes: { id: '8372', cached: true }, toJSON: function () { return this.attributes; } };
               col.findViewModels({ id: '8372' }, function (err, vms) {
                 expect(err).not.to.be.ok();
                 expect(vms.length).to.eql(1);
