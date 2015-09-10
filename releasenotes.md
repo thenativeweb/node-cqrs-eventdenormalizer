@@ -1,3 +1,6 @@
+## [v1.9.6](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.5...v1.9.6)
+- optimize performance while replaying
+
 ## [v1.9.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.4...v1.9.5)
 - fix replay behaviour
 - give possibility to use mongodb with authSource
