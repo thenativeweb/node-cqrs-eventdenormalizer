@@ -1,3 +1,6 @@
+## [v1.9.7](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.6...v1.9.7)
+- remove trycatch dependency due to memory leaks
+
 ## [v1.9.6](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.5...v1.9.6)
 - optimize performance while replaying
 
