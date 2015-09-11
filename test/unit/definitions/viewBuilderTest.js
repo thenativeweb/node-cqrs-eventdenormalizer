@@ -64,7 +64,7 @@ describe('viewBuilder definition', function () {
           var vb = api.defineViewBuilder(null, denormFn);
           expect(vb).to.be.a(DefinitionBase);
           expect(vb).to.be.a(ViewBuilder);
-          expect(vb.denormFn).to.eql(denormFn);
+          expect(vb.denormFn).to.be.a('function');
           expect(vb.definitions).to.be.an('object');
           expect(vb.definitions.notification).to.be.an('object');
           expect(vb.definitions.event).to.be.an('object');
