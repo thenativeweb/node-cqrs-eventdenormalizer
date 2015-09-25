@@ -1,3 +1,6 @@
+## [v1.9.9](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.8...v1.9.9)
+- do not call onAfterCommit during replay
+
 ## [v1.9.8](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.7...v1.9.8)
 - optimize performance while replaying
 
