@@ -1,3 +1,6 @@
+## [v1.9.11](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.10...v1.9.11)
+- update viewmodel
+
 ## [v1.9.10](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.9...v1.9.10)
 - optimize handling of guarding the first events
 
