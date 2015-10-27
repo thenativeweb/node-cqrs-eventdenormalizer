@@ -475,7 +475,7 @@ or
 
 or
 
-	col.loadViewModelifExists('id', function (err, vm) {});
+	col.loadViewModelIfExists('id', function (err, vm) {});
 
 But be careful with this!
 
