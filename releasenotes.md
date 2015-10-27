@@ -1,3 +1,6 @@
+## [v1.9.12](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.11...v1.9.12)
+- collection added loadViewModelIfExists function
+
 ## [v1.9.11](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.10...v1.9.11)
 - update viewmodel
 

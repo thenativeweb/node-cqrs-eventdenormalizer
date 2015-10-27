@@ -473,6 +473,10 @@ or
 
 	col.loadViewModel('id', function (err, vm) {});
 
+or
+
+	col.loadViewModelifExists('id', function (err, vm) {});
+
 But be careful with this!
 
 ## ViewBuilder
