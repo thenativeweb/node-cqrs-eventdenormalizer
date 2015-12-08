@@ -1,4 +1,4 @@
-## [v1.9.13](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.12...v1.9.13)
+## [v1.9.14](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.12...v1.9.14)
 - optimize loader
 
 ## [v1.9.12](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.11...v1.9.12)
