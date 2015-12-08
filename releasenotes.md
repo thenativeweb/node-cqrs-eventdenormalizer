@@ -1,3 +1,6 @@
+## [v1.9.15](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.14...v1.9.15)
+- update viewmodel
+
 ## [v1.9.14](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.12...v1.9.14)
 - optimize loader
 
