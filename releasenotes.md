@@ -1,3 +1,6 @@
+## [v1.9.16](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.15...v1.9.16)
+- fix a replay inmemory issue
+
 ## [v1.9.15](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.14...v1.9.15)
 - update viewmodel
 

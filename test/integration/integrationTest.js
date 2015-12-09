@@ -1047,6 +1047,7 @@ describe('integration', function () {
             expect(notis[0].payload.lastname).to.eql('Joe');
             expect(notis[0].payload.email).not.to.be.ok();
             expect(notis[0].payload.generalEmail).to.eql('g@h.i');
+            expect(notis[0].payload.ref.obj.added).not.to.be.ok();
             expect(notis[0].id).to.be.a('string');
             expect(notis[0].correlationId).to.eql('cmdId3');
             expect(notis[0].meta.event.id).to.eql('evtId3');

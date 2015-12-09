@@ -11,4 +11,7 @@ module.exports = require('../../../../../../index').defineViewBuilder({
 }, function (data, vm) { // instead of function you can define a string with default handling ('create', 'update', 'delete')
   vm.set('firstname', data.firstname);
   vm.set('lastname', data.lastname);
+  var ho = { obj: { test: 'a' } };
+  vm.set('ref', ho);
+  vm.set('copy', ho);
 });
