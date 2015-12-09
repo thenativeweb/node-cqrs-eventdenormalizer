@@ -726,7 +726,7 @@ describe('collection definition', function () {
 
             var called = false;
             col.isReplaying = true;
-            col.saveViewModel({ id: '423' }, function (err) {
+            col.saveViewModel({ id: '423', toJSON: function () { return { id: '423' }; } }, function (err) {
               expect(err).not.to.be.ok();
               expect(called).to.eql(false);
               expect(col.replayingVms['423'].id).to.eql('423');
@@ -753,7 +753,7 @@ describe('collection definition', function () {
 
               var called = false;
               col.isReplaying = true;
-              col.saveViewModel({ id: '423', actionOnCommit: 'delete' }, function (err) {
+              col.saveViewModel({ id: '423', actionOnCommit: 'delete', toJSON: function () { return { id: '756' }; } }, function (err) {
                 expect(err).not.to.be.ok();
                 expect(called).to.eql(false);
                 expect(col.replayingVms['423']).not.to.be.ok();
