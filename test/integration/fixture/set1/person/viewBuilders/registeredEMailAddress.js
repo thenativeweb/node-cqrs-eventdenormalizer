@@ -10,5 +10,5 @@ module.exports = require('../../../../../../index').defineViewBuilder({
   priority: 100 // optional, default Infinity
 }, function (data, vm) {
   vm.set('generalEmail', data.email);
-  vm.get('copy').obj.added = 'new';
+  vm.get('copy').added = 'new';
 });

@@ -13,5 +13,7 @@ module.exports = require('../../../../../../index').defineViewBuilder({
   vm.set('lastname', data.lastname);
   var ho = { obj: { test: 'a' } };
   vm.set('ref', ho);
-  vm.set('copy', ho);
+  vm.set('abc', undefined);
+  vm.set('deeper.two', undefined);
+  vm.set('copy', ho.obj);
 });

@@ -1,4 +1,4 @@
-## [v1.9.17](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.15...v1.9.17)
+## [v1.9.18](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.15...v1.9.18)
 - fix a replay inmemory issue
 
 ## [v1.9.15](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.14...v1.9.15)
