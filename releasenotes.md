@@ -1,3 +1,6 @@
+## [v1.9.19](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.18...v1.9.19)
+- mongodb: added optional heartbeat
+
 ## [v1.9.18](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.15...v1.9.18)
 - fix a replay inmemory issue
 
