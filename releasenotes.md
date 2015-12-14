@@ -1,3 +1,6 @@
+## [v1.9.20](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.19...v1.9.20)
+- redis: fix for new redis lib
+
 ## [v1.9.19](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.18...v1.9.19)
 - mongodb: added optional heartbeat
 
