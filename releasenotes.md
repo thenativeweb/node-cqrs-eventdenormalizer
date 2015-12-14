@@ -1,3 +1,6 @@
+## [v1.9.21](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.20...v1.9.21)
+- revisionGuard fix
+
 ## [v1.9.20](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.19...v1.9.20)
 - redis: fix for new redis lib
 
