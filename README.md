@@ -480,7 +480,7 @@ or
 But be careful with this!
 
 ## ViewBuilder
-Each viewBuilder is dedicated to a specific event.It reacts on an event and denormalizes that event in an appropriate collection.
+Each viewBuilder is dedicated to a specific event. It reacts on an event and denormalizes that event in an appropriate collection.
 
 Viewbuilders are structured by collection (not by context).
 
