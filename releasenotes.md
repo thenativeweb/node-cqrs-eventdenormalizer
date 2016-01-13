@@ -1,3 +1,6 @@
+## [v1.9.22](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.21...v1.9.22)
+- if event is not extended return the original event
+
 ## [v1.9.21](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.20...v1.9.21)
 - revisionGuard fix
 
