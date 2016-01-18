@@ -16,10 +16,10 @@
     "dotty": "0.0.2",
     "flat": "1.6.0",
     "jsondate": "0.0.1",
-    "lodash": "3.10.1",
+    "lodash": "^4.0.0",
     "node-uuid": "1.4.7",
     "parent-require": "1.0.0",
-    "sift": "3.0.0",
+    "sift": "^3.1.1",
     "tolerance": "1.0.0",
     "viewmodel": "1.5.10"
   },
