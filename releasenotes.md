@@ -1,3 +1,6 @@
+## [v1.9.24](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.23...v1.9.24)
+- redis: added optional heartbeat
+
 ## [v1.9.23](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.22...v1.9.23)
 - updated viewmodel
 
