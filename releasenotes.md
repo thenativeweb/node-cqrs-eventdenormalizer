@@ -1,4 +1,4 @@
-## [v1.9.25](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.24...v1.9.25)
+## [v1.9.25](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.24...v1.9.26)
 - revisionGuard: optional startRevisionNumber
 
 ## [v1.9.24](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.23...v1.9.24)
