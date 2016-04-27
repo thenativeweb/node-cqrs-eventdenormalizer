@@ -1,5 +1,6 @@
-## [v1.9.27](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.26...v1.9.27)
+## [v1.9.28](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.26...v1.9.28)
 - fix replay race condition when deleting multiple times
+- do abort/finish denormalization handling when calling this.retry() wile replaying
 
 ## [v1.9.26](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.24...v1.9.26)
 - revisionGuard: optional startRevisionNumber
