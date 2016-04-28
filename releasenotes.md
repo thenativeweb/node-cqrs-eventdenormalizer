@@ -1,3 +1,6 @@
+## [v1.9.29](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.28...v1.9.29)
+- redis, mongodb: call disconnect on ping error
+
 ## [v1.9.28](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.26...v1.9.28)
 - fix replay race condition when deleting multiple times
 - do abort/finish denormalization handling when calling this.retry() wile replaying
