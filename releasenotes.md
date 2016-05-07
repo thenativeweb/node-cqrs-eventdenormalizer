@@ -1,3 +1,6 @@
+## [v1.9.30](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.29...v1.9.30)
+- updated viewmodel
+
 ## [v1.9.29](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.28...v1.9.29)
 - redis, mongodb: call disconnect on ping error
 
