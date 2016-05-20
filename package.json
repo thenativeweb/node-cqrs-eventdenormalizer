@@ -21,7 +21,7 @@
     "parent-require": "1.0.0",
     "sift": "3.2.1",
     "tolerance": "1.0.0",
-    "viewmodel": "1.5.15"
+    "viewmodel": "1.5.16"
   },
   "devDependencies": {
     "cradle": ">=0.6.7",

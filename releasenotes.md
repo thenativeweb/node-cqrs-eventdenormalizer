@@ -1,4 +1,4 @@
-## [v1.9.32](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.31...v1.9.32)
+## [v1.9.33](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.32...v1.9.33)
 - Support mongo connection string
 
 ## [v1.9.31](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.30...v1.9.31)
