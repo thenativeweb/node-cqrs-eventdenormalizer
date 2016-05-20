@@ -1,3 +1,6 @@
+## [v1.9.32](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.31...v1.9.32)
+- Support mongo connection string
+
 ## [v1.9.31](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.30...v1.9.31)
 - fix replay race condition when deleting and creating multiple times
 

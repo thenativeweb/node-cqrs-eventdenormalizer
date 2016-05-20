@@ -82,6 +82,7 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
       // authSource: 'authedicationDatabase',        // optional
 	    // username: 'technicalDbUser',                // optional
 	    // password: 'secret'                          // optional
+      // url: 'mongodb://user:pass@host:port/db?opts // optional
 	  },
 
 	  // optional, default is in-memory
