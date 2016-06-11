@@ -1,3 +1,6 @@
+## [v1.9.35](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.34...v1.9.35)
+- Fix events getting lost at high concurrency
+
 ## [v1.9.34](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.31...v1.9.34)
 - Support mongo connection string
 
