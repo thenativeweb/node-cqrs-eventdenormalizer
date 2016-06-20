@@ -1,3 +1,6 @@
+## [v1.9.36](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.35...v1.9.36)
+- redis, mongodb: call disconnect on ping error
+
 ## [v1.9.35](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.34...v1.9.35)
 - Fix events getting lost at high concurrency
 
