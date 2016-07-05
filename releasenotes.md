@@ -1,3 +1,6 @@
+## [v1.9.37](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.36...v1.9.37)
+- edgecase in revisionGuard
+
 ## [v1.9.36](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.35...v1.9.36)
 - redis, mongodb: call disconnect on ping error
 
