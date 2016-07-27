@@ -1,3 +1,6 @@
+## [v1.9.38](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.37...v1.9.38)
+- update viewmodel
+
 ## [v1.9.37](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.36...v1.9.37)
 - edgecase in revisionGuard
 
