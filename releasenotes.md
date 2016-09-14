@@ -1,3 +1,6 @@
+## [v1.9.39](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.38...v1.9.39)
+- filter falsable notifications
+
 ## [v1.9.38](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.37...v1.9.38)
 - update viewmodel
 

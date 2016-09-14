@@ -11,15 +11,15 @@
     "lib": "./lib"
   },
   "dependencies": {
-    "async": "1.5.2",
+    "async": "2.0.1",
     "debug": "2.2.0",
     "dotty": "0.0.2",
-    "flat": "1.6.0",
+    "flat": "2.0.1",
     "jsondate": "0.0.1",
-    "lodash": "4.11.1",
+    "lodash": "4.15.0",
     "node-uuid": "1.4.7",
     "parent-require": "1.0.0",
-    "sift": "3.2.1",
+    "sift": "3.2.6",
     "tolerance": "1.0.0",
     "viewmodel": "1.5.19"
   },
