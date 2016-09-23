@@ -1,3 +1,6 @@
+## [v1.9.40](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.39...v1.9.40)
+- downgrade async to 1.5.2 because of RangeError: Maximum call stack size exceeded when rebuilding a lot of events
+
 ## [v1.9.39](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.38...v1.9.39)
 - filter falsable notifications
 
