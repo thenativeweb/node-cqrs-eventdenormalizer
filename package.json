@@ -1,7 +1,7 @@
 {
   "author": "adrai",
   "name": "cqrs-eventdenormalizer",
-  "version": "1.9.40",
+  "version": "1.9.41",
   "private": false,
   "main": "index.js",
   "engines": {
