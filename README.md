@@ -517,7 +517,7 @@ Viewbuilders are structured by collection (not by context).
 	  // if you have multiple concurrent events that targets the same vm, you can catch it like this:
 	  // during a replay the denormalization finishes and the retry does not happen
 	  if (vm.actionOnCommit === 'create') {
-	  	return this.retry();
+	  	return this.retry(); // hint: do not use arrow function in this scope when using this.retry()
 	  	// or
 	  	//return this.retry(100); // retries to denormalize again in 0-100ms
 	  	// or

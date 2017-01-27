@@ -1,4 +1,4 @@
-## [v1.9.42](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.41...v1.9.42)
+## [v1.9.43](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.41...v1.9.43)
 - set proper this context
 
 ## [v1.9.41](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.40...v1.9.41)
