@@ -1,4 +1,4 @@
-## [v1.9.44](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.43...v1.9.44)
+## [v1.9.45](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.43...v1.9.45)
 - fix for new mongodb driver
 
 ## [v1.9.43](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.41...v1.9.43)
