@@ -12,15 +12,15 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "debug": "2.3.3",
+    "debug": "2.6.3",
     "dotty": "0.0.2",
     "flat": "2.0.1",
     "jsondate": "0.0.1",
-    "lodash": "4.17.2",
+    "lodash": "4.17.4",
     "parent-require": "1.0.0",
-    "sift": "3.2.6",
+    "sift": "3.2.7",
     "tolerance": "1.0.0",
-    "uuid": "3.0.0",
+    "uuid": "3.0.1",
     "viewmodel": "1.5.22"
   },
   "devDependencies": {
