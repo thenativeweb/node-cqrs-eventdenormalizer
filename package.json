@@ -18,7 +18,7 @@
     "jsondate": "0.0.1",
     "lodash": "4.17.4",
     "parent-require": "1.0.0",
-    "sift": "3.2.7",
+    "sift": "3.3.2",
     "tolerance": "1.0.0",
     "uuid": "3.0.1",
     "viewmodel": "1.5.22"
