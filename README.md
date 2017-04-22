@@ -401,6 +401,14 @@ After the initialization you can request the denormalizer information:
 	  //           "context": "hr",
 	  //           "version": 2
 	  //         }
+	  //       ],
+	  //       "preEventExtenders": [
+	  //         {
+	  //           "name": "enteredNewPerson",
+	  //           "aggregate": "person",
+	  //           "context": "hr",
+	  //           "version": 2
+	  //         }
 	  //       ]
 	  //     },
 	  //     {
@@ -421,7 +429,8 @@ After the initialization you can request the denormalizer information:
       //           "priority": Infinity
 	  //         }
 	  //       ],
-	  //       "eventExtenders": []
+	  //       "eventExtenders": [],
+	  //       "preEventExtenders": []
 	  //     }
 	  //   ],
 	  //   "generalEventExtenders": [
@@ -431,7 +440,8 @@ After the initialization you can request the denormalizer information:
 	  //       "context": null,
 	  //       "version": -1
 	  //     }
-	  //   ]
+	  //   ],
+	  //   "generalPreEventExtenders": []
 	  // }
 	});
 
@@ -617,6 +627,7 @@ A lot of viewmodels can slow down the denormalization process!
 ### for a collection (in a collection folder)
 
 	module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
+  // module.exports = require('cqrs-eventdenormalizer').definePreEventExtender({ // same api as normal EventExtenders but executed before viewBuilder so the extended event can be used
 	  // optional, default is file name without extension,
 	  // if name is '' it will handle all events that matches
 	  name: 'enteredNewPerson',

@@ -190,6 +190,41 @@ describe('collection definition', function () {
 
     });
 
+    describe('calling addPreEventExtender', function () {
+
+      describe('with a wrong object', function () {
+
+        it('it should throw an error', function () {
+
+          var col = api.defineCollection();
+
+          expect(function () {
+            col.addPreEventExtender();
+          }).to.throwError(/extender/);
+
+        });
+
+      });
+
+      describe('with a correct object', function () {
+
+        it('it should work as expected', function () {
+
+          var col = api.defineCollection();
+
+          col.addPreEventExtender({ name: 'myEvent', useCollection: function (c) {
+            expect(c).to.eql(col);
+          }});
+
+          expect(col.preEventExtenders.length).to.eql(1);
+          expect(col.preEventExtenders[0].name).to.eql('myEvent');
+
+        });
+
+      });
+
+    });
+
     describe('having added some viewBuilders', function () {
 
       var col;
@@ -415,6 +450,115 @@ describe('collection definition', function () {
           expect(ex10.version).to.eql(0);
 
           var ex11 = col.getEventExtender({ name: 'evt3', context: 'ctx' });
+          expect(ex11.name).to.eql('evt3');
+          expect(ex11.aggregate).to.eql('agg');
+          expect(ex11.context).to.eql('ctx');
+          expect(ex11.version).to.eql(0);
+
+        });
+
+      });
+
+    });
+
+    describe('having added some preEventExtenders', function () {
+
+      var col;
+
+      beforeEach(function () {
+        col = api.defineCollection();
+        col.addPreEventExtender({ name: 'evt1', version: 0, aggregate: null, context: null, useCollection: function () {} });
+        col.addPreEventExtender({ name: 'evt2', version: 0, aggregate: null, context: null, useCollection: function () {} });
+        col.addPreEventExtender({ name: 'evt2', version: 1, aggregate: null, context: null, useCollection: function () {} });
+        col.addPreEventExtender({ name: 'evt2', version: 2, aggregate: null, context: null, useCollection: function () {} });
+        col.addPreEventExtender({ name: 'evt3', version: 0, aggregate: null, context: null, useCollection: function () {} });
+        col.addPreEventExtender({ name: 'evt3', version: 0, aggregate: 'agg', context: null, useCollection: function () {} });
+        col.addPreEventExtender({ name: 'evt3', version: 0, aggregate: 'agg', context: 'ctx', useCollection: function () {} });
+      });
+
+      describe('calling getPreEventExtenders', function () {
+
+        it('it should return all preEventExtenders', function () {
+
+          var preEventExtenders = col.getPreEventExtenders();
+          expect(preEventExtenders.length).to.eql(7);
+          expect(preEventExtenders[0].name).to.eql('evt1');
+          expect(preEventExtenders[0].version).to.eql(0);
+          expect(preEventExtenders[1].name).to.eql('evt2');
+          expect(preEventExtenders[1].version).to.eql(0);
+          expect(preEventExtenders[2].name).to.eql('evt2');
+          expect(preEventExtenders[2].version).to.eql(1);
+          expect(preEventExtenders[3].name).to.eql('evt2');
+          expect(preEventExtenders[3].version).to.eql(2);
+          expect(preEventExtenders[4].name).to.eql('evt3');
+          expect(preEventExtenders[4].version).to.eql(0);
+          expect(preEventExtenders[5].name).to.eql('evt3');
+          expect(preEventExtenders[5].aggregate).to.eql('agg');
+          expect(preEventExtenders[5].version).to.eql(0);
+          expect(preEventExtenders[6].name).to.eql('evt3');
+          expect(preEventExtenders[6].aggregate).to.eql('agg');
+          expect(preEventExtenders[6].context).to.eql('ctx');
+          expect(preEventExtenders[6].version).to.eql(0);
+
+        });
+
+      });
+
+      describe('calling getPreEventExtender', function () {
+
+        it('it should work as expected', function () {
+
+          var ex0 = col.getPreEventExtender({ name: 'someEvtName' });
+          expect(ex0).not.to.be.ok();
+
+          var ex1 = col.getPreEventExtender({ name: 'evt1', version: 3 });
+          expect(ex1).not.to.be.ok();
+
+          var ex2 = col.getPreEventExtender({ name: 'evt1', version: 0 });
+          expect(ex2.name).to.eql('evt1');
+          expect(ex2.version).to.eql(0);
+
+          var ex3 = col.getPreEventExtender({ name: 'evt2', version: 0 });
+          expect(ex3.name).to.eql('evt2');
+          expect(ex3.version).to.eql(0);
+
+          var ex4 = col.getPreEventExtender({ name: 'evt2', version: 1 });
+          expect(ex4.name).to.eql('evt2');
+          expect(ex4.version).to.eql(1);
+
+          var ex5 = col.getPreEventExtender({ name: 'evt2', version: 2 });
+          expect(ex5.name).to.eql('evt2');
+          expect(ex5.version).to.eql(2);
+
+          var ex6 = col.getPreEventExtender({ name: 'evt3', version: 0 });
+          expect(ex6.name).to.eql('evt3');
+          expect(ex6.aggregate).not.to.be.ok();
+          expect(ex6.context).not.to.be.ok();
+          expect(ex6.version).to.eql(0);
+
+          var ex7 = col.getPreEventExtender({ name: 'evt3' });
+          expect(ex7.name).to.eql('evt3');
+          expect(ex7.aggregate).not.to.be.ok();
+          expect(ex7.context).not.to.be.ok();
+          expect(ex7.version).to.eql(0);
+
+          var ex8 = col.getPreEventExtender({ name: 'evt2' });
+          expect(ex8.name).to.eql('evt2');
+          expect(ex8.version).to.eql(0);
+
+          var ex9 = col.getPreEventExtender({ name: 'evt3', aggregate: 'agg' });
+          expect(ex9.name).to.eql('evt3');
+          expect(ex9.aggregate).to.eql('agg');
+          expect(ex9.context).not.to.be.ok();
+          expect(ex9.version).to.eql(0);
+
+          var ex10 = col.getPreEventExtender({ name: 'evt3', aggregate: 'agg', context: 'ctx' });
+          expect(ex10.name).to.eql('evt3');
+          expect(ex10.aggregate).to.eql('agg');
+          expect(ex10.context).to.eql('ctx');
+          expect(ex10.version).to.eql(0);
+
+          var ex11 = col.getPreEventExtender({ name: 'evt3', context: 'ctx' });
           expect(ex11.name).to.eql('evt3');
           expect(ex11.aggregate).to.eql('agg');
           expect(ex11.context).to.eql('ctx');

@@ -567,7 +567,7 @@ describe('denormalizer', function () {
       });
 
     });
-    
+
     describe('calling extendEvent', function () {
 
       var denorm;
@@ -575,7 +575,7 @@ describe('denormalizer', function () {
       beforeEach(function () {
         denorm = api({ denormalizerPath: __dirname });
       });
-      
+
       describe('having found only the default event extender', function () {
 
         it('it should work as expected', function (done) {
@@ -607,7 +607,7 @@ describe('denormalizer', function () {
           });
 
         });
-        
+
       });
 
       describe('having found the default event extender and an other one', function () {
@@ -649,9 +649,9 @@ describe('denormalizer', function () {
         });
 
       });
-      
+
     });
-    
+
     describe('calling isCommandRejected', function () {
 
       var denorm;
@@ -659,25 +659,25 @@ describe('denormalizer', function () {
       beforeEach(function () {
         denorm = api({ denormalizerPath: __dirname, commandRejectedEventName: 'reji' });
       });
-      
+
       describe('with a normal event', function () {
-        
+
         it('it should work as expected', function (done) {
-          
+
           var calledClb = false;
           var res = denorm.isCommandRejected({ name: 'normal' }, function (err, evt, notifications) {
             calledClb = true;
           });
-          
+
           expect(res).to.eql(false);
-          
+
           setTimeout(function () {
             expect(calledClb).to.eql(false);
             done();
           }, 40);
-          
+
         });
-        
+
       });
 
       describe('with a command rejected event', function () {
@@ -692,7 +692,7 @@ describe('denormalizer', function () {
             });
 
             var calledMissing = false;
-            
+
             denorm.onEventMissing(function (info, evt) {
               expect(info.aggregateId).to.eql('aggId');
               expect(info.aggregateRevision).to.eql(5);
@@ -724,14 +724,14 @@ describe('denormalizer', function () {
               expect(notifications).to.be.an('array');
               expect(notifications.length).to.eql(0);
               expect(calledMissing).to.eql(true);
-              
+
               done();
             });
 
             expect(res).to.eql(true);
 
           });
-          
+
         });
 
         describe('having defined a revision', function () {
@@ -799,7 +799,7 @@ describe('denormalizer', function () {
               expect(res).to.eql(true);
 
             });
-            
+
           });
 
           describe('and the revisionGuardStore has not missed anything', function () {
@@ -865,7 +865,7 @@ describe('denormalizer', function () {
         });
 
       });
-      
+
     });
 
     describe('calling dispatch', function () {
@@ -893,7 +893,14 @@ describe('denormalizer', function () {
           calledExtend = true;
           clb(null, evt);
         };
-        
+
+        var calledPreExtend = false;
+        denorm.preExtendEvent = function (evt, clb) {
+          evt.ext++;
+          calledPreExtend = true;
+          clb(null, evt);
+        };
+
         var notiCalled = [];
         denorm.onNotification(function (noti) {
           notiCalled.push(noti);
@@ -906,27 +913,28 @@ describe('denormalizer', function () {
 
         denorm.dispatch({ my: 'evt', ext: 0 }, function (err, extEvt, notis) {
           expect(err).not.to.be.ok();
-          expect(extEvt.ext).to.eql(1);
+          expect(extEvt.ext).to.eql(2);
           expect(notis).to.be.an('array');
           expect(notis.length).to.eql(2);
           expect(notis[0].noti).to.eql(1);
           expect(notis[1].noti).to.eql(2);
-          
+
           expect(notiCalled.length).to.eql(2);
           expect(notiCalled[0].noti).to.eql(1);
           expect(notiCalled[1].noti).to.eql(2);
           expect(evtCalled.length).to.eql(1);
-          expect(evtCalled[0].ext).to.eql(1);
-          
+          expect(evtCalled[0].ext).to.eql(2);
+
           expect(calledDispatch).to.eql(true);
           expect(calledExtend).to.eql(true);
+          expect(calledPreExtend).to.eql(true);
           done();
         });
 
       });
 
     });
-    
+
     describe('calling handle', function () {
 
       var denorm;
@@ -934,7 +942,7 @@ describe('denormalizer', function () {
       beforeEach(function () {
         denorm = api({ denormalizerPath: __dirname });
       });
-      
+
       describe('not working with revisions', function () {
 
         it('it should work as expected', function (done) {
@@ -956,7 +964,7 @@ describe('denormalizer', function () {
             dispCalled = true;
             clb(null, evt, [{ noti: 1 }]);
           };
-          
+
           var guardCalled = false;
           var guardDoneCalled = false;
           denorm.revisionGuard = {
@@ -985,7 +993,7 @@ describe('denormalizer', function () {
           });
 
         });
-        
+
       });
 
       describe('working with revisions', function () {
@@ -1044,7 +1052,7 @@ describe('denormalizer', function () {
         });
 
       });
-      
+
     });
 
     describe('calling replay', function () {
@@ -1056,7 +1064,7 @@ describe('denormalizer', function () {
       });
 
       it('it should work as expected', function (done) {
-        
+
         var events = [{ evt: 1 }, { evt: 2 }];
         var callback = function () {
           console.log('haha');
@@ -1071,7 +1079,7 @@ describe('denormalizer', function () {
         };
 
         denorm.replay(events, callback);
-        
+
       });
 
     });
@@ -1102,7 +1110,7 @@ describe('denormalizer', function () {
       });
 
     });
-    
+
   });
 
 });

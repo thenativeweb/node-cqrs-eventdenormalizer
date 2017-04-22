@@ -1,3 +1,6 @@
+## [v1.10.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.46...v1.10.0)
+- introduced preEventExtenders
+
 ## [v1.9.46](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.45...v1.9.46)
 - optimize handling for commandRejected
 
