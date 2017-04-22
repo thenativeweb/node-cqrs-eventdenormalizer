@@ -1,3 +1,6 @@
+## [v1.10.1](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.10.1...v1.10.1)
+- respect preEventExtenders in replayHandler
+
 ## [v1.10.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.9.46...v1.10.0)
 - introduced preEventExtenders
 

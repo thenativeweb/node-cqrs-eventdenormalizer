@@ -139,6 +139,9 @@ describe('replayHandler', function () {
             var saveRvmsCalled4 = false;
 
             disp = new EventDispatcher({
+              getPreEventExtender: function (query) {
+                return null;
+              },
               getViewBuilders: function (query) {
                 if (query.aggregate === 'agg1') {
                   return [{
@@ -239,6 +242,9 @@ describe('replayHandler', function () {
             var saveRvmsCalled3 = false;
 
             disp = new EventDispatcher({
+              getPreEventExtender: function (query) {
+                return null;
+              },
               getViewBuilders: function (query) {
                 if (query.aggregate === 'agg1') {
                   return [{
@@ -309,6 +315,129 @@ describe('replayHandler', function () {
 
         });
 
+        describe('having defined a preEventExtender', function () {
+
+          it('it should work as expected', function (done) {
+
+            var calledExt1 = false;
+            var called1 = false;
+            var called2 = false;
+            var called3 = false;
+            var called4 = false;
+
+            var extendedEvt1 = [];
+            var evts1 = [];
+            var evts2 = [];
+            var evts3 = [];
+            var evts4 = [];
+
+            var saveRvmsCalled1 = false;
+            var saveRvmsCalled2 = false;
+            var saveRvmsCalled3 = false;
+            var saveRvmsCalled4 = false;
+
+            disp = new EventDispatcher({
+              getPreEventExtender: function (query) {
+                if (query.aggregate === 'agg1') {
+                  return {
+                    extend: function (evt, callback) {
+                      extendedEvt1.push(evt);
+                      calledExt1 = true;
+                      evt.extended = true;
+                      callback(null, evt);
+                    }
+                  };
+                }
+                return null;
+              },
+              getViewBuilders: function (query) {
+                if (query.aggregate === 'agg1') {
+                  return [{
+                    collection: { workerId: '11', saveReplayingVms: function (clb) {saveRvmsCalled1 = true; clb(null);} },
+                    workerId: '1',
+                    denormalize: function (evt, callback) {
+                      evts1.push(evt);
+                      called1 = true;
+                      callback(null);
+                    }
+                  }];
+                } else if (query.aggregate === 'agg2') {
+                  return [{
+                    collection: { workerId: '22', saveReplayingVms: function (clb) {saveRvmsCalled2 = true; clb(null);} },
+                    workerId: '2',
+                    denormalize: function (evt, callback) {
+                      evts2.push(evt);
+                      called2 = true;
+                      callback(null);
+                    }
+                  },{
+                    collection: { workerId: '11', saveReplayingVms: function (clb) {saveRvmsCalled3 = true; clb(null);} },
+                    workerId: '3',
+                    denormalize: function (evt, callback) {
+                      evts3.push(evt);
+                      called3 = true;
+                      callback(null);
+                    }
+                  },{
+                    collection: { noReplay: true, workerId: '33', saveReplayingVms: function (clb) {saveRvmsCalled4 = true; clb(null);} },
+                    workerId: '4',
+                    denormalize: function (evt, callback) {
+                      evts4.push(evt);
+                      called4 = true;
+                      callback(null);
+                    }
+                  }];
+                }
+              }
+            }, def);
+
+            repl = new ReplayHandler(disp, store, def);
+
+            repl.replay(evts, function (err) {
+              expect(err).not.to.be.ok();
+              expect(calledExt1).to.eql(true);
+              expect(called1).to.eql(true);
+              expect(called2).to.eql(true);
+              expect(called3).to.eql(true);
+              expect(called4).to.eql(false);
+
+              expect(evts1[0].extended).to.eql(true);
+              expect(evts1[1].extended).to.eql(true);
+              expect(evts1[2].extended).to.eql(true);
+              expect(evts3[1].extended).not.to.be.ok();
+              expect(extendedEvt1[0].extended).to.eql(true);
+              expect(extendedEvt1[0]).to.eql(evt1);
+              expect(evts1[0]).to.eql(evt1);
+              expect(evts1[1]).to.eql(evt2);
+              expect(evts1[2]).to.eql(evt4);
+              expect(evts2[0]).to.eql(evt3);
+              expect(evts2[1]).to.eql(evt5);
+              expect(evts3[0]).to.eql(evt3);
+              expect(evts3[1]).to.eql(evt5);
+              expect(evts4.length).to.eql(0);
+
+              expect(saveRvmsCalled1).to.eql(true);
+              expect(saveRvmsCalled2).to.eql(true);
+              expect(saveRvmsCalled3).to.eql(false);
+              expect(saveRvmsCalled4).to.eql(false);
+
+              store.get('ctxagg1aggId1', function (err, rev) {
+                expect(err).not.to.be.ok();
+                expect(rev).to.eql(4);
+
+                store.get('ctxagg2aggId2', function (err, rev) {
+                  expect(err).not.to.be.ok();
+                  expect(rev).to.eql(6);
+
+                  done();
+                });
+              });
+            });
+
+          });
+
+        });
+
       });
 
       describe('streamed', function () {
@@ -330,6 +459,9 @@ describe('replayHandler', function () {
             var saveRvmsCalled3 = false;
 
             disp = new EventDispatcher({
+              getPreEventExtender: function (query) {
+                return null;
+              },
               getViewBuilders: function (query) {
                 if (query.aggregate === 'agg1') {
                   return [{
@@ -423,6 +555,9 @@ describe('replayHandler', function () {
               var saveRvmsCalled3 = false;
 
               disp = new EventDispatcher({
+                getPreEventExtender: function (query) {
+                  return null;
+                },
                 getViewBuilders: function (query) {
                   if (query.aggregate === 'agg1') {
                     return [{
@@ -549,6 +684,9 @@ describe('replayHandler', function () {
             var saveRvmsCalled3 = false;
 
             disp = new EventDispatcher({
+              getPreEventExtender: function (query) {
+                return null;
+              },
               getViewBuilders: function (query) {
                 if (query.aggregate === 'agg1') {
                   return [{
