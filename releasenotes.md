@@ -1,3 +1,6 @@
+## [v1.10.3](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.10.2...v1.10.3)
+- update viewmodel
+
 ## [v1.10.2](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.10.1...v1.10.2)
 - Added non-breaking db implementation specific settings support to collection definition. [#56](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/56) thanks to [nanov](https://github.com/nanov) and his company [eCollect](https://github.com/eCollect) which enabled him to work also during working hours
 
