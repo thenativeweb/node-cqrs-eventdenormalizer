@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "async": "1.5.2",
-    "aws-sdk": "2.94.0",
     "debug": "2.6.8",
     "dotty": "0.0.2",
     "flat": "4.0.0",
@@ -25,6 +24,7 @@
     "viewmodel": "1.7.2"
   },
   "devDependencies": {
+    "aws-sdk": "2.94.0",
     "cradle": ">=0.6.7",
     "eslint": ">=1.0.0",
     "expect.js": ">= 0.1.2",
