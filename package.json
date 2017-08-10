@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "async": "1.5.2",
+    "aws-sdk": "2.94.0",
     "debug": "2.6.8",
     "dotty": "0.0.2",
     "flat": "4.0.0",
