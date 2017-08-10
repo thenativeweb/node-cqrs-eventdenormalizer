@@ -1,3 +1,6 @@
+## [v1.11.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.10.5...v1.11.0)
+- dynamodb revisionGuardStore implementation [#58](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/58) thanks to [emmkong](https://github.com/emmkong)
+
 ## [v1.10.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.10.4...v1.10.5)
 - update viewmodel
 
