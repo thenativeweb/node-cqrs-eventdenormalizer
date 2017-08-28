@@ -844,22 +844,21 @@ or depending on the last guarded event:
 ## ES6 default exports
 Importing ES6 style default exports is supported for all definitions where you also use `module.exports`:
 ```
-module.exports = defineContext({...});
+module.exports = defineCollection({...});
 ```
 works as well as 
 ```
-exports.default = defineContext({...});
+exports.default = defineCollection({...});
 ```
 as well as (must be transpiled by babel or tsc to be runnable in node)
 ```
-export default defineContext({...});
+export default defineCollection({...});
 ```
 
 Also: 
 ```
-exports.default = defineAggregate({...});
-exports.default = defineCommand({...});
-exports.default = defineEvent({...});
+exports.default = defineViewBuilder({...});
+exports.default = defineEventExtender({...});
 // etc...
 ```
 Exports other than the default export are then ignored by this package's structure loader.
