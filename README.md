@@ -841,6 +841,27 @@ or depending on the last guarded event:
 	denormalizer.clear(function (err) {
 	});
 
+## ES6 default exports
+Importing ES6 style default exports is supported for all definitions where you also use `module.exports`:
+```
+module.exports = defineCollection({...});
+```
+works as well as 
+```
+exports.default = defineCollection({...});
+```
+as well as (must be transpiled by babel or tsc to be runnable in node)
+```
+export default defineCollection({...});
+```
+
+Also: 
+```
+exports.default = defineViewBuilder({...});
+exports.default = defineEventExtender({...});
+// etc...
+```
+Exports other than the default export are then ignored by this package's structure loader.
 
 [Release notes](https://github.com/adrai/node-cqrs-eventdenormalizer/blob/master/releasenotes.md)
 
