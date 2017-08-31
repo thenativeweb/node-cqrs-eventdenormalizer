@@ -1,3 +1,6 @@
+## [v1.12.1](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.12.0...v1.12.1)
+- fixing dynamodb DocumentClient initialization [#60](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/60) thanks to [Glockenbeat](https://github.com/Glockenbeat)
+
 ## [v1.12.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.11.0...v1.12.0)
 - Support default exports [#58](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/59) thanks to [IRT-fbachmann](https://github.com/IRT-fbachmann)
 
