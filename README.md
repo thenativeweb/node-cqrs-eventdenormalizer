@@ -555,6 +555,7 @@ Viewbuilders are structured by collection (not by context).
 	}, function (data, vm) { // instead of function you can define
 	                         // a string with default handling ('create', 'update', 'delete')
 	                         // or function that expects a callback (i.e. function (data, vm, callback) {})
+	                         // or function that returns a promise (i.e. function (data, vm) { return new Promise(...); })
 
 	  // if you have multiple concurrent events that targets the same vm, you can catch it like this:
 	  // during a replay the denormalization finishes and the retry does not happen
@@ -609,6 +610,7 @@ A lot of viewmodels can slow down the denormalization process!
 	}, function (data, vm) { // instead of function you can define
 	                         // a string with default handling ('create', 'update', 'delete')
 	                         // or function that expects a callback (i.e. function (data, vm, callback) {})handling ('create', 'update', 'delete')
+	                         // or function that returns a promise (i.e. function (data, vm) { return new Promise(...); })
 	  vm.set('firstname', data.firstname);
 	  vm.set('lastname', data.lastname);
 	  //this.remindMe({ that: 'important value' });
@@ -659,7 +661,7 @@ A lot of viewmodels can slow down the denormalization process!
 ### for a collection (in a collection folder)
 
 	module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
-  // module.exports = require('cqrs-eventdenormalizer').definePreEventExtender({ // same api as normal EventExtenders but executed before viewBuilder so the extended event can be used
+    // module.exports = require('cqrs-eventdenormalizer').definePreEventExtender({ // same api as normal EventExtenders but executed before viewBuilder so the extended event can be used
 	  // optional, default is file name without extension,
 	  // if name is '' it will handle all events that matches
 	  name: 'enteredNewPerson',
@@ -738,6 +740,35 @@ A lot of viewmodels can slow down the denormalization process!
 	  callback(null, evt);
 	});
 
+	// or
+
+	module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
+	  // optional, default is file name without extension,
+	  // if name is '' it will handle all events that matches
+	  name: 'enteredNewPerson',
+
+	  // optional
+	  aggregate: 'person',
+
+	  // optional
+	  context: 'hr',
+
+	  // optional, default is 0
+	  // if set to -1, it will ignore the version
+	  version: 2,
+
+	  // if defined it will load the viewmodel
+	  id: 'payload.id'//,
+
+	  // optional, if not defined it will pass the whole event...
+	  // payload: 'payload'
+	},
+	function (evt, vm) {
+	  evt.extended = vm.get('myValue');
+	  return Promise.resolve(evt);
+	});
+  
+
 ### not for a collection
 
 	module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
@@ -784,6 +815,30 @@ A lot of viewmodels can slow down the denormalization process!
 	}, function (evt, callback) {
 	  evt.extended = true;
 	  callback(null, evt);
+	});
+
+	// or
+
+	module.exports = require('cqrs-eventdenormalizer').defineEventExtender({
+	  // optional, default is file name without extension,
+	  // if name is '' it will handle all events that matches
+	  name: 'enteredNewPerson',
+
+	  // optional
+	  aggregate: 'person',
+
+	  // optional
+	  context: 'hr',
+
+	  // optional, default is 0
+	  // if set to -1, it will ignore the version
+	  version: 2//,
+
+	  // optional, if not defined it will pass the whole event...
+	  // payload: 'payload'
+	}, function (evt) {
+	  evt.extended = true;
+	  return Promise.resolve(evt);
 	});
 
 
