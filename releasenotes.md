@@ -1,3 +1,6 @@
+## [v1.12.4](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.12.3...v1.12.4)
+- [optimization] skip to load vm if viewbuilder has not requested it via shouldHandle function
+
 ## [v1.12.3](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.12.2...v1.12.3)
 - update viewmodel
 
