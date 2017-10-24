@@ -1,3 +1,6 @@
+## [v1.12.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.12.4...v1.12.5)
+- fixing dynamodb DocumentClient initialization [#65](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/65) thanks to [nanov](https://github.com/nanov)
+
 ## [v1.12.4](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.12.3...v1.12.4)
 - [optimization] skip to load vm if viewbuilder has not requested it via shouldHandle function
 
