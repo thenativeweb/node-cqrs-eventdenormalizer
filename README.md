@@ -565,14 +565,6 @@ Viewbuilders are structured by collection (not by context).
 	  	// or
 	  	//return this.retry({ from: 500, to: 8000 }); // retries to denormalize again in 500-8000ms
 	  }
-	  // and if you pass in a callback, then:
-	  //if (vm.actionOnCommit === 'create') {
-	  //	return this.retry(callback);
-	  //	// or
-	  //	//return this.retry(100, callback); // retries to denormalize again in 0-100ms
-	  //	// or
-	  //	//return this.retry({ from: 500, to: 8000 }, callback); // retries to denormalize again in 500-8000ms
-	  //}
 
 	  vm.set('firstname', data.firstname);
 	  vm.set('lastname', data.lastname);
