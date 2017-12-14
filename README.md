@@ -453,7 +453,7 @@ After the initialization you can request the denormalizer information:
 
 	module.exports = require('cqrs-eventdenormalizer').defineCollection({
 	  // optional, default is folder name
-    name: 'personDetail'
+	  name: 'personDetail',
 
 	  // optional, default ''
 	  defaultPayload: 'payload',
@@ -466,46 +466,45 @@ After the initialization you can request the denormalizer information:
 	  //   // or:
 	  //   { profileId: 1 },
 	  //   // or:
-	  //   { index: {profileId: 1}, options: {} }
+	  //   { index: { profileId: 1 }, options: {} },
 	  // ],
 
-		// repositorySettings: { // optional
-		//  mongodb : { // for mongo db
-	  //		indexes: [ // same as above
-	  //   		'profileId',
-	  //   		// or:
-	  //   		{ profileId: 1 },
-	  //   		// or:
-	  //   		{ index: {profileId: 1}, options: {} }
-	  // 		]			
-		//	},
-		//	elasticsearch6 : { // for elasticsearch 5.x and 6.x ( elasticsearch6 type / implementation / driver )
-    //  	refresh: 'wait_for', // refresh behaviour on index, default is true ( ie. force index refresh ) https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-refresh.html
-		//    waitForActiveShards: 2, // optional, defaults to 1 ( ie. wait only for primary ) https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-create-index.html#create-index-wait-for-active-shards
-		//		index: { // optional applied on index create, https://www.elastic.co/guide/en/elasticsearch/reference/6.x/indices-create-index.html
-		//			settings : { // will be merged with the default ones,
-		//				number_of_shards: 3, // optional, otherwise taken from type settings, defaults to 1,
-		//				number_of_replicas: 1 // optional otherwise taken from type settings, defaults to 0,
-		//			},
-		//		mappings : { // optiona will be merged with the default ones, 
-		//				properties: { // specific properties to not be handled by dynamic mapper
-		//					title: { 
-		//						type: "text"
-		//					}
-		//				}                    
-		//			}
-		//		}
-		//  }
-		// }
-		//
-
+	  // repositorySettings: { // optional
+	  //   mongodb: { // for mongo db
+	  //     indexes: [ // same as above
+	  //       'profileId',
+	  //       // or:
+	  //       { profileId: 1 },
+	  //       // or:
+	  //       { index: { profileId: 1 }, options: {} },
+	  //     ],
+	  //   },
+	  //   elasticsearch6: { // for elasticsearch 5.x and 6.x ( elasticsearch6 type / implementation / driver )
+	  //     refresh: 'wait_for', // refresh behaviour on index, default is true ( ie. force index refresh ) https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-refresh.html
+	  //     waitForActiveShards: 2, // optional, defaults to 1 ( ie. wait only for primary ) https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-create-index.html#create-index-wait-for-active-shards
+	  //     index: { // optional applied on index create, https://www.elastic.co/guide/en/elasticsearch/reference/6.x/indices-create-index.html
+	  //       settings: { // will be merged with the default ones,
+	  //         number_of_shards: 3, // optional, otherwise taken from type settings, defaults to 1,
+	  //         number_of_replicas: 1, // optional otherwise taken from type settings, defaults to 0,
+	  //       },
+	  //       mappings: { // optiona will be merged with the default ones,
+	  //         properties: { // specific properties to not be handled by dynamic mapper
+	  //           title: {
+	  //             type: 'text',
+	  //           },
+	  //         },
+	  //       },
+	  //     },
+	  //   },
+	  // },
 	},
 
-	// optionally, define some initialization data for new view models...
+	  // optionally, define some initialization data for new view models...
 	{
 	  emails: ['default@mycomp.org'],
-	  phoneNumbers: []
+	  phoneNumbers: [],
 	});
+
 
 If you need an information from an other collection while denormalizing an event, you can require such a collection and make some lookups.
 for example
