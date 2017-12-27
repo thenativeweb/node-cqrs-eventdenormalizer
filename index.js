@@ -1,5 +1,3 @@
-'use strict';
-
 var Denormalizer = require('./lib/denormalizer'),
   _ = require('lodash'),
   fs = require('fs'),

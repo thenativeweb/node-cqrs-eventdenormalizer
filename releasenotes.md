@@ -1,3 +1,6 @@
+## [v1.13.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.12.5...v1.13.0)
+- compatibility with new mongodb version (3.x)
+
 ## [v1.12.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.12.4...v1.12.5)
 - Fix callback on retry [#65](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/65) thanks to [nanov](https://github.com/nanov)
 
