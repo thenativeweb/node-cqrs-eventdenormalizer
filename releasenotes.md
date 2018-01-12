@@ -1,3 +1,6 @@
+## [v1.13.1](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.13.0...v1.13.1)
+- remove deprecated option max_attempts from redis options
+
 ## [v1.13.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.12.5...v1.13.0)
 - compatibility with new mongodb version (3.x)
 
