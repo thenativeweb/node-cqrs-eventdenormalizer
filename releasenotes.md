@@ -1,3 +1,6 @@
+## [v1.13.1](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.13.1...v1.13.0)
+- make use of optional bulkCommit for replay
+
 ## [v1.13.1](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.13.0...v1.13.1)
 - remove deprecated option max_attempts from redis options
 

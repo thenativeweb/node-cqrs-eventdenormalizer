@@ -980,6 +980,46 @@ describe('collection definition', function () {
 
         });
 
+        describe('in replay mode with bulkCommit repository', function () {
+
+          it('it should work as expected', function (done) {
+
+            var commitCalled = [];
+
+            var orgRepo = col.repository;
+            col.repository = {
+              bulkCommit: function (vms, clb) {
+                _.each(vms, function(vm) {
+                  commitCalled.push(vm);
+                });
+                clb(null);
+              },
+              commit: function (vm, clb) {
+                // commitCalled.push(vm);
+                clb(null);
+              }
+            };
+
+            col.isReplaying = true;
+            col.replayingVms['423'] = { id: '423', cached: true, actionOnCommitForReplay: 'create' };
+            col.replayingVmsToDelete['5123'] = { id: '5123', cached: true, actionOnCommitForReplay: 'delete' };
+            col.saveReplayingVms(function (err) {
+              expect(err).not.to.be.ok();
+              expect(commitCalled.length).to.eql(2);
+              expect(commitCalled[0].id).to.eql('5123');
+              expect(commitCalled[1].id).to.eql('423');
+
+              col.repository = orgRepo;
+              col.isReplaying = false;
+              col.replayingVms = {};
+              col.replayingVmsToDelete = {};
+              done();
+            });
+
+          });
+
+        });
+
       });
 
       describe('having an empty read model', function () {
