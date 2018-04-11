@@ -21,7 +21,7 @@
     "sift": "5.0.0",
     "tolerance": "1.0.0",
     "uuid": "3.1.0",
-    "viewmodel": "1.10.0"
+    "viewmodel": "1.10.1"
   },
   "devDependencies": {
     "aws-sdk": ">=2.104.0",
