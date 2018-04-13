@@ -57,7 +57,7 @@ describe('replayHandler', function () {
       };
 
       var evt3 = {
-        id: 'evtId1',
+        id: 'evtId3',
         aggregate: {
           id: 'aggId2',
           name: 'agg2'
@@ -69,7 +69,7 @@ describe('replayHandler', function () {
       };
 
       var evt4 = {
-        id: 'evtId3',
+        id: 'evtId4',
         aggregate: {
           id: 'aggId1',
           name: 'agg1'
@@ -81,7 +81,7 @@ describe('replayHandler', function () {
       };
 
       var evt5 = {
-        id: 'evtId2',
+        id: 'evtId5',
         aggregate: {
           id: 'aggId2',
           name: 'agg2'
