@@ -11,4 +11,7 @@ module.exports = require('../../../../../../index').defineViewBuilder({
 }, function (data, vm) {
   vm.set('generalEmail', data.email);
   vm.get('copy').added = 'new';
+  var incr = vm.get('incr') || 0;
+  incr++;
+  vm.set('incr', incr);
 });

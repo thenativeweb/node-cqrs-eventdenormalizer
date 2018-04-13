@@ -1,3 +1,6 @@
+## [v1.14.8](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.14.7...v1.14.8)
+- replayHandler: make sure to not handle old events (duplicates)
+
 ## [v1.14.7](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.14.6...v1.14.7)
 - update viewmodel
 

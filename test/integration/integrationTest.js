@@ -1195,7 +1195,7 @@ describe('integration', function () {
           }
         };
 
-        denorm.replay([evt1, evt2], function (err) {
+        denorm.replay([evt1, evt2, evt2], function (err) {
           expect(err).not.to.be.ok();
 
           denorm.handle(evt3, function (errs, e, notis) {
@@ -1213,6 +1213,7 @@ describe('integration', function () {
             expect(notis[0].payload.lastname).to.eql('Joe');
             expect(notis[0].payload.email).not.to.be.ok();
             expect(notis[0].payload.generalEmail).to.eql('g@h.i');
+            expect(notis[0].payload.incr).to.eql(2);
             expect(notis[0].payload.ref.obj.added).not.to.be.ok();
             expect(notis[0].id).to.be.a('string');
             expect(notis[0].correlationId).to.eql('cmdId3');
