@@ -1,3 +1,6 @@
+## [v1.14.12](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.14.11...v1.14.12)
+- update viewmodel
+
 ## [v1.14.11](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.14.10...v1.14.11)
 - update viewmodel
 
