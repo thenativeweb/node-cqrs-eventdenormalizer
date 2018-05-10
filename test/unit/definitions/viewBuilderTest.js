@@ -122,6 +122,45 @@ describe('viewBuilder definition', function () {
 
     });
 
+    describe('defining an use as id function', function() {
+      var vb;
+
+      beforeEach(function () {
+        vb = api.defineViewBuilder({ name: 'eventName', version: 4 }, 'create');
+        vb.getNewIdForThisViewModel = null;
+      });
+
+      describe('in a synchronous way', function() {
+        it('it should be transformed internally to an asynchronous way', function(done) {
+          vb.useAsId(function(evt) {
+            expect(evt.my).to.eql('evt');
+            return 'freshly-generated';
+          });
+
+          vb.extractId({ my: 'evt' }, function(err,id) {
+            expect(id).to.eql('freshly-generated');
+            done();
+          });
+        });
+      });
+
+      describe('in an asynchronous way', function() {
+
+        it('it should be taken as it is', function(done) {
+          vb.useAsId(function(evt, callback) {
+            expect(evt.my).to.eql('evt');
+            callback(null, 'freshly-generated');
+          });
+
+          vb.extractId({ my: 'evt' }, function(err, id) {
+            expect(id).to.eql('freshly-generated');
+            done();
+          });
+        });
+      });      
+      
+    });    
+
     describe('defining an id generator function', function () {
 
       var vb;
