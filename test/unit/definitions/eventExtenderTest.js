@@ -302,6 +302,46 @@ describe('eventExtender definition', function () {
 
     });
 
+    describe('defining an use as id function', function() {
+      var evtExt;
+
+      beforeEach(function () {
+        evtExt = api.defineEventExtender({ name: 'eventName' }, function () {});
+        evtExt.getNewIdForThisEventExtender = null;
+      });
+
+      describe('in a synchronous way', function() {
+        it('it should be transformed internally to an asynchronous way', function(done) {
+          evtExt.useAsId(function(evt) {
+            expect(evt.my).to.eql('evt');
+            return 'freshly-generated';
+          });
+
+          evtExt.extractId({ my: 'evt' }, function(err,id) {
+            expect(id).to.eql('freshly-generated');
+            done();
+          });
+        });
+      });
+
+      describe('in an asynchronous way', function() {
+
+        it('it should be taken as it is', function(done) {
+          evtExt.useAsId(function(evt, callback) {
+            expect(evt.my).to.eql('evt');
+            callback(null, 'freshly-generated');
+          });
+
+          evtExt.extractId({ my: 'evt' }, function(err, id) {
+            expect(id).to.eql('freshly-generated');
+            done();
+          });
+        });
+      });      
+      
+    });    
+    
+
   });
 
 });
