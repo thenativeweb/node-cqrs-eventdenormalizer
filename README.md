@@ -605,6 +605,14 @@ A lot of viewmodels can slow down the denormalization process!
 	  //this.remindMe({ that: 'important value' });
 	  //this.retry();
 	});
+	// optional define a function to that returns an id that will be used as viewmodel id when id not specified in options or found
+	//.useAsId(function (evt) {
+	//  return 'newId';
+	//});
+	// or
+	//.useAsId(function (evt, callback) {
+	//  callback(null, 'newId');
+	//});	
 	// optional define a function that returns a query that will be used as query to find the viewmodels (but do not define the query in the options)
 	//.useAsQuery(function (evt) {
 	//  return { my: evt.payload.my };
@@ -728,6 +736,15 @@ A lot of viewmodels can slow down the denormalization process!
 	  evt.extended = vm.get('myValue');
 	  callback(null, evt);
 	});
+	// optional define a function to that returns an id that will be used as viewmodel id when id not specified in options or found
+	//.useAsId(function (evt) {
+	//  return 'newId';
+	//});
+	// or
+	//.useAsId(function (evt, callback) {
+	//  callback(null, 'newId');
+	//});	
+	
 
 ### not for a collection
 
