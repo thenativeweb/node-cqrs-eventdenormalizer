@@ -298,6 +298,35 @@ The values describes the path to that property in the notification message.
 	});
 
 
+
+## Using custom structure loader function
+The built-in structure loader can be replaced with one adapted to your needs.
+To do that, you need to include a loading method in the options object passed to the domain constructor.
+
+	// options will contain denormalizerPath as well as the as well as a definition object containing all the constructors of the denormalizer components  ( Collection, ViewBuilder etc. )
+	function structureLoader(options) {
+		const collection = new options.definitions.Collection({
+			name: 'col'
+		});
+		collection.addViewBuilder(new options.definitions.ViewBuilder({
+			name: 'evt',
+			aggregate: 'agg',
+			context: 'ctx'              
+		}, function() {}));
+		return {
+			collections: [
+				collection
+			]
+		};
+		// or more probably
+		return myExternalLoader(options.denormalizerPath, options.definitions);
+	}
+
+	require('cqrs-eventdenormalizer')({
+			denormalizerPath: '/path/to/my/files',
+			structureLoader: structureLoader
+	});
+
 ## Initialization
 
 	denormalizer.init(function (err, warnings) {

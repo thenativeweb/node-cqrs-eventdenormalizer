@@ -37,6 +37,7 @@ describe('denormalizer', function () {
         var denorm = api({ denormalizerPath: __dirname });
         expect(denorm).to.be.a('object');
         expect(denorm.on).to.be.a('function');
+        expect(denorm.structureLoader).to.be.a('function');        
         expect(denorm.revisionGuardStore).to.be.an('object');
         expect(denorm.revisionGuardStore.on).to.be.a('function');
         expect(denorm.repository).to.be.an('object');
@@ -61,6 +62,59 @@ describe('denormalizer', function () {
 
     });
 
+    describe('with custom "structureLoader" method', function () {
+
+      describe('creating an object of the wrong interface', function () {
+
+        it('it should throw an error', function () {
+
+          expect(function () {
+            api({
+              domainPath: __dirname,
+              structureLoader: {
+              },
+            })
+          }).to.throwError('/structureLoader/');
+
+        });
+      });
+
+      describe('creating an object of the right interface', function () {
+
+        it('it should return as expected', function () {
+
+          var denorm = api({ 
+            denormalizerPath: __dirname,
+            structureLoader: function() {
+            }
+          });
+
+          expect(denorm).to.be.a('object');
+          expect(denorm.on).to.be.a('function');
+          expect(denorm.structureLoader).to.be.a('function');
+          expect(denorm.revisionGuardStore).to.be.an('object');
+          expect(denorm.revisionGuardStore.on).to.be.a('function');
+          expect(denorm.repository).to.be.an('object');
+          expect(denorm.repository.on).to.be.a('function');
+          expect(denorm.defineNotification).to.be.a('function');
+          expect(denorm.defineEvent).to.be.a('function');
+          expect(denorm.idGenerator).to.be.a('function');
+          expect(denorm.onEvent).to.be.a('function');
+          expect(denorm.onNotification).to.be.a('function');
+          expect(denorm.onEventMissing).to.be.a('function');
+          expect(denorm.defaultEventExtension).to.be.a('function');
+          expect(denorm.init).to.be.a('function');
+          expect(denorm.handle).to.be.a('function');
+          expect(denorm.getLastEvent).to.be.a('function');
+  
+          expect(denorm.options.retryOnConcurrencyTimeout).to.eql(800);
+          expect(denorm.options.commandRejectedEventName).to.eql('commandRejected');
+          expect(denorm.options.revisionGuard.queueTimeout).to.eql(1000);
+          expect(denorm.options.revisionGuard.queueTimeoutMaxLoops).to.eql(3);
+        });
+      });
+    });
+    
     describe('defining an id generator function', function () {
 
       var denorm;
@@ -1113,4 +1167,37 @@ describe('denormalizer', function () {
 
   });
 
+  describe('loading custom structure', function() {
+    it('it should return as expected', function(done) {
+      var denorm = api({
+        denormalizerPath: __dirname,
+        structureLoader: function(options) {
+          const collection = new options.definitions.Collection({
+            name: 'col'
+          });
+          collection.addViewBuilder(new options.definitions.ViewBuilder({
+            name: 'evt',
+            aggregate: 'agg',
+            context: 'ctx'              
+          }, function() {}));
+
+          return {
+            collections: [
+              collection
+            ]
+          }
+        },
+      });
+
+      denorm.init(function() {
+        var collections = denorm.getInfo().collections;
+        expect(collections.length).to.eql(1);
+        expect(collections[0].name).to.eql('col');
+        expect(collections[0].viewBuilders.length).to.eql(1);
+        expect(collections[0].viewBuilders[0].name).to.eql('evt');
+        done();
+      });
+            
+    });
+  });
 });
