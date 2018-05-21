@@ -1,4 +1,4 @@
-## [v1.16.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.15.00...v1.16.0)
+## [v1.16.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.15.0...v1.16.0)
 - add option to add custom structureLoader implementation
 
 ## [v1.15.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.14.12...v1.15.0)
