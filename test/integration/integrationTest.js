@@ -63,20 +63,24 @@ describe('integration', function () {
           return col.name === 'person';
         });
 
+        var viewBuilders = _.sortBy(found.viewBuilders, function(vb) {
+          return vb.priority;
+        });
+
         expect(found.name).to.eql('person');
-        expect(found.viewBuilders.length).to.eql(3);
-        expect(found.viewBuilders[0].name).to.eql('enteredNewPerson');
-        expect(found.viewBuilders[0].aggregate).to.eql('person');
-        expect(found.viewBuilders[0].context).to.eql('hr');
-        expect(found.viewBuilders[0].version).to.eql(2);
-        expect(found.viewBuilders[1].name).to.eql('personLeaved');
-        expect(found.viewBuilders[1].aggregate).to.eql('person');
-        expect(found.viewBuilders[1].context).to.eql('hr');
-        expect(found.viewBuilders[1].version).to.eql(0);
-        expect(found.viewBuilders[2].name).to.eql('registeredEMailAddress');
-        expect(found.viewBuilders[2].aggregate).to.eql('person');
-        expect(found.viewBuilders[2].context).to.eql('hr');
-        expect(found.viewBuilders[2].version).to.eql(2);
+        expect(viewBuilders.length).to.eql(3);
+        expect(viewBuilders[0].name).to.eql('enteredNewPerson');
+        expect(viewBuilders[0].aggregate).to.eql('person');
+        expect(viewBuilders[0].context).to.eql('hr');
+        expect(viewBuilders[0].version).to.eql(2);
+        expect(viewBuilders[1].name).to.eql('personLeaved');
+        expect(viewBuilders[1].aggregate).to.eql('person');
+        expect(viewBuilders[1].context).to.eql('hr');
+        expect(viewBuilders[1].version).to.eql(0);
+        expect(viewBuilders[2].name).to.eql('registeredEMailAddress');
+        expect(viewBuilders[2].aggregate).to.eql('person');
+        expect(viewBuilders[2].context).to.eql('hr');
+        expect(viewBuilders[2].version).to.eql(2);
         expect(found.eventExtenders.length).to.eql(1);
         expect(found.eventExtenders[0].name).to.eql('enteredNewPerson');
         expect(found.eventExtenders[0].aggregate).to.eql('person');
