@@ -56,31 +56,43 @@ describe('integration', function () {
 
       it('it should return the expected information', function () {
 
+        function expectInNamedArray(col, name, test) {
+          var obj = _.find(col, function(v) { return v.name === name; });
+          expect(obj).to.be.an('object');
+          test(obj);          
+        }
+
         var info = denorm.getInfo();
         expect(info.collections.length).to.eql(2);
-
+        
         var found = _.find(info.collections, function (col) {
           return col.name === 'person';
         });
 
-        var viewBuilders = _.sortBy(found.viewBuilders, function(vb) {
-          return vb.priority;
-        });
+        var viewBuilders = found.viewBuilders;
 
         expect(found.name).to.eql('person');
         expect(viewBuilders.length).to.eql(3);
-        expect(viewBuilders[0].name).to.eql('enteredNewPerson');
-        expect(viewBuilders[0].aggregate).to.eql('person');
-        expect(viewBuilders[0].context).to.eql('hr');
-        expect(viewBuilders[0].version).to.eql(2);
-        expect(viewBuilders[1].name).to.eql('personLeaved');
-        expect(viewBuilders[1].aggregate).to.eql('person');
-        expect(viewBuilders[1].context).to.eql('hr');
-        expect(viewBuilders[1].version).to.eql(0);
-        expect(viewBuilders[2].name).to.eql('registeredEMailAddress');
-        expect(viewBuilders[2].aggregate).to.eql('person');
-        expect(viewBuilders[2].context).to.eql('hr');
-        expect(viewBuilders[2].version).to.eql(2);
+
+        expectInNamedArray(viewBuilders, 'enteredNewPerson', function(vb) {
+          expect(vb.name).to.eql('enteredNewPerson');
+          expect(vb.aggregate).to.eql('person');
+          expect(vb.context).to.eql('hr');
+          expect(vb.version).to.eql(2);
+        });
+
+        expectInNamedArray(viewBuilders, 'personLeaved', function(vb) {
+          expect(vb.aggregate).to.eql('person');
+          expect(vb.context).to.eql('hr');
+          expect(vb.version).to.eql(0);
+        });
+
+        expectInNamedArray(viewBuilders, 'registeredEMailAddress', function(vb) {
+          expect(vb.aggregate).to.eql('person');
+          expect(vb.context).to.eql('hr');
+          expect(vb.version).to.eql(2);
+        });
+
         expect(found.eventExtenders.length).to.eql(1);
         expect(found.eventExtenders[0].name).to.eql('enteredNewPerson');
         expect(found.eventExtenders[0].aggregate).to.eql('person');
