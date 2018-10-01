@@ -1,3 +1,6 @@
+## [v1.16.1](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.0...v1.16.1)
+- Allow to set dynamo DB document client options [#77](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/77) thanks to [wrobel](https://github.com/wrobel)
+
 ## [v1.16.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.15.0...v1.16.0)
 - add option to add custom structureLoader implementation
 
