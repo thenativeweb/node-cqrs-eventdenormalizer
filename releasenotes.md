@@ -1,3 +1,6 @@
+## [v1.16.2](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.1...v1.16.2)
+- Fix preExtendEvent callback errs param in dispatch func [#79](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/79) thanks to [shazichuanshuo](https://github.com/shazichuanshuo)
+
 ## [v1.16.1](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.0...v1.16.1)
 - Allow to set dynamo DB document client options [#77](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/77) thanks to [wrobel](https://github.com/wrobel)
 
