@@ -987,6 +987,51 @@ describe('denormalizer', function () {
 
       });
 
+      it('it should work as expected if pre event extender callback with error', function (done) {
+
+        var calledDispatch = false;
+        denorm.eventDispatcher = {
+          dispatch: function (evt, clb) {
+            expect(evt.my).to.eql('evt');
+            calledDispatch = true;
+            clb(null, [{ noti: '1'}, { noti: '2'}]);
+          }
+        };
+
+        var calledPreExtend = false;
+        denorm.preExtendEvent = function (evt, clb) {
+          evt.ext++;
+          calledPreExtend = true;
+          clb(new Error('This is an error'), evt);
+        };
+
+        var notiCalled = [];
+        denorm.onNotification(function (noti) {
+          notiCalled.push(noti);
+        });
+
+        var evtCalled = [];
+        denorm.onEvent(function (evt) {
+          evtCalled.push(evt);
+        });
+
+        denorm.dispatch({ my: 'evt', ext: 0 }, function (errs, extEvt, notis) {
+          expect(errs).to.be.an('array');
+          expect(errs.length).to.eql(1);
+          expect(errs[0].message).to.eql('This is an error');
+          expect(extEvt.ext).to.eql(1);
+          expect(notis).to.be.an('array');
+          expect(notis.length).to.eql(0);
+
+          expect(notiCalled.length).to.eql(0);
+
+          expect(calledDispatch).to.eql(false);
+          expect(calledPreExtend).to.eql(true);
+          done();
+        });
+
+      });
+
     });
 
     describe('calling handle', function () {
