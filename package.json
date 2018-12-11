@@ -1,7 +1,7 @@
 {
   "author": "adrai",
   "name": "cqrs-eventdenormalizer",
-  "version": "1.16.2",
+  "version": "1.16.3",
   "private": false,
   "main": "index.js",
   "engines": {
@@ -21,7 +21,7 @@
     "sift": "5.0.0",
     "tolerance": "1.0.0",
     "uuid": "3.1.0",
-    "viewmodel": "1.10.8"
+    "viewmodel": "1.10.9"
   },
   "devDependencies": {
     "aws-sdk": ">=2.104.0",
