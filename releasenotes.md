@@ -1,4 +1,4 @@
-## [v1.16.3](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.2...v1.16.3)
+## [v1.16.4](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.2...v1.16.4)
 - Increase DynamoDB performance [#80](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/80) thanks to [Peter Schramm](https://github.com/Glockenbeat)
 
 ## [v1.16.2](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.1...v1.16.2)
