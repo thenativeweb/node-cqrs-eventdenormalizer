@@ -1,3 +1,6 @@
+## [v1.16.3](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.2...v1.16.3)
+- Increase DynamoDB performance [#80](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/80) thanks to [Peter Schramm](https://github.com/Glockenbeat)
+
 ## [v1.16.2](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.1...v1.16.2)
 - Fix preExtendEvent callback errs param in dispatch func [#79](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/79) thanks to [shazichuanshuo](https://github.com/shazichuanshuo)
 
