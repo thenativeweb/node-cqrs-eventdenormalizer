@@ -659,7 +659,16 @@ A lot of viewmodels can slow down the denormalization process!
 	//  callback(null, [{ init: 'value1' }, { init: 'value2' }]);
 	//});
 	//
-	// optional define a function that checks if an event should be handled
+	// optional define a function that checks if an event should be handled ( before vm is loaded )
+	//.defineShouldHandleEvent(function (evt) {
+	//  return true;
+	//});
+	// or
+	//.defineShouldHandleEvent(function (evt, callback) {
+	//  callback(null, true');
+	//});
+	//
+	// optional define a function that checks if an event should be handled ( after vm is loaded )
 	//.defineShouldHandle(function (evt, vm) {
 	//  return true;
 	//});
