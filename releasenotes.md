@@ -1,3 +1,6 @@
+## [v1.16.5](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.4...v1.16.5)
+- add shouldHandleEvent option on the viewbuilder
+
 ## [v1.16.4](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.2...v1.16.4)
 - Increase DynamoDB performance [#80](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/80) thanks to [Peter Schramm](https://github.com/Glockenbeat)
 
