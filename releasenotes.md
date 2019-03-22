@@ -1,3 +1,6 @@
+## [v1.16.52](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.51...v1.16.52)
+- isCommandRejected: do not go to revisionStore if evtPayload.reason.aggregateId is not defined
+
 ## [v1.16.51](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.5...v1.16.51)
 - update viewmodel
 
