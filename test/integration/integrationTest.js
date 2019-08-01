@@ -108,15 +108,15 @@ describe('integration', function () {
           return col.name === 'personDetail';
         });
         expect(found.name).to.eql('personDetail');
-        expect(found.viewBuilders.length).to.eql(2);
-        expect(found.viewBuilders[0].name).to.eql('enteredNewPerson');
-        expect(found.viewBuilders[0].aggregate).to.eql('person');
-        expect(found.viewBuilders[0].context).to.eql('hr');
-        expect(found.viewBuilders[0].version).to.eql(2);
-        expect(found.viewBuilders[1].name).to.eql('registeredEMailAddress');
+        expect(found.viewBuilders.length).to.eql(4);
+        expect(found.viewBuilders[1].name).to.eql('enteredNewPerson');
         expect(found.viewBuilders[1].aggregate).to.eql('person');
         expect(found.viewBuilders[1].context).to.eql('hr');
         expect(found.viewBuilders[1].version).to.eql(2);
+        expect(found.viewBuilders[3].name).to.eql('registeredEMailAddress');
+        expect(found.viewBuilders[3].aggregate).to.eql('person');
+        expect(found.viewBuilders[3].context).to.eql('hr');
+        expect(found.viewBuilders[3].version).to.eql(2);
         expect(found.eventExtenders.length).to.eql(0);
         expect(found.preEventExtenders.length).to.eql(0);
 
@@ -1406,6 +1406,111 @@ describe('integration', function () {
           }
         };
 
+        var evt5 = {
+          id: 'evtId5p',
+          correlationId: 'cmdId5p',
+          name: 'registeredEMailAddress',
+          aggregate: {
+            id: '12345678p',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            email: 'g@h.i3'
+          },
+          revision: 5,
+          version: 2,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        var evt6 = {
+          id: 'evtId6p',
+          correlationId: 'cmdId6p',
+          name: 'enteredNewPerson',
+          aggregate: {
+            id: '32145876',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            firstname: 'Jane',
+            lastname: 'Jonson',
+            email: 'a@b.com'
+          },
+          revision: 0,
+          version: 2,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        var evt7 = {
+          id: 'evtId7p',
+          correlationId: 'cmdId7p',
+          name: 'blockedEmail',
+          aggregate: {
+            id: 'dont-care',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            email: 'g@h.i3'
+          },
+          revision: 0,
+          version: 0,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        var evt8 = {
+          id: 'evtId8p',
+          correlationId: 'cmdId8p',
+          name: 'exitedPerson',
+          aggregate: {
+            id: '12345678p',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {},
+          revision: 7,
+          version: 0,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        var evt9 = {
+          id: 'evtId9p',
+          correlationId: 'cmdId9p',
+          name: 'blockedEmail',
+          aggregate: {
+            id: 'dont-care-2',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            email: 'a@b.com'
+          },
+          revision: 0,
+          version: 0,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
         denorm.replayStreamed(function (replay, finished) {
 
           replay(evt1);
@@ -1500,7 +1605,65 @@ describe('integration', function () {
                     expect(publishedNotis[1].meta.aggregate.revision).to.eql(4);
                     expect(publishedNotis[1].meta.context.name).to.eql('hr');
 
-                    done();
+                    denorm.replayStreamed(function (replay, finished) {
+                      replay(evt5);
+                      replay(evt6);
+                      replay(evt7);
+                      replay(evt8);
+
+                      finished(function (err) {
+                        expect(err).not.to.be.ok();
+
+                        denorm.handle(evt9, function (errs, e, notis) {
+                          expect(errs).not.to.be.ok();
+                          expect(e).to.eql(evt9);
+                          expect(notis).to.be.an('array');
+                          expect(notis.length).to.eql(1);
+                          expect(notis[0].name).to.eql('update');
+                          expect(notis[0].collection).to.eql('personDetail');
+                          expect(notis[0].payload.id).to.eql('32145876');
+                          expect(notis[0].payload.firstname).to.eql('Jane');
+                          expect(notis[0].payload.lastname).to.eql('Jonson');
+                          expect(notis[0].payload.email).to.eql('a@b.com');
+                          expect(notis[0].payload.blocked).to.eql(true);
+
+                          expect(notis[0].id).to.be.a('string');
+                          expect(notis[0].correlationId).to.eql('cmdId9p');
+                          expect(notis[0].meta.event.id).to.eql('evtId9p');
+                          expect(notis[0].meta.event.name).to.eql('blockedEmail');
+                          expect(notis[0].meta.userId).to.eql('userId');
+                          expect(notis[0].meta.aggregate.id).to.eql('dont-care-2');
+                          expect(notis[0].meta.aggregate.name).to.eql('person');
+                          expect(notis[0].meta.aggregate.revision).to.eql(0);
+                          expect(notis[0].meta.context.name).to.eql('hr');
+
+                          expect(publishedEvents.length).to.eql(2);
+                          expect(publishedEvents[1]).to.eql(evt9);
+                          expect(publishedEvents[1].defForAllExt).to.eql(true);
+                          expect(publishedEvents[1].extended).not.to.be.ok();
+                          expect(publishedEvents[1].extendedDefault).to.eql(true);
+                          expect(publishedNotis.length).to.eql(3);
+                          expect(publishedNotis[2].name).to.eql('update');
+                          expect(publishedNotis[2].collection).to.eql('personDetail');
+                          expect(publishedNotis[2].payload.id).to.eql('32145876');
+                          expect(publishedNotis[2].payload.firstname).to.eql('Jane');
+                          expect(publishedNotis[2].payload.lastname).to.eql('Jonson');
+                          expect(publishedNotis[2].payload.email).to.eql('a@b.com');
+                          expect(publishedNotis[2].payload.blocked).to.eql(true);
+                          expect(publishedNotis[2].id).to.be.a('string');
+                          expect(publishedNotis[2].correlationId).to.eql('cmdId9p');
+                          expect(publishedNotis[2].meta.event.id).to.eql('evtId9p');
+                          expect(publishedNotis[2].meta.event.name).to.eql('blockedEmail');
+                          expect(publishedNotis[2].meta.userId).to.eql('userId');
+                          expect(publishedNotis[2].meta.aggregate.id).to.eql('dont-care-2');
+                          expect(publishedNotis[2].meta.aggregate.name).to.eql('person');
+                          expect(publishedNotis[2].meta.aggregate.revision).to.eql(0);
+                          expect(publishedNotis[2].meta.context.name).to.eql('hr');
+
+                          done();
+                        });
+                      });
+                    });
                   });
 
                 });
