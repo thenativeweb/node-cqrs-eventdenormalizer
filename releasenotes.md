@@ -1,3 +1,6 @@
+## [v1.16.55](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.54...v1.16.55)
+- fix edge case during replay whe using query
+
 ## [v1.16.54](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.52...v1.16.54)
 - update viewmodel
 

@@ -914,7 +914,7 @@ Exports other than the default export are then ignored by this package's structu
 
 # License
 
-Copyright (c) 2018 Adriano Raiano
+Copyright (c) 2019 Adriano Raiano
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
