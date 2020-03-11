@@ -1,3 +1,6 @@
+## [v1.16.57](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.56...v1.16.57)
+- skipAfterCommit [#88](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/88) thanks to [Robin Fehr](https://github.com/robinfehr)
+
 ## [v1.16.56](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.55...v1.16.56)
 - refactoring of findViewModel - only one loop [#85](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/85) thanks to [Robin Fehr](https://github.com/robinfehr)
 
