@@ -59,12 +59,12 @@ describe('integration', function () {
         function expectInNamedArray(col, name, test) {
           var obj = _.find(col, function(v) { return v.name === name; });
           expect(obj).to.be.an('object');
-          test(obj);          
+          test(obj);
         }
 
         var info = denorm.getInfo();
         expect(info.collections.length).to.eql(2);
-        
+
         var found = _.find(info.collections, function (col) {
           return col.name === 'person';
         });
@@ -853,7 +853,7 @@ describe('integration', function () {
 
     describe('handling an event that has a bigger revision than expected', function () {
 
-      it('it should not fire an eventMissing event', function (done) {
+      it('it should fire an eventMissing event', function (done) {
 
         var publishedEvents = [];
         denorm.onEvent(function (evt) {
@@ -1925,6 +1925,114 @@ describe('integration', function () {
 
     });
 
+    describe('skip event extender - handling an event that will be handled by 2 viewBuilder and a generic eventExtender and a generic preEventExtender', function () {
+
+      before(function (done) {
+        denorm = api({
+          denormalizerPath: __dirname + '/fixture/set1',
+          commandRejectedEventName: 'rejectedCommand',
+          revisionGuard: { queueTimeout: 200, queueTimeoutMaxLoops: 2 },
+          skipOnNotification: true, // has to be set
+          skipExtendEvent: true, // has to be set
+          skipOnEvent: true // has to be set
+        });
+        denorm.defineEvent({
+          correlationId: 'correlationId',
+          id: 'id',
+          name: 'name',
+          aggregateId: 'aggregate.id',
+          context: 'context.name',
+          aggregate: 'aggregate.name',
+          payload: 'payload',
+          revision: 'revision',
+          version: 'version',
+          meta: 'meta'
+        });
+
+        denorm.defineNotification({
+          id: 'id',
+          action: 'name',
+          collection: 'collection',
+          payload: 'payload',
+          context: 'meta.context.name',
+          aggregate: 'meta.aggregate.name',
+          aggregateId: 'meta.aggregate.id',
+          revision: 'meta.aggregate.revision',
+          eventId: 'meta.event.id',
+          event: 'meta.event.name',
+          meta: 'meta'
+        });
+
+        denorm.defaultEventExtension(function (evt) {
+          evt.defForAllExt = true;
+          return evt;
+        });
+
+        expect(function () {
+          denorm.getInfo();
+        }).to.throwError('/init');
+
+        denorm.init(function (err, warns) {
+          expect(warns).not.to.be.ok();
+          done(err);
+        });
+
+      })
+
+      it('it should not publish notifications, the event shall not be extended, the event shall not be published', function (done) {
+        var publishedEvents = [];
+        denorm.onEvent(function (evt) {
+          publishedEvents.push(evt);
+        });
+
+        var publishedNotis = [];
+        denorm.onNotification(function (noti) {
+          publishedNotis.push(noti);
+        });
+
+        var evt = {
+          id: 'evtIdaranew',
+          correlationId: 'cmdId',
+          name: 'enteredNewPerson',
+          aggregate: {
+            id: '12345678aranew',
+            name: 'person'
+          },
+          context: {
+            name: 'hr'
+          },
+          payload: {
+            firstname: 'Jack',
+            lastname: 'Joe',
+            email: 'a@b.c'
+          },
+          revision: 1,
+          version: 2,
+          meta: {
+            userId: 'userId'
+          }
+        };
+
+        denorm.handle(evt, function (errs, e, notis) {
+          expect(errs).not.to.be.ok();
+          for (var m in evt) {
+            expect(e[m]).to.eql(evt[m]);
+          }
+          expect(e.defForAllExt).to.eql(undefined);
+          expect(e.extended).to.eql(undefined);
+          expect(e.extendedDefault).to.eql(undefined);
+          expect(e.preExtended).to.eql(true);
+          expect(notis).to.be.an('array');
+          expect(notis.length).to.eql(2);
+          expect(publishedEvents.length).to.eql(0);
+          expect(publishedNotis.length).to.eql(0);
+          done();
+        });
+
+      });
+
+    });
+
   });
 
   describe('format 2', function () {
@@ -2355,7 +2463,7 @@ describe('integration', function () {
 
     describe('handling an event that has a bigger revision than expected', function () {
 
-      it('it should not fire an eventMissing event', function (done) {
+      it('it should fire an eventMissing event', function (done) {
 
         var publishedEvents = [];
         denorm.onEvent(function (evt) {
@@ -2456,6 +2564,92 @@ describe('integration', function () {
 
           expect(eventMissingCalled).to.eql(true);
 
+          done();
+        });
+
+      });
+
+    });
+
+    describe('handling an command rejected event', function () {
+      before(function (done) {
+        denorm = api({
+          denormalizerPath: __dirname + '/fixture/set2',
+          commandRejectedEventName: 'commandRejected',
+          revisionGuard: { queueTimeout: 200, queueTimeoutMaxLoops: 2 },
+          skipOnEventMissing: true // has to be set
+        });
+        denorm.defineEvent({
+          correlationId: 'commandId',
+          id: 'id',
+          name: 'event',
+          aggregateId: 'payload.id',
+          payload: 'payload',
+          revision: 'head.revision',
+          version: 'head.version',
+          meta: 'head'
+        });
+        denorm.defineNotification({
+          id: 'id',
+          action: 'name',
+          collection: 'collection',
+          payload: 'payload',
+          aggregateId: 'meta.aggregate.id',
+          revision: 'meta.aggregate.revision',
+          eventId: 'meta.event.id',
+          event: 'meta.event.name',
+          meta: 'meta'
+        });
+        denorm.defaultEventExtension(function (evt) {
+          evt.defForAllExt = true;
+          return evt;
+        });
+        denorm.init(done);
+
+      })
+
+      it('it should not fire an eventMissing event', function (done) {
+        var publishedEvents = [];
+        denorm.onEvent(function (evt) {
+          publishedEvents.push(evt);
+        });
+
+        var publishedNotis = [];
+        denorm.onNotification(function (noti) {
+          publishedNotis.push(noti);
+        });
+
+        var evt = {
+          id: 'evtId',
+          commandId: 'cmdId',
+          event: 'commandRejected',
+          payload: {
+            id: '12342',
+            reason: {
+              name: 'AggregateDestroyedError',
+              aggregateId: '12342',
+              aggregateRevision: 6
+            }
+          },
+          head: {
+            revision: 6,
+            version: 2,
+            userId: 'userId'
+          }
+        };
+
+        var eventMissingCalled = false;
+        denorm.onEventMissing(function (info, e) {
+          eventMissingCalled = true;
+        });
+
+        denorm.handle(evt, function (errs, e, notis) {
+          expect(errs).not.to.be.ok();
+          expect(e).to.eql(evt);
+          expect(notis.length).to.eql(0);
+          expect(publishedEvents.length).to.eql(0);
+          expect(publishedNotis.length).to.eql(0);
+          expect(eventMissingCalled).to.eql(false);
           done();
         });
 

@@ -100,7 +100,11 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
 	    prefix: 'readmodel_revision',               // optional
 	    timeout: 10000                              // optional
 	    // password: 'secret'                          // optional
-	  }
+	  },
+	  skipExtendEvent: false,						// optional
+	  skipOnEventMissing: false,					// optional
+	  skipOnEvent: false,							// optional
+	  skipOnNotification: false,					// optional
 	});
 
 
@@ -245,6 +249,7 @@ The values describes the path to that property in the notification message.
 	  bus.emit('event', evt);
 	});
 
+
 ### or you can define an asynchronous function
 
 	// pass events to bus
@@ -253,6 +258,9 @@ The values describes the path to that property in the notification message.
 	    callback();
 	  });
 	});
+
+### skip onEvent if provided
+	You can skip onEvent from being called, by adding the `skipOnEvent` option to the denormalizer. Checkout the usage section for more information.
 
 
 ## Wire up notifications [optional]
@@ -272,6 +280,11 @@ The values describes the path to that property in the notification message.
 	  });
 	});
 
+### skip onNotification if provided
+
+	You can skip onNotification from being called, by addding the `skipOnNotification` option to the denormalizer. Checkout the usage section for more information.
+
+
 
 ## Wire up event missing [optional]
 ### you can define a synchronous function
@@ -280,6 +293,9 @@ The values describes the path to that property in the notification message.
 	  console.log(info);
 	  console.log(evt);
 	});
+
+### skip onEventMissing if provided
+	You can skip onEventMissing from being called, by adding the `skipOnEventMissing` option to the denormalizer. Checkout the usage section more information.
 
 
 ## Define default event extension [optional]
@@ -296,6 +312,10 @@ The values describes the path to that property in the notification message.
 	  evt.receiver = [evt.meta.userId];
 	  callback(null, evt);
 	});
+
+### skip default event extensions 
+	You can skip all event extenders and the default extensions from being executed by adding the option `skipExtendEvent` to the denormalizer. Checkout the usage section for more information.
+
 
 
 
@@ -857,6 +877,8 @@ or when catching some events:
 	  });
 
 	});
+
+	you can skip onEventMissing from being called, if provided, by adding the option `skipOnEventMissing` to the denormalizer. Checkout the usage section for more information.
 
 or depending on the last guarded event:
 
