@@ -1,3 +1,6 @@
+## [v1.17.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.57...v1.17.0)
+- introduce skip steps [#89](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/89) thanks to [Robin Fehr](https://github.com/robinfehr)
+
 ## [v1.16.57](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.56...v1.16.57)
 - skipAfterCommit [#88](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/88) thanks to [Robin Fehr](https://github.com/robinfehr)
 
