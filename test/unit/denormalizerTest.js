@@ -1,5 +1,6 @@
 var expect = require('expect.js'),
   api = require('../../index'),
+  EventExtender = require('../../lib/definitions/eventExtender');
   _ = require('lodash');
 
 describe('denormalizer', function () {
@@ -37,7 +38,7 @@ describe('denormalizer', function () {
         var denorm = api({ denormalizerPath: __dirname });
         expect(denorm).to.be.a('object');
         expect(denorm.on).to.be.a('function');
-        expect(denorm.structureLoader).to.be.a('function');        
+        expect(denorm.structureLoader).to.be.a('function');
         expect(denorm.revisionGuardStore).to.be.an('object');
         expect(denorm.revisionGuardStore.on).to.be.a('function');
         expect(denorm.repository).to.be.an('object');
@@ -83,7 +84,7 @@ describe('denormalizer', function () {
 
         it('it should return as expected', function () {
 
-          var denorm = api({ 
+          var denorm = api({
             denormalizerPath: __dirname,
             structureLoader: function() {
             }
@@ -106,7 +107,7 @@ describe('denormalizer', function () {
           expect(denorm.init).to.be.a('function');
           expect(denorm.handle).to.be.a('function');
           expect(denorm.getLastEvent).to.be.a('function');
-  
+
           expect(denorm.options.retryOnConcurrencyTimeout).to.eql(800);
           expect(denorm.options.commandRejectedEventName).to.eql('commandRejected');
           expect(denorm.options.revisionGuard.queueTimeout).to.eql(1000);
@@ -114,7 +115,7 @@ describe('denormalizer', function () {
         });
       });
     });
-    
+
     describe('defining an id generator function', function () {
 
       var denorm;
@@ -349,14 +350,11 @@ describe('denormalizer', function () {
 
       var denorm;
 
-      beforeEach(function () {
-        denorm = api({ denormalizerPath: __dirname });
-        denorm.onEventHandle = null;
-      });
-
       describe('in a synchronous way', function() {
 
         it('it should be transformed internally to an asynchronous way', function(done) {
+          denorm = api({ denormalizerPath: __dirname });
+          denorm.onEventHandle = null;
 
           var called = false;
           denorm.onEvent(function (evt) {
@@ -377,6 +375,8 @@ describe('denormalizer', function () {
       describe('in an synchronous way', function() {
 
         it('it should be taken as it is', function(done) {
+          denorm = api({ denormalizerPath: __dirname });
+          denorm.onEventHandle = null;
 
           var called = false;
           denorm.onEvent(function (evt, callback) {
@@ -397,20 +397,39 @@ describe('denormalizer', function () {
 
       });
 
+      describe('in an synchronous way', function() {
+
+        it('it should not be called beause we want to skip it', function(done) {
+          denorm = api({ denormalizerPath: __dirname, skipOnEvent: true });
+          denorm.onEventHandle = null;
+
+          var called = false;
+          denorm.onEvent(function (evt, callback) {
+            called = true;
+            callback(null);
+          });
+
+          denorm.onEventHandle({ my: 'evt' }, function (err) {
+            expect(err).not.to.be.ok();
+            expect(called).to.eql(false);
+            done();
+          });
+
+        });
+
+      });
+
     });
 
     describe('defining onNotification handler', function () {
 
       var denorm;
 
-      beforeEach(function () {
-        denorm = api({ denormalizerPath: __dirname });
-        denorm.onNotificationHandle = null;
-      });
-
       describe('in a synchronous way', function() {
 
         it('it should be transformed internally to an asynchronous way', function(done) {
+          denorm = api({ denormalizerPath: __dirname });
+          denorm.onNotificationHandle = null;
 
           var called = false;
           denorm.onNotification(function (noti) {
@@ -431,6 +450,8 @@ describe('denormalizer', function () {
       describe('in an synchronous way', function() {
 
         it('it should be taken as it is', function(done) {
+          denorm = api({ denormalizerPath: __dirname });
+          denorm.onNotificationHandle = null;
 
           var called = false;
           denorm.onNotification(function (noti, callback) {
@@ -451,30 +472,67 @@ describe('denormalizer', function () {
 
       });
 
+      describe('in an synchronous way', function() {
+
+        it('it should not be called becuase we want to skip it', function(done) {
+          denorm = api({ denormalizerPath: __dirname, skipOnNotification: true });
+          denorm.onNotificationHandle = null;
+
+          var called = false;
+          denorm.onNotification(function (noti, callback) {
+            called = true;
+            callback(null);
+          });
+
+          denorm.onNotificationHandle({ my: 'n' }, function (err) {
+            expect(err).not.to.be.ok();
+            expect(called).to.eql(false);
+            done();
+          });
+
+        });
+
+      });
+
     });
 
     describe('defining onEventMissing handler', function () {
 
       var denorm;
 
-      beforeEach(function () {
-        denorm = api({ denormalizerPath: __dirname });
-        denorm.onEventMissingHandle = null;
-      });
+      describe('without skipping the onEventMissing handler', function () {
+        it('it should work as expected', function() {
+          denorm = api({ denormalizerPath: __dirname });
+          denorm.onEventMissingHandle = null;
 
-      it('it should work as expected', function() {
+          var called = false;
+          denorm.onEventMissing(function (info, evt) {
+            expect(info.in).to.eql('fo');
+            expect(evt.my).to.eql('evt');
+            called = true;
+          });
 
-        var called = false;
-        denorm.onEventMissing(function (info, evt) {
-          expect(info.in).to.eql('fo');
-          expect(evt.my).to.eql('evt');
-          called = true;
+          denorm.onEventMissingHandle({ in: 'fo' }, { my: 'evt' });
+          expect(called).to.eql(true);
+
         });
+      })
 
-        denorm.onEventMissingHandle({ in: 'fo' }, { my: 'evt' });
-        expect(called).to.eql(true);
+      describe('with skipping the onEventMissing handler', function() {
+        it('it should work as expected', function() {
+          denorm = api({ denormalizerPath: __dirname, skipOnEventMissing: true });
+          denorm.onEventMissingHandle = null;
 
-      });
+          var called = false;
+          denorm.onEventMissing(function (info, evt) {
+            called = true;
+          });
+
+          denorm.onEventMissingHandle({ in: 'fo' }, { my: 'evt' });
+          expect(called).to.eql(false);
+
+        });
+      })
 
     });
 
@@ -482,14 +540,12 @@ describe('denormalizer', function () {
 
       var denorm;
 
-      beforeEach(function () {
-        denorm = api({ denormalizerPath: __dirname });
-        denorm.extendEventHandle = null;
-      });
 
       describe('in a synchronous way', function() {
 
         it('it should be transformed internally to an asynchronous way', function(done) {
+          denorm = api({ denormalizerPath: __dirname });
+          denorm.extendEventHandle = null;
 
           var called = false;
           denorm.defaultEventExtension(function (evt) {
@@ -510,6 +566,8 @@ describe('denormalizer', function () {
       describe('in an synchronous way', function() {
 
         it('it should be taken as it is', function(done) {
+          denorm = api({ denormalizerPath: __dirname });
+          denorm.extendEventHandle = null;
 
           var called = false;
           denorm.defaultEventExtension(function (evt, callback) {
@@ -529,6 +587,28 @@ describe('denormalizer', function () {
         });
 
       });
+
+      describe('in a synchronous way', function() {
+
+        it('it should be skipped', function(done) {
+          denorm = api({ denormalizerPath: __dirname, skipExtendEvent: true });
+          denorm.extendEventHandle = null;
+
+          var called = false;
+          denorm.defaultEventExtension(function (evt) {
+            called = true;
+          });
+
+          denorm.extendEventHandle({ my: 'evt' }, function (err) {
+            expect(err).not.to.be.ok();
+            expect(called).to.eql(false);
+            done();
+          });
+
+        });
+
+      });
+
 
     });
 
@@ -626,13 +706,10 @@ describe('denormalizer', function () {
 
       var denorm;
 
-      beforeEach(function () {
-        denorm = api({ denormalizerPath: __dirname });
-      });
-
       describe('having found only the default event extender', function () {
 
         it('it should work as expected', function (done) {
+          denorm = api({ denormalizerPath: __dirname });
 
           denorm.defaultEventExtension(function (evt) {
             evt.ext++;
@@ -667,6 +744,7 @@ describe('denormalizer', function () {
       describe('having found the default event extender and an other one', function () {
 
         it('it should work as expected', function (done) {
+          denorm = api({ denormalizerPath: __dirname });
 
           denorm.defaultEventExtension(function (evt) {
             evt.ext++;
@@ -697,6 +775,45 @@ describe('denormalizer', function () {
           denorm.extendEvent({ ext: 0 }, function (err, extEvt) {
             expect(err).not.to.be.ok();
             expect(extEvt.ext).to.eql(2);
+            done();
+          });
+
+        });
+
+      });
+
+      describe('having found the default event extender and an other one that that should be skipped', function () {
+
+        it('it should skip the default event extender and the extender', function (done) {
+          denorm = api({ denormalizerPath: __dirname, skipExtendEvent: true });
+
+          denorm.defaultEventExtension(function (evt) {
+            evt.ext++;
+            return evt;
+          });
+
+          denorm.eventDispatcher = {
+            getTargetInformation: function (e) {
+              expect(e.ext).to.eql(0);
+              return 'target';
+            }
+          };
+
+          denorm.tree = {
+            getEventExtender: function (t) {
+              expect(t).to.eql('target');
+
+              function extendEvtFn(evt) {
+                evt.ext++;
+              }
+
+              return new EventExtender(null, extendEvtFn);
+            }
+          };
+
+          denorm.extendEvent({ ext: 0 }, function (err, extEvt) {
+            expect(err).not.to.be.ok();
+            expect(extEvt.ext).to.eql(0);
             done();
           });
 
@@ -1166,7 +1283,6 @@ describe('denormalizer', function () {
 
         var events = [{ evt: 1 }, { evt: 2 }];
         var callback = function () {
-          console.log('haha');
         };
 
         denorm.replayHandler = {
@@ -1194,7 +1310,6 @@ describe('denormalizer', function () {
       it('it should work as expected', function (done) {
 
         var replFn = function () {
-          console.log('haha');
         };
 
         denorm.replayHandler = {
@@ -1223,7 +1338,7 @@ describe('denormalizer', function () {
           collection.addViewBuilder(new options.definitions.ViewBuilder({
             name: 'evt',
             aggregate: 'agg',
-            context: 'ctx'              
+            context: 'ctx'
           }, function() {}));
 
           return {
@@ -1242,7 +1357,7 @@ describe('denormalizer', function () {
         expect(collections[0].viewBuilders[0].name).to.eql('evt');
         done();
       });
-            
+
     });
   });
 });
