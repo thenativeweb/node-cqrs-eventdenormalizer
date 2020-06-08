@@ -94,12 +94,18 @@ It can be very useful as eventdenormalizer component if you work with (d)ddd, cq
 	    startRevisionNumber: 1,			// optional, if defined the denormaizer waits for an event with that revision to be used as first event
 
 	    type: 'redis',
-	    host: 'localhost',                          // optional
-	    port: 6379,                                 // optional
-	    db: 0,                                      // optional
-	    prefix: 'readmodel_revision',               // optional
-	    timeout: 10000                              // optional
-	    // password: 'secret'                          // optional
+	    host: 'localhost',                              // optional
+	    port: 6379,                                     // optional
+	    db: 0,                                          // optional
+	    prefix: 'readmodel_revision',                   // optional
+	    timeout: 10000                                  // optional
+	    // password: 'secret',                          // optional
+      middlewares: {                                  // optional
+        onBeforeSet: (evt, next) => {
+          var occuredAt = dotty.get(evt, 'occuredAt');
+          next({ occuredAt }); // the value passed will be stored within the rev guard, next to the revision
+        }    // optional
+      },
 	  },
 	  skipExtendEvent: false,						// optional
 	  skipOnEventMissing: false,					// optional
@@ -313,7 +319,7 @@ The values describes the path to that property in the notification message.
 	  callback(null, evt);
 	});
 
-### skip default event extensions 
+### skip default event extensions
 	You can skip all event extenders and the default extensions from being executed by adding the option `skipExtendEvent` to the denormalizer. Checkout the usage section for more information.
 
 
@@ -331,7 +337,7 @@ To do that, you need to include a loading method in the options object passed to
 		collection.addViewBuilder(new options.definitions.ViewBuilder({
 			name: 'evt',
 			aggregate: 'agg',
-			context: 'ctx'              
+			context: 'ctx'
 		}, function() {}));
 		return {
 			collections: [
@@ -661,7 +667,7 @@ A lot of viewmodels can slow down the denormalization process!
 	// or
 	//.useAsId(function (evt, callback) {
 	//  callback(null, 'newId');
-	//});	
+	//});
 	// optional define a function that returns a query that will be used as query to find the viewmodels (but do not define the query in the options)
 	//.useAsQuery(function (evt) {
 	//  return { my: evt.payload.my };
@@ -801,8 +807,8 @@ A lot of viewmodels can slow down the denormalization process!
 	// or
 	//.useAsId(function (evt, callback) {
 	//  callback(null, 'newId');
-	//});	
-	
+	//});
+
 
 ### not for a collection
 
@@ -914,7 +920,7 @@ Importing ES6 style default exports is supported for all definitions where you a
 ```
 module.exports = defineCollection({...});
 ```
-works as well as 
+works as well as
 ```
 exports.default = defineCollection({...});
 ```
@@ -923,7 +929,7 @@ as well as (must be transpiled by babel or tsc to be runnable in node)
 export default defineCollection({...});
 ```
 
-Also: 
+Also:
 ```
 exports.default = defineViewBuilder({...});
 exports.default = defineEventExtender({...});

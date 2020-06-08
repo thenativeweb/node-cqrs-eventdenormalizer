@@ -53,6 +53,7 @@ describe('denormalizer', function () {
         expect(denorm.init).to.be.a('function');
         expect(denorm.handle).to.be.a('function');
         expect(denorm.getLastEvent).to.be.a('function');
+        expect(denorm.getLastEventOfEachAggregate).to.be.a('function');
 
         expect(denorm.options.retryOnConcurrencyTimeout).to.eql(800);
         expect(denorm.options.commandRejectedEventName).to.eql('commandRejected');
@@ -107,6 +108,7 @@ describe('denormalizer', function () {
           expect(denorm.init).to.be.a('function');
           expect(denorm.handle).to.be.a('function');
           expect(denorm.getLastEvent).to.be.a('function');
+          expect(denorm.getLastEventOfEachAggregate).to.be.a('function');
 
           expect(denorm.options.retryOnConcurrencyTimeout).to.eql(800);
           expect(denorm.options.commandRejectedEventName).to.eql('commandRejected');
@@ -932,7 +934,7 @@ describe('denormalizer', function () {
               var calledStore = false;
 
               denorm.revisionGuardStore = {
-                get: function (aggId, clb) {
+                get: function (prefix, aggId, clb) {
                   expect(aggId).to.eql('aggId');
                   calledStore = true;
 
@@ -992,7 +994,7 @@ describe('denormalizer', function () {
               var calledStore = false;
 
               denorm.revisionGuardStore = {
-                get: function (aggId, clb) {
+                get: function (prefix, aggId, clb) {
                   expect(aggId).to.eql('aggId');
                   calledStore = true;
 
@@ -1322,6 +1324,31 @@ describe('denormalizer', function () {
         denorm.replayStreamed(replFn);
 
       });
+
+    });
+
+  });
+
+
+  describe('calling getLastEventOfEachAggregate', function () {
+
+    var denorm;
+
+    beforeEach(function () {
+      denorm = api({ denormalizerPath: __dirname });
+    });
+
+    it('it should work as expected', function (done) {
+      var callback = function () {};
+
+      denorm.revisionGuardStore = {
+        getValueOfEachKey: function (prefix, callbackFn) {
+          expect(callbackFn).to.eql(callback)
+          done();
+        }
+      };
+
+      denorm.getLastEventOfEachAggregate(callback);
 
     });
 

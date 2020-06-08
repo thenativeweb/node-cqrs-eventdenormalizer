@@ -1,5 +1,4 @@
 var expect = require('expect.js'),
-  async = require('async'),
   revisionGuardStore = require('../../lib/revisionGuardStore'),
   Base = require('../../lib/revisionGuardStore/base'),
   InMemory = require('../../lib/revisionGuardStore/databases/inmemory');
@@ -103,7 +102,10 @@ describe('revisionGuardStore', function() {
               expect(store.set).to.be.a('function');
               expect(store.saveLastEvent).to.be.a('function');
               expect(store.getLastEvent).to.be.a('function');
-
+              if (type === 'redis') {
+                expect(store.getValueOfEachKey).to.be.a('function');
+                expect(store.getValueOfKey).to.be.a('function');
+              }
             });
 
           });
@@ -199,7 +201,7 @@ describe('revisionGuardStore', function() {
 
                 it('it should callback with a new Id as string', function(done) {
 
-                  store.getNewId(function(err, id) {
+                  store.getNewId(null, function(err, id) {
                     expect(err).not.to.be.ok();
                     expect(id).to.be.a('string');
                     done();
@@ -212,14 +214,14 @@ describe('revisionGuardStore', function() {
               describe('having no entries', function() {
 
                 before(function(done) {
-                  store.clear(done);
+                  store.clear(null, done);
                 });
 
                 describe('calling get', function() {
 
                   it('it should callback with an empty revision', function(done) {
 
-                    store.get('23', function (err, rev) {
+                    store.get(null, '23', function (err, rev) {
                       expect(err).not.to.be.ok();
                       expect(rev).not.to.be.ok();
                       done();
@@ -233,10 +235,10 @@ describe('revisionGuardStore', function() {
 
                   it('it should work as expected', function(done) {
 
-                    store.set('23', 5, 4, function (err) {
+                    store.set(null, '23', null, 5, 4, function (err) {
                       expect(err).not.to.be.ok();
 
-                      store.get('23', function (err, rev) {
+                      store.get(null, '23', function (err, rev) {
                         expect(err).not.to.be.ok();
                         expect(rev).to.eql(5);
 
@@ -250,11 +252,11 @@ describe('revisionGuardStore', function() {
 
                     it('it should callback with a ConcurrencyError', function(done) {
 
-                      store.set('23', 6, 4, function (err) {
+                      store.set(null, '23', null, 6, 4, function (err) {
                         expect(err).to.be.ok();
                         expect(err.name).to.eql('ConcurrencyError');
 
-                        store.get('23', function (err, rev) {
+                        store.get(null, '23', function (err, rev) {
                           expect(err).not.to.be.ok();
                           expect(rev).to.eql(5);
 
@@ -270,11 +272,11 @@ describe('revisionGuardStore', function() {
 
                     it('it should callback with a ConcurrencyError', function(done) {
 
-                      store.set('23', 6, 7, function (err) {
+                      store.set(null, '23', null, 6, 7, function (err) {
                         expect(err).to.be.ok();
                         expect(err.name).to.eql('ConcurrencyError');
 
-                        store.get('23', function (err, rev) {
+                        store.get(null, '23', function (err, rev) {
                           expect(err).not.to.be.ok();
                           expect(rev).to.eql(5);
 
@@ -290,11 +292,11 @@ describe('revisionGuardStore', function() {
 
                     it('it should callback with a ConcurrencyError', function(done) {
 
-                      store.set('23', 6, 6, function (err) {
+                      store.set(null, '23', null, 6, 6, function (err) {
                         expect(err).to.be.ok();
                         expect(err.name).to.eql('ConcurrencyError');
 
-                        store.get('23', function (err, rev) {
+                        store.get(null, '23', function (err, rev) {
                           expect(err).not.to.be.ok();
                           expect(rev).to.eql(5);
 
@@ -310,10 +312,10 @@ describe('revisionGuardStore', function() {
 
                     it('it should callback without an error', function(done) {
 
-                      store.set('2345', 2, null, function (err) {
+                      store.set(null, '2345', null, 2, null, function (err) {
                         expect(err).not.to.be.ok();
 
-                        store.get('2345', function (err, rev) {
+                        store.get(null, '2345', function (err, rev) {
                           expect(err).not.to.be.ok();
                           expect(rev).to.eql(2);
 
@@ -329,10 +331,10 @@ describe('revisionGuardStore', function() {
 
                     it('it should callback without an error', function(done) {
 
-                      store.set('23', 6, 5, function (err) {
+                      store.set(null, '23', null, 6, 5, function (err) {
                         expect(err).not.to.be.ok();
 
-                        store.get('23', function (err, rev) {
+                        store.get(null, '23', function (err, rev) {
                           expect(err).not.to.be.ok();
                           expect(rev).to.eql(6);
 
@@ -350,21 +352,21 @@ describe('revisionGuardStore', function() {
 
                   it('it should work as expected', function (done) {
 
-                    store.getLastEvent(function (err, evt) {
+                    store.getLastEvent(null, function (err, evt) {
                       expect(err).not.to.be.ok();
                       expect(evt).not.to.be.ok();
 
-                      store.saveLastEvent({ my: 'evt' }, function (err) {
+                      store.saveLastEvent(null, { my: 'evt' }, function (err) {
                         expect(err).not.to.be.ok();
 
-                        store.getLastEvent(function (err, evt) {
+                        store.getLastEvent(null, function (err, evt) {
                           expect(err).not.to.be.ok();
                           expect(evt.my).to.eql('evt');
 
-                          store.clear(function (err) {
+                          store.clear(null, function (err) {
                             expect(err).not.to.be.ok();
 
-                            store.getLastEvent(function (err, evt) {
+                            store.getLastEvent(null, function (err, evt) {
                               expect(err).not.to.be.ok();
                               expect(evt).not.to.be.ok();
 
@@ -379,6 +381,67 @@ describe('revisionGuardStore', function() {
                   });
 
                 });
+
+                if (type === 'redis') {
+                  describe('get value for each key', function() {
+
+                    it('it should work as expected', function (done) {
+                      var count = 0;
+
+                      store.set(null, '23', { aggregate: 'test' }, 7, 6, function (err) {
+                        expect(err).not.to.be.ok();
+
+
+                        store.set(null, '24', { aggregate: 'test1' }, 5, 4, function (err) {
+                          expect(err).not.to.be.ok();
+
+                          store.set(null, '25', null, 5, 4, function (err) {
+                            expect(err).not.to.be.ok();
+
+                            store.getValueOfEachKey(null, (err, aggregateHandleFns) => {
+                              expect(err).not.to.be.ok();
+
+                              aggregateHandleFns.forEach(handleFn => {
+                                handleFn((err, data) => {
+
+                                  expect(err).to.not.be.ok();
+                                  expect(data.key).to.be.ok();
+
+                                  if (data.key.indexOf('23') >= 0) {
+                                    expect(data.key).to.eql('default::23');
+                                    expect(data.value).to.eql({ revision: 7, data: { aggregate: 'test' } });
+                                    count++;
+                                  }
+                                  if (data.key.indexOf('24') >= 0) {
+                                    expect(data.key).to.eql('default::24');
+                                    expect(data.value).to.eql({ revision: 5, data: { aggregate: 'test1' } });
+                                    count++;
+                                  }
+                                  if (data.key.indexOf('25') >= 0) {
+                                    expect(data.key).to.eql('default::25');
+                                    expect(data.value).to.eql({ revision: 5 });
+                                    count++;
+                                  }
+
+                                  if (count === 3) {
+                                    done();
+                                  }
+                                });
+
+                              });
+
+                            });
+
+                          })
+
+                        });
+
+                      });
+
+                    });
+
+                  });
+                }
 
               });
 
