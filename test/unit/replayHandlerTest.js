@@ -114,7 +114,7 @@ describe('replayHandler', function () {
       });
 
       beforeEach(function (done) {
-        store.clear(done);
+        store.clear(null, done);
       });
 
       describe('normally', function () {
@@ -183,7 +183,7 @@ describe('replayHandler', function () {
               }
             }, def);
 
-            repl = new ReplayHandler(disp, store, def);
+            repl = new ReplayHandler(disp, store, def, { revisionGuard: { prefix: 'readmodel_revision' } });
 
             repl.replay(evts, function (err) {
               expect(err).not.to.be.ok();
@@ -206,11 +206,11 @@ describe('replayHandler', function () {
               expect(saveRvmsCalled3).to.eql(false);
               expect(saveRvmsCalled4).to.eql(false);
 
-              store.get('ctxagg1aggId1', function (err, rev) {
+              store.get('readmodel_revision', 'ctx:ctx::agg:agg1::aggId:aggId1', function (err, rev) {
                 expect(err).not.to.be.ok();
                 expect(rev).to.eql(4);
 
-                store.get('ctxagg2aggId2', function (err, rev) {
+                store.get('readmodel_revision', 'ctx:ctx::agg:agg2::aggId:aggId2', function (err, rev) {
                   expect(err).not.to.be.ok();
                   expect(rev).to.eql(6);
 
@@ -278,7 +278,7 @@ describe('replayHandler', function () {
               }
             }, def);
 
-            repl = new ReplayHandler(disp, store, def);
+            repl = new ReplayHandler(disp, store, def, { revisionGuard: { prefix: 'readmodel_revision' } });
 
             repl.replay(evts, function (err) {
               expect(err).not.to.be.ok();
@@ -298,11 +298,11 @@ describe('replayHandler', function () {
               expect(saveRvmsCalled2).to.eql(true);
               expect(saveRvmsCalled3).to.eql(false);
 
-              store.get('aggId1', function (err, rev) {
+              store.get(null, 'aggId1', function (err, rev) {
                 expect(err).not.to.be.ok();
                 expect(rev).not.to.be.ok();
 
-                store.get('aggId2', function (err, rev) {
+                store.get(null, 'aggId2', function (err, rev) {
                   expect(err).not.to.be.ok();
                   expect(rev).not.to.be.ok();
 
@@ -391,7 +391,7 @@ describe('replayHandler', function () {
               }
             }, def);
 
-            repl = new ReplayHandler(disp, store, def);
+            repl = new ReplayHandler(disp, store, def, { revisionGuard: { prefix: 'readmodel_revision' } });
 
             repl.replay(evts, function (err) {
               expect(err).not.to.be.ok();
@@ -421,11 +421,11 @@ describe('replayHandler', function () {
               expect(saveRvmsCalled3).to.eql(false);
               expect(saveRvmsCalled4).to.eql(false);
 
-              store.get('ctxagg1aggId1', function (err, rev) {
+              store.get('readmodel_revision', 'ctx:ctx::agg:agg1::aggId:aggId1', function (err, rev) {
                 expect(err).not.to.be.ok();
                 expect(rev).to.eql(4);
 
-                store.get('ctxagg2aggId2', function (err, rev) {
+                store.get('readmodel_revision', 'ctx:ctx::agg:agg2::aggId:aggId2', function (err, rev) {
                   expect(err).not.to.be.ok();
                   expect(rev).to.eql(6);
 
@@ -495,7 +495,7 @@ describe('replayHandler', function () {
               }
             }, def);
 
-            repl = new ReplayHandler(disp, store, def);
+            repl = new ReplayHandler(disp, store, def, { revisionGuard: { prefix: 'readmodel_revision' } });
 
             repl.replayStreamed(function (replay, finished) {
 
@@ -521,11 +521,11 @@ describe('replayHandler', function () {
                 expect(saveRvmsCalled2).to.eql(true);
                 expect(saveRvmsCalled3).to.eql(false);
 
-                store.get('ctxagg1aggId1', function (err, rev) {
+                store.get('readmodel_revision', 'ctx:ctx::agg:agg1::aggId:aggId1', function (err, rev) {
                   expect(err).not.to.be.ok();
                   expect(rev).to.eql(4);
 
-                  store.get('ctxagg2aggId2', function (err, rev) {
+                  store.get('readmodel_revision', 'ctx:ctx::agg:agg2::aggId:aggId2', function (err, rev) {
                     expect(err).not.to.be.ok();
                     expect(rev).to.eql(6);
 
@@ -591,7 +591,7 @@ describe('replayHandler', function () {
                 }
               }, def);
 
-              repl = new ReplayHandler(disp, store, def);
+              repl = new ReplayHandler(disp, store, def, { revisionGuard: { prefix: 'readmodel_revision' } });
 
               repl.replayStreamed(function (replay, finished) {
 
@@ -642,11 +642,11 @@ describe('replayHandler', function () {
                       expect(saveRvmsCalled2).to.eql(true);
                       expect(saveRvmsCalled3).to.eql(false);
 
-                      store.get('ctxagg1aggId1', function (err, rev) {
+                      store.get('readmodel_revision', 'ctx:ctx::agg:agg1::aggId:aggId1', function (err, rev) {
                         expect(err).not.to.be.ok();
                         expect(rev).to.eql(4);
 
-                        store.get('ctxagg2aggId2', function (err, rev) {
+                        store.get('readmodel_revision', 'ctx:ctx::agg:agg2::aggId:aggId2', function (err, rev) {
                           expect(err).not.to.be.ok();
                           expect(rev).to.eql(6);
 
@@ -720,7 +720,7 @@ describe('replayHandler', function () {
               }
             }, def);
 
-            repl = new ReplayHandler(disp, store, def);
+            repl = new ReplayHandler(disp, store, def, { revisionGuard: { prefix: 'readmodel_revision' } });
 
             repl.replayStreamed(function (replay, finished) {
 
@@ -746,11 +746,11 @@ describe('replayHandler', function () {
                 expect(saveRvmsCalled2).to.eql(true);
                 expect(saveRvmsCalled3).to.eql(false);
 
-                store.get('aggId1', function (err, rev) {
+                store.get(null, 'aggId1', function (err, rev) {
                   expect(err).not.to.be.ok();
                   expect(rev).not.to.be.ok();
 
-                  store.get('aggId2', function (err, rev) {
+                  store.get(null, 'aggId2', function (err, rev) {
                     expect(err).not.to.be.ok();
                     expect(rev).not.to.be.ok();
 

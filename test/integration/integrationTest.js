@@ -2571,6 +2571,104 @@ describe('integration', function () {
 
     });
 
+    describe('inject a onBeforeSet middleware', function () {
+
+      describe('call getLastEventOfEachAggregate', function () {
+
+        it('it should store the occuredAt date within the revision guard', function (done) {
+          var publishedEvents = [];
+          denorm.onEvent(function (evt) {
+            publishedEvents.push(evt);
+          });
+
+          var publishedNotis = [];
+          denorm.onNotification(function (noti) {
+            publishedNotis.push(noti);
+          });
+
+          var evt1= {
+            id: 'evtId',
+            commandId: 'cmdId',
+            event: 'registeredEMailAddress',
+            payload: {
+              id: '12345678911',
+              email: 'abc@d.e'
+            },
+            head: {
+              revision: 4,
+              version: 2,
+              userId: 'userId'
+            },
+            occuredAt: '2020-06-09T22:55:54.946Z'
+          };
+
+          var evt2= {
+            id: 'evtId',
+            commandId: 'cmdId',
+            event: 'registeredEMailAddress',
+            payload: {
+              id: '12345678910',
+              email: 'abc@d.e'
+            },
+            head: {
+              revision: 2,
+              version: 2,
+              userId: 'userId'
+            },
+            occuredAt: '2020-06-10T22:55:54.946Z'
+          };
+
+          denorm.options.revisionGuard.middlewares.onBeforeSet = function (evt, next) {
+            next({ occuredAt: evt.occuredAt });
+          }
+
+          denorm.handle(evt1, function (errs, e, notis) {
+            expect(errs).not.to.be.ok();
+            expect(e).to.eql(evt1);
+
+
+            denorm.handle(evt2, function (errs, e, notis) {
+              expect(errs).not.to.be.ok();
+              expect(e).to.eql(evt2);
+
+              var count = 0;
+              denorm.getLastEventOfEachAggregate((err, aggregateHandleFns) => {
+                expect(err).not.to.be.ok();
+                expect(aggregateHandleFns.length).to.eql(2);
+                aggregateHandleFns.forEach(handleFn => {
+                  handleFn((err, data) => {
+
+                    expect(err).not.to.be.ok();
+                    expect(data.id).to.be.ok();
+
+                    if (data.id.indexOf('12345678910') >= 0) {
+                      expect(data.id).to.eql('readmodel_revision::aggId:12345678910');
+                      expect(data.value).to.eql({ revision: 3, data: { occuredAt: '2020-06-10T22:55:54.946Z' } });
+                      count++;
+                    }
+                    if (data.id.indexOf('12345678911') >= 0) {
+                      expect(data.id).to.eql('readmodel_revision::aggId:12345678911');
+                      expect(data.value).to.eql({ revision: 5, data: { occuredAt: '2020-06-09T22:55:54.946Z' } });
+                      count++;
+                    }
+
+                    if (count === 2) {
+                      done();
+                    }
+                  });
+                });
+              });
+
+            });
+
+          });
+
+        });
+
+      });
+
+    });
+
     describe('handling an command rejected event', function () {
       before(function (done) {
         denorm = api({

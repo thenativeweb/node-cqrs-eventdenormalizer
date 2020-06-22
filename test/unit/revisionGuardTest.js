@@ -181,7 +181,7 @@ describe('revisionGuard', function () {
 
       beforeEach(function (done) {
         guard.currentHandlingRevisions = {};
-        store.clear(done);
+        store.clear(null, done);
       });
 
       describe('in correct order', function () {
@@ -256,7 +256,7 @@ describe('revisionGuard', function () {
 
           beforeEach(function (done) {
             specialGuard.currentHandlingRevisions = {};
-            store.clear(done);
+            store.clear(null, done);
           });
 
           it('it should work as expected', function (done) {
@@ -274,14 +274,12 @@ describe('revisionGuard', function () {
             var start1 = Date.now();
             specialGuard.guard(evt1, function (err, finish1) {
               var diff1 = Date.now() - start1;
-              console.log('guarded 1: ' + diff1);
               expect(err).not.to.be.ok();
 
               setTimeout(function () {
                 start1 = Date.now();
                 finish1(function (err) {
                   diff1 = Date.now() - start1;
-                  console.log('finished 1: ' + diff1);
                   expect(err).not.to.be.ok();
                   expect(guarded).to.eql(0);
                   check();
@@ -292,13 +290,11 @@ describe('revisionGuard', function () {
             var start2 = Date.now();
             specialGuard.guard(evt2, function (err, finish2) {
               var diff2 = Date.now() - start2;
-              console.log('guarded 2: ' + diff2);
               expect(err).not.to.be.ok();
 
               start2 = Date.now();
               finish2(function (err) {
                 diff2 = Date.now() - start2;
-                console.log('finished 2: ' + diff2);
                 expect(err).not.to.be.ok();
                 expect(guarded).to.eql(1);
                 check();
@@ -308,13 +304,11 @@ describe('revisionGuard', function () {
             var start3 = Date.now();
             specialGuard.guard(evt3, function (err, finish3) {
               var diff3 = Date.now() - start3;
-              console.log('guarded 3: ' + diff3);
               expect(err).not.to.be.ok();
 
               start3 = Date.now();
               finish3(function (err) {
                 diff3 = Date.now() - start3;
-                console.log('finished 3: ' + diff3);
                 expect(err).not.to.be.ok();
                 expect(guarded).to.eql(2);
                 check();
@@ -344,7 +338,7 @@ describe('revisionGuard', function () {
               meta: 'meta'
             });
             specialGuard.currentHandlingRevisions = {};
-            store.clear(done);
+            store.clear(null, done);
           });
 
           it('and guarding an event with revision greater than expected, it should emit an eventMissing event', function (done) {
@@ -455,7 +449,7 @@ describe('revisionGuard', function () {
                 expect(err.name).to.eql('AlreadyDenormalizedError');
                 expect(guarded).to.eql(3);
 
-                store.getLastEvent(function (err, evt) {
+                store.getLastEvent(null, function (err, evt) {
                   expect(err).not.to.be.ok();
                   expect(evt.id).to.eql(evt3.id);
                   done();

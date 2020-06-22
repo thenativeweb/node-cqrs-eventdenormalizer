@@ -1,3 +1,13 @@
+## [v2.0.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.17.0...v2.0.0)
+-  IMPORTANT: FULL REBUILD NEEDED!!
+   new revision guard prefix strucutre got introduced to make parsing the key possible.
+   The API stays the same - The prefix option can still be added or omitted as before.
+- a onBeforeSet middleware got added which allows to save a full / parts of an events to the revison guard next to the revision number itself.
+- getLastEventOfEachAggregate function got added to the exposed denormalizer API. It returns an array of functions which on invocation
+  return the value that got saved for a key (aggregate) within the revision guard. The onBeforeSet middleware can be used to alter the value,
+  the revision will always be present.
+
+- introduce skip steps [#89](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/89) thanks to [Robin Fehr](https://github.com/robinfehr)
 ## [v1.17.0](https://github.com/adrai/node-cqrs-eventdenormalizer/compare/v1.16.57...v1.17.0)
 - introduce skip steps [#89](https://github.com/adrai/node-cqrs-eventdenormalizer/pull/89) thanks to [Robin Fehr](https://github.com/robinfehr)
 
