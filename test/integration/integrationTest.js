@@ -2639,15 +2639,15 @@ describe('integration', function () {
                   handleFn((err, data) => {
 
                     expect(err).not.to.be.ok();
-                    expect(data.key).to.be.ok();
+                    expect(data.id).to.be.ok();
 
-                    if (data.key.indexOf('12345678910') >= 0) {
-                      expect(data.key).to.eql('readmodel_revision::aggId:12345678910');
+                    if (data.id.indexOf('12345678910') >= 0) {
+                      expect(data.id).to.eql('readmodel_revision::aggId:12345678910');
                       expect(data.value).to.eql({ revision: 3, data: { occuredAt: '2020-06-10T22:55:54.946Z' } });
                       count++;
                     }
-                    if (data.key.indexOf('12345678911') >= 0) {
-                      expect(data.key).to.eql('readmodel_revision::aggId:12345678911');
+                    if (data.id.indexOf('12345678911') >= 0) {
+                      expect(data.id).to.eql('readmodel_revision::aggId:12345678911');
                       expect(data.value).to.eql({ revision: 5, data: { occuredAt: '2020-06-09T22:55:54.946Z' } });
                       count++;
                     }

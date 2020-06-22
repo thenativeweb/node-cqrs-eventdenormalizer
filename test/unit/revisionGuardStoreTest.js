@@ -103,8 +103,8 @@ describe('revisionGuardStore', function() {
               expect(store.saveLastEvent).to.be.a('function');
               expect(store.getLastEvent).to.be.a('function');
               if (type === 'redis') {
-                expect(store.getValueOfEachKey).to.be.a('function');
-                expect(store.getValueOfKey).to.be.a('function');
+                expect(store.getValueOfEachId).to.be.a('function');
+                expect(store.getValueOfId).to.be.a('function');
               }
             });
 
@@ -383,7 +383,7 @@ describe('revisionGuardStore', function() {
                 });
 
                 if (type === 'redis') {
-                  describe('get value for each key', function() {
+                  describe('get value for each id', function() {
 
                     it('it should work as expected', function (done) {
                       var count = 0;
@@ -398,27 +398,27 @@ describe('revisionGuardStore', function() {
                           store.set(null, '25', null, 5, 4, function (err) {
                             expect(err).not.to.be.ok();
 
-                            store.getValueOfEachKey(null, (err, aggregateHandleFns) => {
+                            store.getValueOfEachId(null, (err, aggregateHandleFns) => {
                               expect(err).not.to.be.ok();
 
                               aggregateHandleFns.forEach(handleFn => {
                                 handleFn((err, data) => {
 
                                   expect(err).to.not.be.ok();
-                                  expect(data.key).to.be.ok();
+                                  expect(data.id).to.be.ok();
 
-                                  if (data.key.indexOf('23') >= 0) {
-                                    expect(data.key).to.eql('default::23');
+                                  if (data.id.indexOf('23') >= 0) {
+                                    expect(data.id).to.eql('default::23');
                                     expect(data.value).to.eql({ revision: 7, data: { aggregate: 'test' } });
                                     count++;
                                   }
-                                  if (data.key.indexOf('24') >= 0) {
-                                    expect(data.key).to.eql('default::24');
+                                  if (data.id.indexOf('24') >= 0) {
+                                    expect(data.id).to.eql('default::24');
                                     expect(data.value).to.eql({ revision: 5, data: { aggregate: 'test1' } });
                                     count++;
                                   }
-                                  if (data.key.indexOf('25') >= 0) {
-                                    expect(data.key).to.eql('default::25');
+                                  if (data.id.indexOf('25') >= 0) {
+                                    expect(data.id).to.eql('default::25');
                                     expect(data.value).to.eql({ revision: 5 });
                                     count++;
                                   }

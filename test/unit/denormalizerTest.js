@@ -1342,7 +1342,7 @@ describe('denormalizer', function () {
       var callback = function () {};
 
       denorm.revisionGuardStore = {
-        getValueOfEachKey: function (prefix, callbackFn) {
+        getValueOfEachId: function (prefix, callbackFn) {
           expect(callbackFn).to.eql(callback)
           done();
         }

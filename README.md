@@ -896,6 +896,22 @@ or depending on the last guarded event:
 
 	});
 
+or depending on the last guarded event per aggregate:
+
+  denorm.getLastEventOfEachAggregate((err, aggregateHandleFns) => {
+
+    aggregateHandleFns.forEach(handleFn => {
+
+      handleFn((err, data) => {
+        console.log('id', data.id);  // id that is stored within the revision guard for the aggregate
+        console.log('value', data.value);  // value that is stored within the revision guard for the aggregate
+      });
+
+    });
+
+  });
+
+
 ### streamed
 
 	denormalizer.replayStreamed(function (replay, done) {
